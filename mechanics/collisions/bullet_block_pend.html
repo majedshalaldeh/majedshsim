@@ -142,7 +142,7 @@ input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;bac
 <div id="breadcrumb">
   <a href="../../index.html">🏠 الرئيسية</a><span class="sep">›</span>
   <a href="../../index.html#mechanics">⚙️ الميكانيكا</a><span class="sep">›</span>
-  <a href="collisions.html">💥 التصادمات</span><span class="sep">›</span>
+  <span id="parentCrumb">💥 التصادمات</span><span class="sep">›</span>
   <span class="cur">🎯 البندول القذفي</span>
 </div>
 
@@ -1269,8 +1269,8 @@ animate();
 </script>
 
 <script>
-/* مسار القسم الأم */
-var PARENT_URL = '';
+/* مسار القسم الأم: صفحة «التصادمات» */
+var PARENT_URL = 'collisions.html';
 (function () {
   if (!PARENT_URL) return;
   var old = document.getElementById('parentCrumb'), a = document.createElement('a');
