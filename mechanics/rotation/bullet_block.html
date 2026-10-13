@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>رصاصة تنغرز في كتلة على ساق دوّار | الحركة الدورانية | الأستاذ ماجد شلالدة</title>
+<style>
+:root{--logo:clamp(84px,13vh,192px);--bg-color:#070b12;--main-card-bg:#131c2c;--sub-card-bg:#25344a;--accent:#4da3ff;--gold:#ffb74d;--accent-text:#7cc0ff;
+ --border-soft:rgba(120,160,220,.18);--shadow-soft:0 10px 30px rgba(0,0,0,.45);--ink:#dbe6f5;--mute:#8fa3bd;
+ --inner:#0b1220;--formula:#111d3a;--edge:#233149;--eq:#facc15;--ok:#7ed957;--danger:#ff7b6b}
+body.light-mode{--bg-color:#f0f4f8;--main-card-bg:#fff;--sub-card-bg:#e8eef5;--border-soft:rgba(0,0,0,.08);--shadow-soft:0 10px 30px rgba(0,0,0,.08);
+ --ink:#1a202c;--mute:#4a5568;--inner:#eef3f9;--formula:#f3f6fb;--edge:#cbd5e1;--eq:#92400e;--accent-text:#1e5fa3;--accent:#2563eb;--ok:#15803d}
+*{box-sizing:border-box}
+html,body{margin:0}
+#navbar,#breadcrumb,#siteHeader,.tabs,#footer{flex:none}
+body{background:var(--bg-color);color:var(--ink);font-family:"Segoe UI",Tahoma,"Noto Kufi Arabic",system-ui,sans-serif;line-height:1.8;height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden;
+ padding-bottom:env(safe-area-inset-bottom,0);transition:background .3s,color .3s}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+[hidden]{display:none!important}
+
+/* ===== شريط التنقل ===== */
+#navbar{position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:12px 24px;padding-top:calc(12px + env(safe-area-inset-top,0px));min-height:56px;
+ background:rgba(19,28,44,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border-soft)}
+body.light-mode #navbar{background:rgba(255,255,255,.92)}
+.nav-brand{font-size:1.05rem;font-weight:bold;color:var(--accent)}
+body.light-mode .nav-brand{color:#1e5fa3}
+.nav-links{display:flex;gap:6px;flex-wrap:wrap}
+.nav-links a{color:var(--ink);text-decoration:none;padding:8px 14px;border-radius:8px;font-size:.88rem;transition:.2s}
+.nav-links a:hover{background:var(--accent);color:#fff}
+.theme-toggle{background:transparent;border:1px solid var(--border-soft);color:var(--ink);font-size:1.1rem;width:36px;height:36px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s}
+.theme-toggle:hover{transform:rotate(20deg);background:var(--sub-card-bg)}
+#breadcrumb{width:max-content;max-width:calc(100% - 24px);margin:8px auto 0;display:flex;align-items:center;flex-wrap:wrap;justify-content:center;gap:8px;padding:5px 18px;font-size:12px;color:var(--mute);background:var(--main-card-bg);border:1px solid var(--border-soft);border-radius:10px}
+#breadcrumb a{color:var(--accent-text);text-decoration:none}
+body.light-mode #breadcrumb a{color:#1e5fa3}
+#breadcrumb .sep{opacity:.5}#breadcrumb a#parentCrumb{color:var(--accent-text)}#breadcrumb #parentCrumb{color:var(--mute)}#breadcrumb .cur{color:var(--ink);font-weight:600}
+
+/* ===== الترويسة ===== */
+#siteHeader{position:relative;display:flex;align-items:center;justify-content:center;padding:4px 20px 2px;min-height:var(--logo)}
+#logoWrap{position:absolute;top:4px;right:18px;z-index:30;display:flex;justify-content:center;align-items:center}
+#logoWrap img{width:var(--logo);height:var(--logo);border-radius:50%;background:#fff;object-fit:cover;box-shadow:0 6px 30px rgba(0,0,0,.5),0 0 0 4px rgba(255,255,255,.08);border:3px solid rgba(255,255,255,.2)}
+body.light-mode #logoWrap img{box-shadow:0 6px 30px rgba(0,0,0,.2),0 0 0 4px rgba(0,0,0,.05);border-color:rgba(0,0,0,.1)}
+#logoFallback{display:none;width:var(--logo);height:var(--logo);border-radius:50%;background:linear-gradient(135deg,#2563eb,#00b4d8);align-items:center;justify-content:center;font-size:calc(var(--logo)*.32);color:#fff}
+#titleBlock{text-align:center}
+#titleBlock h1{margin:0;font-size:20px;line-height:1.4;color:var(--accent-text)}
+.sub{color:var(--mute);margin:2px 0 0;font-size:13px}
+.credit{margin:6px 0 0;font-size:13px;color:var(--mute)}
+.credit .lead{color:var(--accent-text)}.credit strong{color:var(--ink)}.credit .bar{opacity:.5;margin:0 6px}.credit .ph{direction:ltr;unicode-bidi:isolate}
+
+/* ===== التخطيط ===== */
+.layout{flex:1;min-height:0;width:100%;display:flex;gap:16px;padding:0 16px 8px;max-width:1700px;margin:0 auto;align-items:stretch}
+.stage-wrap{position:relative;flex:1 1 0;min-width:0;border:1px solid var(--border-soft);border-radius:16px;overflow:hidden;background:#060a11;box-shadow:var(--shadow-soft)}
+#app{position:absolute;inset:0}
+#app canvas{display:block}
+
+/* ===== لوحة التحكم ===== */
+#panel{flex:0 0 clamp(320px,24vw,380px);height:100%;overflow-y:auto;scrollbar-width:thin;background:var(--main-card-bg);border:1px solid var(--border-soft);border-radius:16px;padding:12px 14px;box-shadow:var(--shadow-soft)}
+#panel::-webkit-scrollbar{width:6px}
+#panel::-webkit-scrollbar-thumb{background:var(--edge);border-radius:3px}
+#panel .sub{font-size:12px;color:var(--mute);margin:0 0 10px;line-height:1.7}
+.ctrl{margin-bottom:9px}
+.ctrl label{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--mute);margin-bottom:4px}
+.ctrl label b{color:var(--accent-text);font-weight:700;font-variant-numeric:tabular-nums}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:4px;border-radius:4px;background:var(--edge);outline:none;cursor:pointer;display:block}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;border-radius:50%;background:var(--accent);border:2px solid var(--main-card-bg);cursor:pointer;box-shadow:0 0 8px rgba(77,163,255,.6)}
+input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:var(--accent);border:2px solid var(--main-card-bg);cursor:pointer}
+.check-wrapper{display:flex;align-items:center;gap:9px;cursor:pointer;font-size:12px;color:var(--mute);margin:8px 0 4px;user-select:none}
+.check-wrapper input[type=checkbox]{appearance:none;-webkit-appearance:none;width:34px;height:19px;background:var(--edge);border-radius:10px;position:relative;cursor:pointer;transition:.22s;flex-shrink:0;border:none;outline:none;margin:0}
+.check-wrapper input[type=checkbox]::after{content:'';position:absolute;width:15px;height:15px;border-radius:50%;background:#94a3b8;top:2px;left:2px;transition:.22s}
+.check-wrapper input[type=checkbox]:checked{background:var(--accent)}
+.check-wrapper input[type=checkbox]:checked::after{left:17px;background:#fff}
+.btns{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.btns button{flex:1;min-width:60px;padding:8px 6px;border-radius:20px;border:1px solid var(--border-soft);background:var(--sub-card-bg);color:var(--ink);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:.15s}
+.btns button:hover{filter:brightness(1.08)}
+.btns button:active{transform:scale(.98)}
+.btns button.primary{background:linear-gradient(135deg,#2f7ddb,#4da3ff);border-color:transparent;color:#fff;box-shadow:0 4px 14px rgba(77,163,255,.35)}
+.btns button:disabled{opacity:.4;cursor:not-allowed}
+
+.derived{margin-top:12px;padding-top:9px;border-top:1px solid var(--edge)}
+.derived .row{display:flex;justify-content:space-between;font-size:12px;padding:3px 0;gap:10px}
+.derived .row span{color:var(--mute)}
+.derived .row b{color:var(--gold);font-variant-numeric:tabular-nums;font-weight:700;white-space:nowrap}
+.derived .row b.ok{color:var(--ok)}
+.file-note{font-size:11px;color:var(--mute);background:rgba(77,163,255,.08);border:1px solid rgba(77,163,255,.2);border-radius:8px;padding:7px 10px;margin-top:8px;line-height:1.7}
+.file-note b{color:var(--accent-text)}
+
+/* ===== اللوحات الزجاجية ===== */
+.glass{background:rgba(15,21,33,.84);border:1px solid rgba(120,160,220,.20);border-radius:12px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:#dbe6f5}
+#hud{position:absolute;bottom:12px;right:12px;padding:8px 14px;min-width:260px;z-index:5}
+#hud .row{display:flex;justify-content:space-between;gap:16px;font-size:12px;padding:3px 0}
+#hud .row span{color:#9fb2cc}#hud .row b{color:#fff;font-variant-numeric:tabular-nums;font-weight:600}
+#hud .row b.hi{color:#7ed957}
+#hint{position:absolute;bottom:12px;left:12px;font-size:11px;color:#9fb2cc;z-index:5;pointer-events:none;line-height:1.7}
+
+#footer{padding:4px 20px calc(4px + env(safe-area-inset-bottom,0px));text-align:center;font-size:11px;color:var(--mute)}
+#footer strong{color:var(--accent)}body.light-mode #footer strong{color:#1e5fa3}
+
+@media(max-width:760px){
+ #navbar{flex-wrap:wrap;gap:10px;padding:10px 15px;padding-top:calc(10px + env(safe-area-inset-top,0px))}
+ .nav-links{order:3;width:100%;justify-content:center}.nav-links a{padding:6px 10px;font-size:.8rem}.nav-brand span{display:none}
+ #breadcrumb{font-size:10px;padding:5px 12px}
+ #titleBlock h1{font-size:16px}
+}
+@media(min-width:901px) and (max-height:820px){
+ :root{--logo:72px}
+ #titleBlock .sub{display:none}#titleBlock h1{font-size:17px}
+ #breadcrumb{margin-top:4px;padding:3px 14px}
+ #navbar{min-height:46px;padding-top:calc(6px + env(safe-area-inset-top,0px));padding-bottom:6px}
+}
+@media(max-width:900px){
+ :root{--logo:120px}
+ body{height:auto;min-height:100vh;display:block;overflow:visible}
+ #logoWrap{position:static}#siteHeader{flex-direction:column;gap:8px;padding:12px 12px 2px;min-height:0}
+ .layout{flex-direction:column;padding:0 10px 12px}
+ .stage-wrap{flex:none;width:100%;height:62vh;min-height:340px}
+ #panel{flex:none;width:100%;height:auto;overflow:visible}
+ #hud{min-width:0;top:8px;bottom:auto;right:8px;padding:5px 9px}#hud .row{font-size:10.5px;gap:10px;padding:1px 0}#hint{display:none}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<nav id="navbar">
+  <div class="nav-brand">⚛️ <span>فيزياء ماجد شلالدة</span></div>
+  <div class="nav-links">
+    <a href="../../index.html#mechanics">⚙️ الميكانيكا</a>
+    <a href="../../index.html#electricity">⚡ الكهرباء</a>
+    <a href="../../index.html#magnetism">🧲 المغناطيسية</a>
+    <a href="../../index.html#modern">🔬 الحديثة</a>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="تبديل الوضع الليلي/النهاري" title="تبديل الوضع">🌙</button>
+</nav>
+
+<div id="breadcrumb">
+  <a href="../../index.html">🏠 الرئيسية</a><span class="sep">›</span>
+  <a href="../../index.html#mechanics">⚙️ الميكانيكا</a><span class="sep">›</span>
+  <a href="rotation.html">🔄 الحركة الدورانية</span><span class="sep">›</span>
+  <span class="cur">🎯 رصاصة على ساق دوّار</span>
+</div>
+
+<header id="siteHeader">
+  <div id="logoWrap">
+    <img src="../../logo.png" alt="شعار الأستاذ ماجد شلالدة" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+    <div id="logoFallback">⚛️</div>
+  </div>
+  <div id="titleBlock">
+    <h1>رصاصة تنغرز في كتلة على ساق دوّار — محاكاة ثلاثية الأبعاد</h1>
+    <p class="sub">حفظ الزخم الزاوي حول محور رأسي عديم الاحتكاك، ثم دوران النظام كجسم صلب</p>
+    <p class="credit"><span class="lead">إعداد وتطوير:</span> <strong>الأستاذ ماجد شلالدة</strong> <span class="bar">|</span> <span class="ph">0599870176</span></p>
+  </div>
+</header>
+
+<main class="layout">
+  <section class="stage-wrap" aria-label="المشهد ثلاثي الأبعاد">
+    <div id="app"></div>
+    <div id="hud" class="glass">
+      <div class="row"><span>الزاوية θ</span><b id="r_theta">0.0°</b></div>
+      <div class="row"><span>السرعة الزاوية ω</span><b id="r_omega">0.000 rad/s</b></div>
+      <div class="row"><span>السرعة الخطية للكتلة v = ωℓ</span><b id="r_v">0.000 m/s</b></div>
+      <div class="row"><span>دورات كاملة</span><b id="r_rev">0.00</b></div>
+      <div class="row"><span>الطاقة الحركية KE</span><b id="r_ke">0.000 J</b></div>
+    </div>
+    <div id="hint">اسحب بالفأرة للدوران • عجلة الفأرة للتقريب</div>
+  </section>
+
+  <aside id="panel" aria-label="لوحة التحكم">
+    <p class="sub">رصاصة تُطلق أفقياً وعمودياً على الساق من طرفها، فتنغرز في الكتلة الخشبية. النظام يدور كجسم صلب حول محور رأسي عديم الاحتكاك.</p>
+
+    <div class="ctrl">
+      <label>كتلة الرصاصة m <b><span id="v_mb">0.020</span> kg</b></label>
+      <input id="s_mb" type="range" min="0.005" max="0.10" step="0.005" value="0.020">
+    </div>
+    <div class="ctrl">
+      <label>سرعة الرصاصة v <b><span id="v_vb">500</span> m/s</b></label>
+      <input id="s_vb" type="range" min="50" max="900" step="10" value="500">
+    </div>
+    <div class="ctrl">
+      <label>كتلة القطعة الخشبية M <b><span id="v_Mb">1.48</span> kg</b></label>
+      <input id="s_Mb" type="range" min="0.3" max="5" step="0.02" value="1.48">
+    </div>
+    <div class="ctrl">
+      <label>كتلة الساق M<sub>r</sub> <b><span id="v_Mr">3.00</span> kg</b></label>
+      <input id="s_Mr" type="range" min="0" max="6" step="0.05" value="3.00">
+    </div>
+    <div class="ctrl">
+      <label>طول الساق ℓ <b><span id="v_L">2.00</span> m</b></label>
+      <input id="s_L" type="range" min="0.8" max="3" step="0.05" value="2.00">
+    </div>
+    <div class="ctrl">
+      <label>سرعة العرض (Slow-mo) <b><span id="v_ts">0.25</span>×</b></label>
+      <input id="s_ts" type="range" min="0.05" max="1" step="0.05" value="0.25">
+    </div>
+    <div class="ctrl">
+      <label>مستوى الصوت <b><span id="v_vol">70</span>%</b></label>
+      <input id="s_vol" type="range" min="0" max="100" step="5" value="70">
+    </div>
+
+    <label class="check-wrapper" style="margin-top:0;">
+      <input type="checkbox" id="soundOn" checked>
+      <span>تشغيل المؤثرات الصوتية</span>
+    </label>
+
+    <div class="btns">
+      <button id="btnFire" class="primary">إطلاق 🎯</button>
+      <button id="btnReset">إعادة</button>
+    </div>
+
+    <div class="derived">
+      <div class="row"><span>عزم القصور الذاتي I</span><b id="d_I">—</b></div>
+      <div class="row"><span>الزخم الزاوي قبل L<sub>i</sub> = m v ℓ</span><b id="d_Li">—</b></div>
+      <div class="row"><span>الزخم الزاوي بعد L<sub>f</sub> = I ω</span><b id="d_Lf">—</b></div>
+      <div class="row"><span>السرعة الزاوية ω₀</span><b id="d_w">—</b></div>
+      <div class="row"><span>طاقة قبل KE<sub>i</sub></span><b id="d_KEi">—</b></div>
+      <div class="row"><span>طاقة بعد KE<sub>f</sub></span><b id="d_KEf">—</b></div>
+      <div class="row"><span>الطاقة المفقودة</span><b id="d_loss">—</b></div>
+    </div>
+
+    <div class="file-note">
+      <b>حفظ الزخم الزاوي:</b> L<sub>i</sub> = L<sub>f</sub> ✔ — بينما الطاقة الحركية تُفقد جزئياً في تصادم غير مرن تماماً.
+    </div>
+  </aside>
+</main>
+
+<div id="footer">
+  © 2025 المنصة التفاعلية للمحاكاة الفيزيائية — إعداد
+  <strong>الأستاذ ماجد شلالدة</strong> — 📱 0599870176
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+/* =========================================================
+   0) محرك الصوت
+   ========================================================= */
+const AudioEngine = (() => {
+  let ctx = null, masterGain = null, enabled = true, volume = 0.7, noiseBuffer = null;
+  function init() {
+    if (ctx) return;
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return;
+    ctx = new AC();
+    masterGain = ctx.createGain();
+    masterGain.gain.value = volume;
+    masterGain.connect(ctx.destination);
+    const len = Math.floor(ctx.sampleRate * 1.5);
+    noiseBuffer = ctx.createBuffer(1, len, ctx.sampleRate);
+    const data = noiseBuffer.getChannelData(0);
+    for (let i = 0; i < len; i++) data[i] = Math.random() * 2 - 1;
+  }
+  function resume(){ if(!ctx) init(); if(ctx && ctx.state==='suspended') ctx.resume(); }
+  function setVolume(v){ volume=v; if(masterGain) masterGain.gain.value=v; }
+  function setEnabled(v){ enabled=v; }
+  function now(){ return ctx ? ctx.currentTime : 0; }
+
+  function gunshot(){
+    if(!enabled || !ctx) return;
+    const t = now();
+    const noise = ctx.createBufferSource(); noise.buffer = noiseBuffer;
+    const ng = ctx.createGain(); const nf = ctx.createBiquadFilter();
+    nf.type='highpass'; nf.frequency.value=800; nf.Q.value=0.7;
+    ng.gain.setValueAtTime(0.0001,t);
+    ng.gain.exponentialRampToValueAtTime(0.85,t+0.004);
+    ng.gain.exponentialRampToValueAtTime(0.0001,t+0.28);
+    noise.connect(nf); nf.connect(ng); ng.connect(masterGain);
+    noise.start(t); noise.stop(t+0.32);
+    const kick = ctx.createOscillator(); const kg = ctx.createGain();
+    kick.type='sine';
+    kick.frequency.setValueAtTime(180,t);
+    kick.frequency.exponentialRampToValueAtTime(45,t+0.15);
+    kg.gain.setValueAtTime(0.9,t);
+    kg.gain.exponentialRampToValueAtTime(0.0001,t+0.22);
+    kick.connect(kg); kg.connect(masterGain);
+    kick.start(t); kick.stop(t+0.25);
+    const crack = ctx.createOscillator(); const cg = ctx.createGain();
+    crack.type='square';
+    crack.frequency.setValueAtTime(1800,t);
+    crack.frequency.exponentialRampToValueAtTime(400,t+0.03);
+    cg.gain.setValueAtTime(0.35,t);
+    cg.gain.exponentialRampToValueAtTime(0.0001,t+0.05);
+    crack.connect(cg); cg.connect(masterGain);
+    crack.start(t); crack.stop(t+0.06);
+  }
+  function woodImpact(){
+    if(!enabled || !ctx) return;
+    const t = now();
+    const noise = ctx.createBufferSource(); noise.buffer = noiseBuffer;
+    const bp = ctx.createBiquadFilter();
+    bp.type='bandpass'; bp.frequency.value=1500; bp.Q.value=1.6;
+    const ng = ctx.createGain();
+    ng.gain.setValueAtTime(0.0001,t);
+    ng.gain.exponentialRampToValueAtTime(0.75,t+0.002);
+    ng.gain.exponentialRampToValueAtTime(0.0001,t+0.11);
+    noise.connect(bp); bp.connect(ng); ng.connect(masterGain);
+    noise.start(t); noise.stop(t+0.14);
+    const thud = ctx.createOscillator(); const tg = ctx.createGain();
+    thud.type='triangle';
+    thud.frequency.setValueAtTime(260,t);
+    thud.frequency.exponentialRampToValueAtTime(95,t+0.13);
+    tg.gain.setValueAtTime(0.55,t);
+    tg.gain.exponentialRampToValueAtTime(0.0001,t+0.18);
+    thud.connect(tg); tg.connect(masterGain);
+    thud.start(t); thud.stop(t+0.20);
+  }
+  function resetTone(){
+    if(!enabled || !ctx) return;
+    const t = now();
+    const osc = ctx.createOscillator(); const g = ctx.createGain();
+    osc.type='sine';
+    osc.frequency.setValueAtTime(660,t);
+    osc.frequency.exponentialRampToValueAtTime(220,t+0.18);
+    g.gain.setValueAtTime(0.0001,t);
+    g.gain.exponentialRampToValueAtTime(0.16,t+0.01);
+    g.gain.exponentialRampToValueAtTime(0.0001,t+0.22);
+    osc.connect(g); g.connect(masterGain);
+    osc.start(t); osc.stop(t+0.24);
+  }
+  return { init, resume, setVolume, setEnabled, gunshot, woodImpact, resetTone };
+})();
+
+['pointerdown','keydown','touchstart'].forEach(evt => {
+  window.addEventListener(evt, () => AudioEngine.resume(), { once:true, passive:true });
+});
+
+/* =========================================================
+   1) المعاملات
+   ========================================================= */
+const params = {
+  L: 2.00, Mrod: 3.00, Mblock: 1.48,
+  mbullet: 0.020, vbullet: 500, timeScale: 0.25
+};
+
+const LOGO_PATH = 'logo.png';
+
+const BLOCK_HALF = 0.19;
+const ROD_Y = 0.11, BLOCK_Y = 0.19, BULLET_Y = BLOCK_Y;
+const START_Z = 2.30, FLIGHT_DUR = 0.55;
+
+let I = 0, omega0 = 0, Li = 0, Lf = 0, KEi = 0, KEf = 0;
+
+function computeDerived() {
+  const { L, Mrod, Mblock, mbullet, vbullet } = params;
+  I = (Mrod * L * L) / 3 + Mblock * L * L + mbullet * L * L;
+  omega0 = (mbullet * vbullet * L) / I;
+  Li = mbullet * vbullet * L;
+  Lf = I * omega0;
+  KEi = 0.5 * mbullet * vbullet * vbullet;
+  KEf = 0.5 * I * omega0 * omega0;
+}
+
+/* =========================================================
+   2) المشهد والمُصيّر
+   ========================================================= */
+const container = document.getElementById('app');
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x070b12);
+scene.fog = new THREE.Fog(0x070b12, 10, 26);
+
+const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 200);
+camera.position.set(3.9, 4.6, 5.0);
+
+const renderer = new THREE.WebGLRenderer({ antialias:true });
+renderer.setSize(container.clientWidth, container.clientHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.12;
+container.appendChild(renderer.domElement);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.target.set(0.85, 0, 0);
+controls.enableDamping = true;
+controls.dampingFactor = 0.07;
+controls.minDistance = 2.2;
+controls.maxDistance = 18;
+controls.maxPolarAngle = Math.PI * 0.495;
+
+/* =========================================================
+   3) الإضاءة
+   ========================================================= */
+scene.add(new THREE.HemisphereLight(0x9dbdff, 0x0a0f18, 0.9));
+
+const keyLight = new THREE.DirectionalLight(0xffffff, 2.3);
+keyLight.position.set(4.5, 8.5, 5.0);
+keyLight.castShadow = true;
+keyLight.shadow.mapSize.set(2048, 2048);
+const sc = keyLight.shadow.camera;
+sc.left=-6; sc.right=6; sc.top=6; sc.bottom=-6; sc.near=0.5; sc.far=26;
+keyLight.shadow.bias = -0.0006;
+scene.add(keyLight);
+
+const rimLight = new THREE.DirectionalLight(0x4da3ff, 1.0);
+rimLight.position.set(-6, 3, -5);
+scene.add(rimLight);
+
+const fillLight = new THREE.PointLight(0xffb74d, 0.55, 16, 2);
+fillLight.position.set(-1.5, 2.5, 3.5);
+scene.add(fillLight);
+
+/* =========================================================
+   4) مواد مشتركة + نسيج خشبي
+   ========================================================= */
+function makeWoodTexture(base, dark, light) {
+  const c = document.createElement('canvas');
+  c.width = c.height = 256;
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = base; ctx.fillRect(0,0,256,256);
+  for (let i=0; i<120; i++){
+    ctx.strokeStyle = Math.random() > 0.5
+      ? `rgba(${dark},${0.08 + Math.random()*0.30})`
+      : `rgba(${light},${0.05 + Math.random()*0.22})`;
+    ctx.lineWidth = 0.5 + Math.random()*2.6;
+    ctx.beginPath();
+    const y0 = Math.random()*256;
+    ctx.moveTo(0, y0);
+    for (let x=0; x<=256; x+=16){
+      ctx.lineTo(x, y0 + Math.sin(x*0.045 + i*1.7)*5 + (Math.random()-0.5)*2.2);
+    }
+    ctx.stroke();
+  }
+  for (let k=0; k<3; k++){
+    const kx = Math.random()*256, ky = Math.random()*256;
+    const grd = ctx.createRadialGradient(kx, ky, 1, kx, ky, 16 + Math.random()*12);
+    grd.addColorStop(0, 'rgba(60,35,12,0.5)');
+    grd.addColorStop(1, 'rgba(60,35,12,0)');
+    ctx.fillStyle = grd;
+    ctx.beginPath(); ctx.arc(kx, ky, 30, 0, Math.PI*2); ctx.fill();
+  }
+  const tex = new THREE.CanvasTexture(c);
+  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+  tex.repeat.set(1.8, 1.8);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}
+
+function shared(mat){ mat.__shared = true; return mat; }
+
+const tableTex   = makeWoodTexture('#b8874f', '90,58,24', '230,200,160');
+const blockWoodTex = makeWoodTexture('#a9743c', '80,50,20', '225,190,145');
+
+const rodMat = shared(new THREE.MeshStandardMaterial({ color:0xb6c2d1, metalness:0.94, roughness:0.28 }));
+const axleMat = shared(new THREE.MeshStandardMaterial({ color:0x6c7887, metalness:0.95, roughness:0.24 }));
+const bulletMat = shared(new THREE.MeshStandardMaterial({ color:0xdfa94a, metalness:1.0, roughness:0.20, emissive:0x4a2c00, emissiveIntensity:0.8 }));
+const blockMat = shared(new THREE.MeshStandardMaterial({
+  map: blockWoodTex, color:0xffffff, roughness:0.85, metalness:0.02,
+  transparent:true, opacity:0.86, side: THREE.DoubleSide
+}));
+
+/* =========================================================
+   5) الطاولة والأرضية
+   ========================================================= */
+const table = new THREE.Group();
+scene.add(table);
+
+const TOP_W = 6.4, TOP_D = 6.4, TOP_T = 0.18;
+
+const tableTop = new THREE.Mesh(
+  new THREE.BoxGeometry(TOP_W, TOP_T, TOP_D),
+  new THREE.MeshStandardMaterial({ map: tableTex, color:0xd8d8d8, roughness:0.8, metalness:0.04 })
+);
+tableTop.position.y = -TOP_T/2;
+tableTop.receiveShadow = true; tableTop.castShadow = true;
+table.add(tableTop);
+
+const edgeMat = new THREE.MeshStandardMaterial({ color:0x8a5f34, roughness:0.7 });
+[[0,-TOP_T/2, TOP_D/2, TOP_W, TOP_T, 0.08],
+ [0,-TOP_T/2,-TOP_D/2, TOP_W, TOP_T, 0.08],
+ [ TOP_W/2,-TOP_T/2, 0, 0.08, TOP_T, TOP_D],
+ [-TOP_W/2,-TOP_T/2, 0, 0.08, TOP_T, TOP_D]].forEach(([x,y,z,w,h,d]) => {
+  const m = new THREE.Mesh(new THREE.BoxGeometry(w,h,d), edgeMat);
+  m.position.set(x,y,z); m.castShadow = true; table.add(m);
+});
+
+const legMat = new THREE.MeshStandardMaterial({ color:0x9a6a3c, roughness:0.75, metalness:0.03 });
+const legH = 1.5;
+[[-1,-1],[1,-1],[-1,1],[1,1]].forEach(([sx,sz]) => {
+  const leg = new THREE.Mesh(new THREE.BoxGeometry(0.22, legH, 0.22), legMat);
+  leg.position.set(sx*(TOP_W/2-0.3), -TOP_T - legH/2, sz*(TOP_D/2-0.3));
+  leg.castShadow = true; leg.receiveShadow = true; table.add(leg);
+});
+
+const grid = new THREE.GridHelper(TOP_W-0.2, 32, 0x5a7ea8, 0x3c5674);
+grid.position.y = 0.004; grid.material.transparent = true; grid.material.opacity = 0.22;
+scene.add(grid);
+
+const floor = new THREE.Mesh(
+  new THREE.CircleGeometry(14, 64),
+  new THREE.MeshStandardMaterial({ color:0x0a0f18, roughness:0.98, metalness:0.05 })
+);
+floor.rotation.x = -Math.PI/2;
+floor.position.y = -TOP_T - legH;
+floor.receiveShadow = true;
+scene.add(floor);
+
+/* =========================================================
+   6) الشعار الدائري على الطاولة
+   ========================================================= */
+const logoRadius = 1.45;
+const logoOutline = new THREE.Mesh(
+  new THREE.RingGeometry(logoRadius-0.025, logoRadius, 96),
+  new THREE.MeshBasicMaterial({ color:0xc49b3f, transparent:true, opacity:0.55, side:THREE.DoubleSide, depthWrite:false })
+);
+logoOutline.rotation.x = -Math.PI/2;
+logoOutline.position.set(0, 0.006, 0);
+scene.add(logoOutline);
+
+const logoMaterial = new THREE.MeshBasicMaterial({
+  color:0xffffff, transparent:true, opacity:0,
+  side:THREE.DoubleSide, depthWrite:false, toneMapped:false
+});
+const logoMesh = new THREE.Mesh(new THREE.CircleGeometry(logoRadius-0.02, 96), logoMaterial);
+logoMesh.rotation.x = -Math.PI/2;
+logoMesh.position.set(0, 0.008, 0);
+logoMesh.visible = false;
+logoMesh.renderOrder = 1;
+scene.add(logoMesh);
+
+(function tryAutoLoad() {
+  const img = new Image();
+  img.onload = function () {
+    const tex = new THREE.Texture(img);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+    tex.minFilter = THREE.LinearFilter;
+    tex.magFilter = THREE.LinearFilter;
+    tex.generateMipmaps = false;
+    tex.needsUpdate = true;
+    if (logoMaterial.map) logoMaterial.map.dispose();
+    logoMaterial.map = tex;
+    logoMaterial.opacity = 1;
+    logoMaterial.needsUpdate = true;
+    logoMesh.visible = true;
+    logoOutline.material.opacity = 0.25;
+  };
+  img.onerror = function () {
+    console.warn('⚠️ تعذّر تحميل الشعار: ' + LOGO_PATH);
+  };
+  img.src = LOGO_PATH + '?v=' + Date.now();
+})();
+
+/* =========================================================
+   7) المحور الثابت
+   ========================================================= */
+const pivotGroup = new THREE.Group();
+scene.add(pivotGroup);
+
+const axle = new THREE.Mesh(new THREE.CylinderGeometry(0.075, 0.075, 0.46, 28), axleMat);
+axle.position.y = 0.23; axle.castShadow = true; axle.receiveShadow = true;
+pivotGroup.add(axle);
+
+const basePlate = new THREE.Mesh(
+  new THREE.CylinderGeometry(0.15, 0.17, 0.045, 28),
+  new THREE.MeshStandardMaterial({ color:0x50606f, metalness:0.9, roughness:0.35 })
+);
+basePlate.position.y = 0.0225; basePlate.castShadow = true; basePlate.receiveShadow = true;
+pivotGroup.add(basePlate);
+
+const ringMesh = new THREE.Mesh(
+  new THREE.TorusGeometry(0.095, 0.013, 12, 36),
+  new THREE.MeshStandardMaterial({ color:0x4da3ff, emissive:0x1e5a9a, metalness:0.7, roughness:0.35 })
+);
+ringMesh.rotation.x = Math.PI/2; ringMesh.position.y = 0.465;
+pivotGroup.add(ringMesh);
+
+/* =========================================================
+   8) مجموعة البندول
+   ========================================================= */
+const pendulum = new THREE.Group();
+scene.add(pendulum);
+
+let rodMesh = null, blockMesh = null, embeddedBullet = null;
+
+function makeBulletMesh(scale = 1) {
+  const g = new THREE.Group();
+  const bodyGeo = new THREE.CylinderGeometry(0.042*scale, 0.042*scale, 0.155*scale, 18);
+  bodyGeo.rotateX(Math.PI/2);
+  const body = new THREE.Mesh(bodyGeo, bulletMat);
+  body.castShadow = true; g.add(body);
+  const tip = new THREE.Mesh(new THREE.ConeGeometry(0.042*scale, 0.085*scale, 18), bulletMat);
+  tip.rotation.x = -Math.PI/2;
+  tip.position.z = -(0.0775 + 0.0425)*scale;
+  tip.castShadow = true; g.add(tip);
+  return g;
+}
+
+function clearGroup(g) {
+  while (g.children.length) {
+    const c = g.children.pop();
+    g.remove(c);
+    c.traverse(o => {
+      if (o.geometry) o.geometry.dispose();
+      if (o.material) {
+        const mats = Array.isArray(o.material) ? o.material : [o.material];
+        mats.forEach(m => {
+          if (m && !m.__shared) {
+            if (m.map) m.map.dispose();
+            m.dispose();
+          }
+        });
+      }
+    });
+  }
+}
+
+function buildPendulum() {
+  clearGroup(pendulum);
+  const L = params.L;
+
+  const rodGeo = new THREE.CylinderGeometry(0.036, 0.036, L, 22);
+  rodGeo.rotateZ(Math.PI/2);
+  rodMesh = new THREE.Mesh(rodGeo, rodMat);
+  rodMesh.position.set(L/2, ROD_Y, 0);
+  rodMesh.castShadow = true; rodMesh.receiveShadow = true;
+  pendulum.add(rodMesh);
+
+  blockMesh = new THREE.Mesh(
+    new THREE.BoxGeometry(BLOCK_HALF*2, BLOCK_HALF*2, BLOCK_HALF*2),
+    blockMat
+  );
+  blockMesh.position.set(L, BLOCK_Y, 0);
+  blockMesh.castShadow = true; blockMesh.receiveShadow = true;
+  pendulum.add(blockMesh);
+
+  embeddedBullet = makeBulletMesh(1);
+  embeddedBullet.position.set(L, BULLET_Y, BLOCK_HALF*0.35);
+  embeddedBullet.visible = false;
+  pendulum.add(embeddedBullet);
+
+  impactLight.position.set(L, BULLET_Y, 0);
+
+  controls.target.set(L * 0.45, 0.15, 0);
+}
+
+/* =========================================================
+   9) الرصاصة الطائرة + الأثر + الوميض
+   ========================================================= */
+const flyingBullet = makeBulletMesh(1);
+flyingBullet.visible = false;
+scene.add(flyingBullet);
+
+const trailGeo = new THREE.CylinderGeometry(0.012, 0.012, 1, 12);
+trailGeo.rotateX(Math.PI/2);
+const trailMat = new THREE.MeshBasicMaterial({
+  color:0xffc46b, transparent:true, opacity:0.5,
+  blending:THREE.AdditiveBlending, depthWrite:false
+});
+const trail = new THREE.Mesh(trailGeo, trailMat);
+trail.visible = false;
+scene.add(trail);
+
+// وميض الفوهة
+const muzzleFlash = new THREE.PointLight(0xffcc66, 0, 3.5, 2);
+scene.add(muzzleFlash);
+const muzzleSprite = new THREE.Sprite(new THREE.SpriteMaterial({
+  color:0xffd58a, transparent:true, opacity:0,
+  blending:THREE.AdditiveBlending, depthWrite:false
+}));
+muzzleSprite.scale.set(0.35, 0.35, 1);
+scene.add(muzzleSprite);
+let muzzleTimer = 0;
+
+const impactLight = new THREE.PointLight(0xffa53a, 0, 5, 2);
+scene.add(impactLight);
+let flashTimer = 0;
+
+const shockRing = new THREE.Mesh(
+  new THREE.RingGeometry(0.06, 0.10, 40),
+  new THREE.MeshBasicMaterial({
+    color:0xffd08a, transparent:true, opacity:0, side:THREE.DoubleSide,
+    blending:THREE.AdditiveBlending, depthWrite:false
+  })
+);
+shockRing.rotation.x = -Math.PI/2;
+scene.add(shockRing);
+let shockTimer = 0;
+
+/* =========================================================
+   10) قوس الزاوية والخط المرجعي
+   ========================================================= */
+const ARC_SEG = 72;
+const arcGeo = new THREE.BufferGeometry();
+arcGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array((ARC_SEG+1)*3), 3));
+const arcLine = new THREE.Line(arcGeo, new THREE.LineBasicMaterial({
+  color:0x4da3ff, transparent:true, opacity:0.85
+}));
+scene.add(arcLine);
+
+const refGeo = new THREE.BufferGeometry().setFromPoints([
+  new THREE.Vector3(0, 0.012, 0), new THREE.Vector3(1, 0.012, 0)
+]);
+const refLine = new THREE.Line(refGeo, new THREE.LineDashedMaterial({
+  color:0xffb74d, dashSize:0.09, gapSize:0.07, transparent:true, opacity:0.6
+}));
+refLine.computeLineDistances();
+scene.add(refLine);
+
+function updateArc(phi) {
+  const R = params.L * 0.92;
+  const pos = arcGeo.attributes.position;
+  const n = Math.max(2, Math.round(ARC_SEG * Math.min(1, Math.abs(phi) / (Math.PI*2))));
+  for (let i=0; i<=n; i++){
+    const t = phi * (i/n);
+    pos.setXYZ(i, R*Math.cos(t), 0.014, -R*Math.sin(t));
+  }
+  for (let i=n+1; i<=ARC_SEG; i++){
+    pos.setXYZ(i, R*Math.cos(phi), 0.014, -R*Math.sin(phi));
+  }
+  pos.needsUpdate = true;
+  arcGeo.setDrawRange(0, n+1);
+}
+
+function updateRefLine() {
+  const p = refLine.geometry.attributes.position;
+  p.setXYZ(1, params.L * 1.15, 0.012, 0);
+  p.needsUpdate = true;
+  refLine.computeLineDistances();
+}
+
+/* =========================================================
+   11) تسميات نصية
+   ========================================================= */
+function makeLabel(text, color = '#ffffff', size = 84) {
+  const c = document.createElement('canvas');
+  c.width = 256; c.height = 128;
+  const ctx = c.getContext('2d');
+  ctx.clearRect(0,0,256,128);
+  ctx.font = `bold ${size}px "Segoe UI", Tahoma, sans-serif`;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.shadowColor = 'rgba(0,0,0,0.85)'; ctx.shadowBlur = 14;
+  ctx.fillStyle = color; ctx.fillText(text, 128, 64);
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  const mat = new THREE.SpriteMaterial({ map:tex, transparent:true, depthTest:false });
+  const sp = new THREE.Sprite(mat);
+  sp.scale.set(0.62, 0.31, 1); sp.renderOrder = 999;
+  return sp;
+}
+
+let labelM = null, labelLittleM = null, labelL = null;
+
+function buildLabels() {
+  [labelM, labelLittleM, labelL].forEach(lbl => {
+    if (!lbl) return;
+    scene.remove(lbl);
+    if (lbl.material.map) lbl.material.map.dispose();
+    lbl.material.dispose();
+  });
+  labelM = makeLabel('M', '#8fd0ff'); scene.add(labelM);
+  labelLittleM = makeLabel('m', '#ffd08a', 76); scene.add(labelLittleM);
+  labelL = makeLabel('ℓ', '#cfd8e6', 80); scene.add(labelL);
+}
+
+/* =========================================================
+   12) حالة الفيزياء
+   ========================================================= */
+let phase = 'ready', phi = 0, flightT = 0, totalRot = 0;
+
+function resetSim() {
+  phase = 'ready'; phi = 0; flightT = 0; totalRot = 0;
+  flashTimer = 0; shockTimer = 0; muzzleTimer = 0;
+  impactLight.intensity = 0;
+  muzzleFlash.intensity = 0;
+  muzzleSprite.material.opacity = 0;
+  shockRing.material.opacity = 0;
+  pendulum.rotation.y = 0;
+  flyingBullet.visible = false;
+  flyingBullet.position.set(params.L, BULLET_Y, START_Z);
+  trail.visible = false;
+  if (embeddedBullet) embeddedBullet.visible = false;
+  computeDerived();
+  updateArc(0); updateRefLine(); updatePanelDerived();
+  updateHUD(true);
+  btnFire.disabled = false;
+}
+
+function fire() {
+  if (phase !== 'ready') return;
+  AudioEngine.resume();
+  AudioEngine.gunshot();
+  computeDerived();
+  phase = 'flight'; flightT = 0;
+  flyingBullet.visible = true;
+  flyingBullet.position.set(params.L, BULLET_Y, START_Z);
+  trail.visible = true;
+  trailMat.opacity = 0.55;
+  muzzleTimer = 0.14;
+  muzzleFlash.position.set(params.L, BULLET_Y, START_Z);
+  muzzleSprite.position.copy(muzzleFlash.position);
+  muzzleFlash.intensity = 55;
+  muzzleSprite.material.opacity = 1;
+  btnFire.disabled = true;
+}
+
+/* =========================================================
+   13) واجهة التحكم
+   ========================================================= */
+const btnFire = document.getElementById('btnFire');
+const btnReset = document.getElementById('btnReset');
+const soundOnCheck = document.getElementById('soundOn');
+const volSlider = document.getElementById('s_vol');
+const volOut = document.getElementById('v_vol');
+
+function refreshGeometry() {
+  buildPendulum();
+  buildLabels();
+  updateRefLine();
+  computeDerived();
+  updateArc(phase === 'spin' ? phi : 0);
+  updatePanelDerived();
+}
+
+const sliders = [
+  { id:'s_mb', out:'v_mb', key:'mbullet',  fmt: v => v.toFixed(3), rebuild:false },
+  { id:'s_vb', out:'v_vb', key:'vbullet',  fmt: v => v.toFixed(0), rebuild:false },
+  { id:'s_Mb', out:'v_Mb', key:'Mblock',   fmt: v => v.toFixed(2), rebuild:false },
+  { id:'s_Mr', out:'v_Mr', key:'Mrod',     fmt: v => v.toFixed(2), rebuild:false },
+  { id:'s_L',  out:'v_L',  key:'L',        fmt: v => v.toFixed(2), rebuild:true  },
+  { id:'s_ts', out:'v_ts', key:'timeScale',fmt: v => v.toFixed(2), rebuild:false }
+];
+
+sliders.forEach(s => {
+  const el = document.getElementById(s.id);
+  const out = document.getElementById(s.out);
+  out.textContent = s.fmt(parseFloat(el.value));
+  params[s.key] = parseFloat(el.value);
+
+  el.addEventListener('input', () => {
+    const val = parseFloat(el.value);
+    params[s.key] = val;
+    out.textContent = s.fmt(val);
+    if (s.rebuild) {
+      refreshGeometry();
+      if (phase !== 'ready') resetSim();
+      else flyingBullet.position.set(params.L, BULLET_Y, START_Z);
+    } else {
+      computeDerived();
+      updatePanelDerived();
+    }
+  });
+  el.addEventListener('change', () => { if (phase !== 'ready') resetSim(); });
+});
+
+volSlider.addEventListener('input', () => {
+  const v = parseInt(volSlider.value) / 100;
+  volOut.textContent = volSlider.value;
+  AudioEngine.setVolume(v);
+});
+soundOnCheck.addEventListener('change', () => {
+  AudioEngine.setEnabled(soundOnCheck.checked);
+});
+AudioEngine.setVolume(parseInt(volSlider.value) / 100);
+
+btnFire.addEventListener('click', fire);
+btnReset.addEventListener('click', () => {
+  AudioEngine.resume();
+  AudioEngine.resetTone();
+  resetSim();
+});
+
+/* =========================================================
+   14) تحديث اللوحات
+   ========================================================= */
+const rTheta = document.getElementById('r_theta');
+const rOmega = document.getElementById('r_omega');
+const rV     = document.getElementById('r_v');
+const rRev   = document.getElementById('r_rev');
+const rKE    = document.getElementById('r_ke');
+const dI     = document.getElementById('d_I');
+const dLi    = document.getElementById('d_Li');
+const dLf    = document.getElementById('d_Lf');
+const dW     = document.getElementById('d_w');
+const dKEi   = document.getElementById('d_KEi');
+const dKEf   = document.getElementById('d_KEf');
+const dLoss  = document.getElementById('d_loss');
+
+function updatePanelDerived() {
+  dI.textContent   = I.toFixed(3) + ' kg·m²';
+  dLi.textContent  = Li.toFixed(2) + ' kg·m²/s';
+  dLf.textContent  = Lf.toFixed(2) + ' kg·m²/s';
+  dW.textContent   = omega0.toFixed(3) + ' rad/s';
+  dKEi.textContent = KEi.toFixed(1) + ' J';
+  dKEf.textContent = KEf.toFixed(2) + ' J';
+  const loss = KEi - KEf;
+  const pct = KEi > 0 ? (loss / KEi * 100) : 0;
+  dLoss.textContent = loss.toFixed(1) + ' J (' + pct.toFixed(1) + '%)';
+}
+
+function updateHUD(force = false) {
+  const w = (phase === 'spin') ? omega0 : 0;
+  const v = w * params.L;
+  const KE = 0.5 * I * w * w;
+
+  rTheta.textContent = (phi * 180 / Math.PI).toFixed(1) + '°';
+  rOmega.textContent = w.toFixed(3) + ' rad/s';
+  rV.textContent     = v.toFixed(3) + ' m/s';
+  rRev.textContent   = (phi / (Math.PI*2)).toFixed(2);
+  rKE.textContent    = KE.toFixed(3) + ' J';
+  if (force) rKE.classList.add('hi');
+}
+
+/* =========================================================
+   15) حلقة الرسم
+   ========================================================= */
+const clock = new THREE.Clock();
+let hudTick = 0;
+
+function animate() {
+  requestAnimationFrame(animate);
+  let dt = clock.getDelta();
+  if (dt > 0.05) dt = 0.05;
+
+  if (muzzleTimer > 0) {
+    muzzleTimer -= dt;
+    const f = Math.max(0, muzzleTimer / 0.14);
+    muzzleFlash.intensity = 55 * f * f;
+    muzzleSprite.material.opacity = f;
+    muzzleSprite.scale.setScalar(0.35 + (1 - f) * 0.25);
+  } else if (muzzleFlash.intensity > 0) {
+    muzzleFlash.intensity = 0;
+    muzzleSprite.material.opacity = 0;
+  }
+
+  if (phase === 'flight') {
+    flightT += dt;
+    const p = Math.min(flightT / FLIGHT_DUR, 1);
+    const s = p * p * (3 - 2 * p);
+    const z = START_Z + (0 - START_Z) * s;
+    flyingBullet.position.set(params.L, BULLET_Y, z);
+    const len = Math.max(0.001, START_Z - z);
+    trail.scale.z = len;
+    trail.position.set(params.L, BULLET_Y, z + len/2);
+    trailMat.opacity = 0.55 * (1 - p * 0.4);
+    if (p >= 1) {
+      AudioEngine.woodImpact();
+      flyingBullet.visible = false;
+      trail.visible = false;
+      embeddedBullet.visible = true;
+      phi = 0; phase = 'spin';
+      flashTimer = 0.25; shockTimer = 0.55;
+      shockRing.position.set(params.L, BULLET_Y, 0);
+      shockRing.scale.setScalar(1);
+      shockRing.material.opacity = 0.9;
+    }
+  } else if (phase === 'spin') {
+    const simDt = dt * params.timeScale;
+    phi += omega0 * simDt;
+    totalRot += omega0 * simDt;
+    pendulum.rotation.y = phi;
+    updateArc(phi);
+  }
+
+  if (flashTimer > 0) {
+    flashTimer -= dt;
+    const f = Math.max(0, flashTimer / 0.25);
+    impactLight.intensity = 30 * f * f;
+  } else impactLight.intensity = 0;
+
+  if (shockTimer > 0) {
+    shockTimer -= dt;
+    const f = Math.max(0, shockTimer / 0.55);
+    const k = 1 - f;
+    shockRing.scale.setScalar(1 + k * 5.5);
+    shockRing.material.opacity = 0.9 * f * f;
+  } else shockRing.material.opacity = 0;
+
+  if (labelM && blockMesh) {
+    const wp = new THREE.Vector3();
+    blockMesh.getWorldPosition(wp);
+    labelM.position.set(wp.x, wp.y + 0.48, wp.z);
+  }
+  if (labelLittleM) {
+    if (phase === 'flight') {
+      labelLittleM.position.set(flyingBullet.position.x, flyingBullet.position.y + 0.32, flyingBullet.position.z - 0.15);
+      labelLittleM.visible = true;
+    } else if (phase === 'ready') {
+      labelLittleM.position.set(params.L, BULLET_Y + 0.32, START_Z - 0.15);
+      labelLittleM.visible = true;
+    } else {
+      labelLittleM.visible = false;
+    }
+  }
+  if (labelL) {
+    const half = params.L * 0.5;
+    labelL.position.set(half * Math.cos(phi), ROD_Y + 0.36, -half * Math.sin(phi));
+  }
+
+  if ((hudTick++ % 3) === 0) updateHUD();
+  controls.update();
+  renderer.render(scene, camera);
+}
+
+/* =========================================================
+   16) بدء التشغيل
+   ========================================================= */
+function fitStage() {
+  const w = container.clientWidth, h = container.clientHeight;
+  if (w < 10 || h < 10) return;
+  camera.aspect = w / h; camera.updateProjectionMatrix(); renderer.setSize(w, h);
+}
+new ResizeObserver(fitStage).observe(container);
+window.addEventListener('resize', fitStage);
+
+params.L         = parseFloat(document.getElementById('s_L').value);
+params.Mrod      = parseFloat(document.getElementById('s_Mr').value);
+params.Mblock    = parseFloat(document.getElementById('s_Mb').value);
+params.mbullet   = parseFloat(document.getElementById('s_mb').value);
+params.vbullet   = parseFloat(document.getElementById('s_vb').value);
+params.timeScale = parseFloat(document.getElementById('s_ts').value);
+
+buildPendulum();
+buildLabels();
+updateRefLine();
+resetSim();
+animate();
+</script>
+
+<script>
+/* مسار القسم الأم */
+var PARENT_URL = '';
+(function () {
+  if (!PARENT_URL) return;
+  var old = document.getElementById('parentCrumb'), a = document.createElement('a');
+  a.id = 'parentCrumb'; a.href = PARENT_URL; a.textContent = old.textContent; old.replaceWith(a);
+})();
+/* الوضع الليلي/النهاري */
+(function () {
+  var t = document.getElementById('themeToggle'), saved = null;
+  try { saved = localStorage.getItem('theme'); } catch (e) {}
+  if (saved === 'light') { document.body.classList.add('light-mode'); t.textContent = '☀️'; }
+  t.addEventListener('click', function () {
+    document.body.classList.toggle('light-mode');
+    var l = document.body.classList.contains('light-mode'); t.textContent = l ? '☀️' : '🌙';
+    try { localStorage.setItem('theme', l ? 'light' : 'dark'); } catch (e) {}
+  });
+})();
+</script>
+</body>
+</html>
