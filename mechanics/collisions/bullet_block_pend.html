@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>البندول القذفي ثلاثي الأبعاد | التصادمات | الأستاذ ماجد شلالدة</title>
+<style>
+:root{--logo:clamp(84px,13vh,192px);--bg-color:#0b1329;--main-card-bg:#1c2541;--sub-card-bg:#3a506b;--accent:#f77f00;--gold:#ffd166;--accent-text:#ffd166;
+ --border-soft:rgba(255,255,255,.08);--shadow-soft:0 10px 30px rgba(0,0,0,.3);--ink:#eef1f7;--mute:#c0c8d8;
+ --inner:#0b1329;--formula:#111d3a;--edge:#334155;--eq:#facc15;--ok:#7ed957;--danger:#ff7b6b}
+body.light-mode{--bg-color:#f0f4f8;--main-card-bg:#fff;--sub-card-bg:#e8eef5;--border-soft:rgba(0,0,0,.08);--shadow-soft:0 10px 30px rgba(0,0,0,.08);
+ --ink:#1a202c;--mute:#4a5568;--inner:#eef3f9;--formula:#f3f6fb;--edge:#cbd5e1;--eq:#92400e;--accent-text:#b45309;--ok:#15803d}
+*{box-sizing:border-box}
+html,body{margin:0}
+#navbar,#breadcrumb,#siteHeader,.tabs,#footer{flex:none}
+body{background:var(--bg-color);color:var(--ink);font-family:"Segoe UI",Tahoma,"Noto Naskh Arabic",system-ui,sans-serif;line-height:1.8;height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden;
+ padding-bottom:env(safe-area-inset-bottom,0);transition:background .3s,color .3s}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+[hidden]{display:none!important}
+
+/* ===== شريط التنقل ===== */
+#navbar{position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:12px 24px;padding-top:calc(12px + env(safe-area-inset-top,0px));min-height:56px;
+ background:rgba(28,37,65,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border-soft)}
+body.light-mode #navbar{background:rgba(255,255,255,.92)}
+.nav-brand{font-size:1.05rem;font-weight:bold;color:var(--accent)}
+body.light-mode .nav-brand{color:#c2410c}
+.nav-links{display:flex;gap:6px;flex-wrap:wrap}
+.nav-links a{color:var(--ink);text-decoration:none;padding:8px 14px;border-radius:8px;font-size:.88rem;transition:.2s}
+.nav-links a:hover{background:var(--accent);color:#000}
+.theme-toggle{background:transparent;border:1px solid var(--border-soft);color:var(--ink);font-size:1.1rem;width:36px;height:36px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s}
+.theme-toggle:hover{transform:rotate(20deg);background:var(--sub-card-bg)}
+#breadcrumb{width:max-content;max-width:calc(100% - 24px);margin:8px auto 0;display:flex;align-items:center;flex-wrap:wrap;justify-content:center;gap:8px;padding:5px 18px;font-size:12px;color:var(--mute);background:var(--main-card-bg);border:1px solid var(--border-soft);border-radius:10px}
+#breadcrumb a{color:var(--accent-text);text-decoration:none}
+body.light-mode #breadcrumb a{color:#c2410c}
+#breadcrumb .sep{opacity:.5}#breadcrumb a#parentCrumb{color:var(--accent-text)}#breadcrumb #parentCrumb{color:var(--mute)}#breadcrumb .cur{color:var(--ink);font-weight:600}
+
+/* ===== الترويسة ===== */
+#siteHeader{position:relative;display:flex;align-items:center;justify-content:center;padding:4px 20px 2px;min-height:var(--logo)}
+#logoWrap{position:absolute;top:4px;right:18px;z-index:30;display:flex;justify-content:center;align-items:center}
+#logoWrap img{width:var(--logo);height:var(--logo);border-radius:50%;background:#fff;object-fit:cover;box-shadow:0 6px 30px rgba(0,0,0,.5),0 0 0 4px rgba(255,255,255,.08);border:3px solid rgba(255,255,255,.2)}
+body.light-mode #logoWrap img{box-shadow:0 6px 30px rgba(0,0,0,.2),0 0 0 4px rgba(0,0,0,.05);border-color:rgba(0,0,0,.1)}
+#logoFallback{display:none;width:var(--logo);height:var(--logo);border-radius:50%;background:linear-gradient(135deg,#f77f00,#00b4d8);align-items:center;justify-content:center;font-size:calc(var(--logo)*.32);color:#fff}
+#titleBlock{text-align:center}
+#titleBlock h1{margin:0;font-size:20px;line-height:1.4;color:var(--accent-text)}
+.sub{color:var(--mute);margin:2px 0 0;font-size:13px}
+.credit{margin:6px 0 0;font-size:13px;color:var(--mute)}
+.credit .lead{color:var(--accent-text)}.credit strong{color:var(--ink)}.credit .bar{opacity:.5;margin:0 6px}.credit .ph{direction:ltr;unicode-bidi:isolate}
+
+/* ===== التبويبات ===== */
+.tabs{display:flex;gap:8px;justify-content:center;align-items:center;padding:4px 16px 8px;flex-wrap:wrap}
+.tabs button{font:inherit;font-size:13px;font-weight:bold;padding:8px 22px;border-radius:20px;border:1px solid var(--border-soft);background:var(--main-card-bg);color:var(--ink);cursor:pointer;transition:.2s}
+.tabs button:hover{background:var(--sub-card-bg)}
+.tabs button[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:#000}
+
+/* ===== التخطيط ===== */
+.layout{flex:1;min-height:0;width:100%;display:flex;gap:16px;padding:0 16px 8px;max-width:1700px;margin:0 auto;align-items:stretch}
+.stage-wrap{position:relative;flex:1 1 0;min-width:0;border:1px solid var(--border-soft);border-radius:16px;overflow:hidden;background:#060a11;box-shadow:var(--shadow-soft)}
+#app{position:absolute;inset:0}
+#app canvas{display:block}
+
+/* ===== لوحة التحكم ===== */
+#panel{flex:0 0 clamp(320px,24vw,380px);height:100%;overflow-y:auto;scrollbar-width:thin;background:var(--main-card-bg);border:1px solid var(--border-soft);border-radius:16px;padding:12px 14px;box-shadow:var(--shadow-soft)}
+#panel .sub{font-size:12px;color:var(--mute);margin:0 0 10px;line-height:1.7}
+.ctrl{margin-bottom:9px}
+.ctrl label{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--mute);margin-bottom:4px}
+.ctrl label b{color:var(--accent-text);font-weight:700;font-variant-numeric:tabular-nums}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:4px;border-radius:4px;background:var(--edge);outline:none;cursor:pointer;display:block}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;border-radius:50%;background:var(--accent);border:2px solid var(--main-card-bg);cursor:pointer;box-shadow:0 0 8px rgba(247,127,0,.6)}
+input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:var(--accent);border:2px solid var(--main-card-bg);cursor:pointer}
+.check-wrapper{display:flex;align-items:center;gap:9px;cursor:pointer;font-size:12px;color:var(--mute);margin:8px 0 4px;user-select:none}
+.check-wrapper input[type=checkbox]{appearance:none;-webkit-appearance:none;width:34px;height:19px;background:var(--edge);border-radius:10px;position:relative;cursor:pointer;transition:.22s;flex-shrink:0;border:none;outline:none;margin:0}
+.check-wrapper input[type=checkbox]::after{content:'';position:absolute;width:15px;height:15px;border-radius:50%;background:#94a3b8;top:2px;left:2px;transition:.22s}
+.check-wrapper input[type=checkbox]:checked{background:var(--accent)}
+.check-wrapper input[type=checkbox]:checked::after{left:17px;background:#fff}
+.presets{display:flex;gap:5px;margin-top:7px;flex-wrap:wrap}
+.presets button{flex:1 1 auto;min-width:0;padding:5px 6px;border-radius:16px;border:1px solid var(--border-soft);background:var(--inner);color:var(--ink);font-family:inherit;font-size:11px;cursor:pointer;transition:.15s}
+.presets button:hover{border-color:var(--accent)}
+.presets button.active{background:var(--accent);color:#000;border-color:var(--accent);font-weight:700}
+.btns{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.btns button{flex:1;min-width:60px;padding:8px 6px;border-radius:20px;border:1px solid var(--border-soft);background:var(--sub-card-bg);color:var(--ink);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:.15s}
+.btns button:hover{filter:brightness(1.1)}
+.btns button:active{transform:scale(.98)}
+.btns button.primary{background:var(--accent);border-color:var(--accent);color:#000}
+.btns button.freeze{background:var(--gold);border-color:var(--gold);color:#1a1105}
+.btns button:disabled{opacity:.4;cursor:not-allowed}
+.derived{margin-top:12px;padding-top:9px;border-top:1px solid var(--edge)}
+.derived .row{display:flex;justify-content:space-between;font-size:12px;padding:3px 0;gap:10px}
+.derived .row span{color:var(--mute)}
+.derived .row b{color:var(--accent-text);font-variant-numeric:tabular-nums;font-weight:700;white-space:nowrap}
+
+/* ===== اللوحات الزجاجية فوق المشهد ===== */
+.glass{background:rgba(12,18,32,.82);border:1px solid rgba(255,255,255,.14);border-radius:12px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:#dbe6f5}
+#hud{position:absolute;bottom:12px;right:12px;padding:8px 14px;min-width:260px;z-index:5}
+#hud .row{display:flex;justify-content:space-between;gap:16px;font-size:12px;padding:3px 0}
+#hud .row span{color:#9fb2cc}#hud .row b{color:#fff;font-variant-numeric:tabular-nums;font-weight:600}
+#hud .row b.pos{color:#7ed957}#hud .row b.neg{color:#ff8a80}
+#hud .frozen-badge{display:none;margin-top:6px;padding-top:6px;border-top:1px solid rgba(255,255,255,.14);text-align:center;font-size:11px;color:#7ed957;font-weight:600}
+#hud.frozen .frozen-badge{display:block;animation:pulse 1.6s infinite}
+@keyframes pulse{0%,100%{opacity:.6}50%{opacity:1}}
+#hint{position:absolute;bottom:12px;left:12px;font-size:11px;color:#9fb2cc;z-index:5;pointer-events:none;line-height:1.7}
+
+#footer{padding:4px 20px calc(4px + env(safe-area-inset-bottom,0px));text-align:center;font-size:11px;color:var(--mute)}
+#footer strong{color:var(--accent)}body.light-mode #footer strong{color:#c2410c}
+
+@media(max-width:760px){
+ #navbar{flex-wrap:wrap;gap:10px;padding:10px 15px;padding-top:calc(10px + env(safe-area-inset-top,0px))}
+ .nav-links{order:3;width:100%;justify-content:center}.nav-links a{padding:6px 10px;font-size:.8rem}.nav-brand span{display:none}
+ #breadcrumb{font-size:10px;padding:5px 12px}
+ #titleBlock h1{font-size:16px}
+}
+@media(min-width:901px) and (max-height:820px){
+ :root{--logo:72px}
+ #titleBlock .sub{display:none}#titleBlock h1{font-size:17px}
+ #breadcrumb{margin-top:4px;padding:3px 14px}
+ #navbar{min-height:46px;padding-top:calc(6px + env(safe-area-inset-top,0px));padding-bottom:6px}
+}
+@media(max-width:900px){
+ :root{--logo:120px}
+ body{height:auto;min-height:100vh;display:block;overflow:visible}
+ #logoWrap{position:static}#siteHeader{flex-direction:column;gap:8px;padding:12px 12px 2px;min-height:0}
+ .layout{flex-direction:column;padding:0 10px 12px}
+ .stage-wrap{flex:none;width:100%;height:62vh;min-height:340px}
+ #panel{flex:none;width:100%;height:auto;overflow:visible}
+ #hud{min-width:0;top:8px;bottom:auto;right:8px;padding:5px 9px}#hud .row{font-size:10.5px;gap:10px;padding:1px 0}#hud .frozen-badge{font-size:10px;margin-top:3px;padding-top:3px}#hint{display:none}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<nav id="navbar">
+  <div class="nav-brand">⚛️ <span>فيزياء ماجد شلالدة</span></div>
+  <div class="nav-links">
+    <a href="../../index.html#mechanics">⚙️ الميكانيكا</a>
+    <a href="../../index.html#electricity">⚡ الكهرباء</a>
+    <a href="../../index.html#magnetism">🧲 المغناطيسية</a>
+    <a href="../../index.html#modern">🔬 الحديثة</a>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="تبديل الوضع الليلي/النهاري" title="تبديل الوضع">🌙</button>
+</nav>
+
+<div id="breadcrumb">
+  <a href="../../index.html">🏠 الرئيسية</a><span class="sep">›</span>
+  <a href="../../index.html#mechanics">⚙️ الميكانيكا</a><span class="sep">›</span>
+  <a href="collisions.html">💥 التصادمات</span><span class="sep">›</span>
+  <span class="cur">🎯 البندول القذفي</span>
+</div>
+
+<header id="siteHeader">
+  <div id="logoWrap">
+    <img src="../../logo.png" alt="شعار الأستاذ ماجد شلالدة" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+    <div id="logoFallback">⚛️</div>
+  </div>
+  <div id="titleBlock">
+    <h1>البندول القذفي — محاكاة ثلاثية الأبعاد</h1>
+    <p class="sub">حفظ الزخم في التصادم، ثم حفظ الطاقة أثناء صعود الكتلة كبندول</p>
+    <p class="credit"><span class="lead">إعداد وتطوير:</span> <strong>الأستاذ ماجد شلالدة</strong> <span class="bar">|</span> <span class="ph">0599870176</span></p>
+  </div>
+</header>
+
+<main class="layout">
+  <section class="stage-wrap" aria-label="المشهد ثلاثي الأبعاد">
+    <div id="app"></div>
+    <div id="hud" class="glass">
+      <div class="row"><span>الزاوية θ</span><b id="r_theta">0.0°</b></div>
+      <div class="row"><span>الارتفاع h</span><b id="r_h">0.000 m</b></div>
+      <div class="row"><span>السرعة الزاوية ω</span><b id="r_omega">0.000 rad/s</b></div>
+      <div class="row"><span>سرعة الكتلة v = ωL</span><b id="r_v">0.000 m/s</b></div>
+      <div class="row"><span>الطاقة الحركية KE</span><b id="r_ke">0.000 J</b></div>
+      <div class="row"><span>طاقة الوضع PE</span><b id="r_pe">0.000 J</b></div>
+      <div class="row"><span>عدد القمم المُرصودة</span><b id="r_peaks">0</b></div>
+      <div class="frozen-badge">❄ مُجمَّد عند أقصى ارتفاع</div>
+    </div>
+    <div id="hint">اسحب بالفأرة للدوران • عجلة الفأرة للتقريب</div>
+  </section>
+
+  <aside id="panel" aria-label="لوحة التحكم">
+    <p class="sub">رصاصة تُطلق أفقياً نحو كتلة خشبية معلّقة بحامل أرضي، فتنغرز فيها وترتفع الكتلة كبندول. ارتفاع الحامل يتكيف تلقائياً مع طول الخيط.</p>
+
+    <div class="ctrl">
+      <label>كتلة الرصاصة m <b><span id="v_m">0.010</span> kg</b></label>
+      <input id="s_m" type="range" min="0.002" max="0.08" step="0.001" value="0.010">
+    </div>
+    <div class="ctrl">
+      <label>سرعة الرصاصة v <b><span id="v_v">400</span> m/s</b></label>
+      <input id="s_v" type="range" min="50" max="800" step="10" value="400">
+    </div>
+    <div class="ctrl">
+      <label>كتلة القطعة M <b><span id="v_M">2.00</span> kg</b></label>
+      <input id="s_M" type="range" min="0.3" max="8" step="0.05" value="2.00">
+    </div>
+    <div class="ctrl">
+      <label>طول الخيط L <b><span id="v_L">1.50</span> m</b></label>
+      <input id="s_L" type="range" min="0.5" max="2.5" step="0.02" value="1.50">
+    </div>
+
+    <div class="ctrl">
+      <label>تسارع الجاذبية g <b><span id="v_g">9.81</span> m/s²</b></label>
+      <input id="s_g" type="range" min="0.5" max="30" step="0.01" value="9.81">
+      <div class="presets">
+        <button type="button" data-g="1.62">🌙 القمر</button>
+        <button type="button" data-g="3.72">🔴 المريخ</button>
+        <button type="button" data-g="9.81" class="active">🌍 الأرض</button>
+        <button type="button" data-g="24.79">🟠 المشتري</button>
+      </div>
+    </div>
+
+    <div class="ctrl">
+      <label>سرعة العرض (Slow-mo) <b><span id="v_ts">0.35</span>×</b></label>
+      <input id="s_ts" type="range" min="0.05" max="1" step="0.05" value="0.35">
+    </div>
+    <div class="ctrl">
+      <label>مستوى الصوت <b><span id="v_vol">70</span>%</b></label>
+      <input id="s_vol" type="range" min="0" max="100" step="5" value="70">
+    </div>
+
+    <label class="check-wrapper">
+      <input type="checkbox" id="autoStop" checked>
+      <span>إيقاف تلقائي عند أقصى ارتفاع</span>
+    </label>
+    <label class="check-wrapper" style="margin-top:0;">
+      <input type="checkbox" id="soundOn" checked>
+      <span>تشغيل المؤثرات الصوتية</span>
+    </label>
+
+    <div class="btns">
+      <button id="btnFire" class="primary">إطلاق 🎯</button>
+      <button id="btnFreeze" class="freeze" disabled>⏸ تجميد</button>
+      <button id="btnReset">إعادة</button>
+    </div>
+
+    <div class="derived">
+      <div class="row"><span>ارتفاع المحور عن الأرض</span><b id="d_pivot">—</b></div>
+      <div class="row"><span>حجم الكتلة (نصف الضلع)</span><b id="d_size">—</b></div>
+      <div class="row"><span>سرعة الكتلة بعد التصادم V</span><b id="d_V">—</b></div>
+      <div class="row"><span>السرعة الزاوية ω₀</span><b id="d_w0">—</b></div>
+      <div class="row"><span>أقصى ارتفاع h<sub>max</sub></span><b id="d_hmax">—</b></div>
+      <div class="row"><span>أقصى زاوية θ<sub>max</sub></span><b id="d_tmax">—</b></div>
+      <div class="row"><span>الطاقة المفقودة في التصادم</span><b id="d_loss">—</b></div>
+    </div>
+  </aside>
+</main>
+
+<div id="footer">
+  © 2025 المنصة التفاعلية للمحاكاة الفيزيائية — إعداد
+  <strong>الأستاذ ماجد شلالدة</strong> — 📱 0599870176
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+/* =========================================================
+   0) محرك الصوت
+   ========================================================= */
+const AudioEngine = (() => {
+  let ctx = null, masterGain = null, enabled = true, volume = 0.7, noiseBuffer = null;
+  function init() {
+    if (ctx) return;
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return;
+    ctx = new AC();
+    masterGain = ctx.createGain();
+    masterGain.gain.value = volume;
+    masterGain.connect(ctx.destination);
+    const len = Math.floor(ctx.sampleRate * 1.5);
+    noiseBuffer = ctx.createBuffer(1, len, ctx.sampleRate);
+    const data = noiseBuffer.getChannelData(0);
+    for (let i = 0; i < len; i++) data[i] = Math.random() * 2 - 1;
+  }
+  function resume() { if (!ctx) init(); if (ctx && ctx.state === 'suspended') ctx.resume(); }
+  function setVolume(v) { volume = v; if (masterGain) masterGain.gain.value = v; }
+  function setEnabled(v) { enabled = v; }
+  function now() { return ctx ? ctx.currentTime : 0; }
+
+  function gunshot() {
+    if (!enabled || !ctx) return;
+    const t = now();
+    const noise = ctx.createBufferSource(); noise.buffer = noiseBuffer;
+    const ng = ctx.createGain(); const nf = ctx.createBiquadFilter();
+    nf.type = 'highpass'; nf.frequency.value = 800; nf.Q.value = 0.7;
+    ng.gain.setValueAtTime(0.0001, t);
+    ng.gain.exponentialRampToValueAtTime(0.85, t + 0.004);
+    ng.gain.exponentialRampToValueAtTime(0.0001, t + 0.28);
+    noise.connect(nf); nf.connect(ng); ng.connect(masterGain);
+    noise.start(t); noise.stop(t + 0.32);
+
+    const kick = ctx.createOscillator(); const kg = ctx.createGain();
+    kick.type = 'sine';
+    kick.frequency.setValueAtTime(180, t);
+    kick.frequency.exponentialRampToValueAtTime(45, t + 0.15);
+    kg.gain.setValueAtTime(0.9, t);
+    kg.gain.exponentialRampToValueAtTime(0.0001, t + 0.22);
+    kick.connect(kg); kg.connect(masterGain);
+    kick.start(t); kick.stop(t + 0.25);
+
+    const crack = ctx.createOscillator(); const cg = ctx.createGain();
+    crack.type = 'square';
+    crack.frequency.setValueAtTime(1800, t);
+    crack.frequency.exponentialRampToValueAtTime(400, t + 0.03);
+    cg.gain.setValueAtTime(0.35, t);
+    cg.gain.exponentialRampToValueAtTime(0.0001, t + 0.05);
+    crack.connect(cg); cg.connect(masterGain);
+    crack.start(t); crack.stop(t + 0.06);
+  }
+  function woodImpact() {
+    if (!enabled || !ctx) return;
+    const t = now();
+    const noise = ctx.createBufferSource(); noise.buffer = noiseBuffer;
+    const bp = ctx.createBiquadFilter();
+    bp.type = 'bandpass'; bp.frequency.value = 1500; bp.Q.value = 1.6;
+    const ng = ctx.createGain();
+    ng.gain.setValueAtTime(0.0001, t);
+    ng.gain.exponentialRampToValueAtTime(0.75, t + 0.002);
+    ng.gain.exponentialRampToValueAtTime(0.0001, t + 0.11);
+    noise.connect(bp); bp.connect(ng); ng.connect(masterGain);
+    noise.start(t); noise.stop(t + 0.14);
+
+    const thud = ctx.createOscillator(); const tg = ctx.createGain();
+    thud.type = 'triangle';
+    thud.frequency.setValueAtTime(260, t);
+    thud.frequency.exponentialRampToValueAtTime(95, t + 0.13);
+    tg.gain.setValueAtTime(0.55, t);
+    tg.gain.exponentialRampToValueAtTime(0.0001, t + 0.18);
+    thud.connect(tg); tg.connect(masterGain);
+    thud.start(t); thud.stop(t + 0.20);
+  }
+  function freezeClick() {
+    if (!enabled || !ctx) return;
+    const t = now();
+    const osc = ctx.createOscillator(); const g = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(900, t);
+    osc.frequency.exponentialRampToValueAtTime(1600, t + 0.05);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(0.20, t + 0.008);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.09);
+    osc.connect(g); g.connect(masterGain);
+    osc.start(t); osc.stop(t + 0.10);
+  }
+  function resetTone() {
+    if (!enabled || !ctx) return;
+    const t = now();
+    const osc = ctx.createOscillator(); const g = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(660, t);
+    osc.frequency.exponentialRampToValueAtTime(220, t + 0.18);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(0.16, t + 0.01);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.22);
+    osc.connect(g); g.connect(masterGain);
+    osc.start(t); osc.stop(t + 0.24);
+  }
+  return { init, resume, setVolume, setEnabled, gunshot, woodImpact, freezeClick, resetTone };
+})();
+
+/* استئناف الصوت عند أول تفاعل مع الصفحة (سياسة المتصفحات) */
+['pointerdown','keydown','touchstart'].forEach(evt => {
+  window.addEventListener(evt, () => AudioEngine.resume(), { once: true, passive: true });
+});
+
+/* =========================================================
+   1) الثوابت والمعاملات
+   ========================================================= */
+const FLOOR_Y = 0;
+const BASE_H = 0.06;
+const BASE_TOP = FLOOR_Y + BASE_H + 0.012;
+
+const BULLET_LEN = 0.12;
+const BULLET_R = 0.022;
+const START_X = -1.90;
+const FLIGHT_DUR = 0.45;
+
+const params = {
+  L: 1.50, M: 2.00, m: 0.010, v: 400,
+  timeScale: 0.35, g: 9.81
+};
+
+let PIVOT_Y = 2.60;
+let V = 0, omega0 = 0, hMax = 0, thetaMax = 0, KEbefore = 0, KEafter = 0;
+
+function getBlockHalf(M) { return 0.075 + 0.055 * Math.cbrt(M); }
+
+function computePivotY() {
+  const bh = getBlockHalf(params.M);
+  const clearance = 0.35;
+  const needed = BASE_TOP + clearance + params.L + bh;
+  return Math.max(1.90, needed);
+}
+
+function computeDerived() {
+  const { L, M, m, v, g } = params;
+  V = (m * v) / (M + m);
+  omega0 = V / L;
+  hMax = (V * V) / (2 * g);
+  const cosT = 1 - hMax / L;
+  thetaMax = Math.acos(Math.max(-1, Math.min(1, cosT)));
+  KEbefore = 0.5 * m * v * v;
+  KEafter  = 0.5 * (M + m) * V * V;
+}
+
+/* =========================================================
+   2) المشهد والمُصيّر
+   ========================================================= */
+const container = document.getElementById('app');
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x060a11);
+scene.fog = new THREE.Fog(0x060a11, 10, 30);
+
+const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 200);
+camera.position.set(4.2, 3.0, 6.2);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(container.clientWidth, container.clientHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.12;
+container.appendChild(renderer.domElement);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.target.set(0, 1.4, 0);
+controls.enableDamping = true;
+controls.dampingFactor = 0.07;
+controls.minDistance = 2.5;
+controls.maxDistance = 22;
+controls.maxPolarAngle = Math.PI * 0.92;
+
+/* =========================================================
+   3) الإضاءة
+   ========================================================= */
+scene.add(new THREE.HemisphereLight(0x9dbdff, 0x0a0f18, 0.85));
+
+const keyLight = new THREE.DirectionalLight(0xffffff, 2.4);
+keyLight.position.set(4.5, 7.5, 4.5);
+keyLight.castShadow = true;
+keyLight.shadow.mapSize.set(2048, 2048);
+const sc = keyLight.shadow.camera;
+sc.left = -6; sc.right = 6; sc.top = 6; sc.bottom = -6; sc.near = 0.5; sc.far = 26;
+keyLight.shadow.bias = -0.0006;
+scene.add(keyLight);
+
+const rimLight = new THREE.DirectionalLight(0x4da3ff, 0.95);
+rimLight.position.set(-5, 2.5, -4);
+scene.add(rimLight);
+
+const fillLight = new THREE.PointLight(0xffb74d, 0.45, 16, 2);
+fillLight.position.set(-1.5, 2.0, 3.5);
+scene.add(fillLight);
+
+/* =========================================================
+   4) نسيج خشبي + مواد مشتركة (معلّمة بـ __shared لتفادي حذفها)
+   ========================================================= */
+function makeWoodTexture(base, dark, light) {
+  const c = document.createElement('canvas');
+  c.width = c.height = 256;
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = base; ctx.fillRect(0, 0, 256, 256);
+  for (let i = 0; i < 120; i++) {
+    ctx.strokeStyle = Math.random() > 0.5
+      ? `rgba(${dark},${0.08 + Math.random() * 0.30})`
+      : `rgba(${light},${0.05 + Math.random() * 0.22})`;
+    ctx.lineWidth = 0.5 + Math.random() * 2.6;
+    ctx.beginPath();
+    const y0 = Math.random() * 256;
+    ctx.moveTo(0, y0);
+    for (let x = 0; x <= 256; x += 16) {
+      ctx.lineTo(x, y0 + Math.sin(x * 0.045 + i * 1.7) * 5 + (Math.random() - 0.5) * 2.2);
+    }
+    ctx.stroke();
+  }
+  for (let k = 0; k < 3; k++) {
+    const kx = Math.random() * 256, ky = Math.random() * 256;
+    const grd = ctx.createRadialGradient(kx, ky, 1, kx, ky, 16 + Math.random() * 12);
+    grd.addColorStop(0, 'rgba(60,35,12,0.5)');
+    grd.addColorStop(1, 'rgba(60,35,12,0)');
+    ctx.fillStyle = grd;
+    ctx.beginPath(); ctx.arc(kx, ky, 30, 0, Math.PI * 2); ctx.fill();
+  }
+  const tex = new THREE.CanvasTexture(c);
+  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+  tex.repeat.set(1.8, 1.8);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}
+
+const woodTex = makeWoodTexture('#a9743c', '80,50,20', '225,190,145');
+const baseWoodTex = makeWoodTexture('#5a3f24', '60,38,16', '200,160,120');
+
+function shared(mat){ mat.__shared = true; return mat; }
+
+const blockMat = shared(new THREE.MeshStandardMaterial({
+  map: woodTex, color: 0xffffff, roughness: 0.85, metalness: 0.02
+}));
+const stringMat = shared(new THREE.MeshStandardMaterial({
+  color: 0xd8d2c4, roughness: 0.95, metalness: 0.0
+}));
+const metalMat = shared(new THREE.MeshStandardMaterial({
+  color: 0x8c98a8, metalness: 0.94, roughness: 0.28
+}));
+const baseMat = shared(new THREE.MeshStandardMaterial({
+  color: 0x2c3542, metalness: 0.88, roughness: 0.32
+}));
+const poleMat = shared(new THREE.MeshStandardMaterial({
+  color: 0xb0bccb, metalness: 0.96, roughness: 0.2
+}));
+const brassMat = shared(new THREE.MeshStandardMaterial({
+  color: 0xc79a3d, metalness: 0.92, roughness: 0.28
+}));
+const boltMat = shared(new THREE.MeshStandardMaterial({
+  color: 0x556270, metalness: 0.95, roughness: 0.25
+}));
+const bulletMat = shared(new THREE.MeshStandardMaterial({
+  color: 0xdfa94a, metalness: 1.0, roughness: 0.18,
+  emissive: 0x5c3800, emissiveIntensity: 0.9
+}));
+
+/* =========================================================
+   5) الأرضية
+   ========================================================= */
+const floor = new THREE.Mesh(
+  new THREE.CircleGeometry(12, 64),
+  new THREE.MeshStandardMaterial({ color: 0x0a121f, roughness: 0.96, metalness: 0.04 })
+);
+floor.rotation.x = -Math.PI / 2;
+floor.position.y = FLOOR_Y;
+floor.receiveShadow = true;
+scene.add(floor);
+
+const floorGrid = new THREE.GridHelper(20, 40, 0x1a2a40, 0x101a28);
+floorGrid.position.y = FLOOR_Y + 0.003;
+floorGrid.material.transparent = true;
+floorGrid.material.opacity = 0.32;
+scene.add(floorGrid);
+
+/* =========================================================
+   6) القاعدة والعمود
+   ========================================================= */
+const POLE_Z = -0.60;
+
+const BASE_W = 1.20, BASE_D = 1.00;
+const basePlate = new THREE.Mesh(new THREE.BoxGeometry(BASE_W, BASE_H, BASE_D), baseMat);
+basePlate.position.set(0, FLOOR_Y + BASE_H / 2, -0.25);
+basePlate.castShadow = true; basePlate.receiveShadow = true;
+scene.add(basePlate);
+
+const baseTop = new THREE.Mesh(
+  new THREE.BoxGeometry(BASE_W * 0.96, 0.012, BASE_D * 0.96),
+  new THREE.MeshStandardMaterial({ map: baseWoodTex, color: 0xffffff, roughness: 0.7, metalness: 0.05 })
+);
+baseTop.position.set(0, FLOOR_Y + BASE_H + 0.006, -0.25);
+baseTop.receiveShadow = true;
+scene.add(baseTop);
+
+[[-BASE_W/2 + 0.10, -BASE_D/2 + 0.10 - 0.25],
+ [ BASE_W/2 - 0.10, -BASE_D/2 + 0.10 - 0.25],
+ [-BASE_W/2 + 0.10,  BASE_D/2 - 0.10 - 0.25],
+ [ BASE_W/2 - 0.10,  BASE_D/2 - 0.10 - 0.25]].forEach(([bx, bz]) => {
+  const bolt = new THREE.Mesh(new THREE.CylinderGeometry(0.020, 0.020, 0.016, 12), boltMat);
+  bolt.position.set(bx, FLOOR_Y + BASE_H + 0.014, bz);
+  bolt.castShadow = true; scene.add(bolt);
+  const head = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.008, 6), boltMat);
+  head.position.set(bx, FLOOR_Y + BASE_H + 0.024, bz);
+  scene.add(head);
+});
+
+const poleCollar = new THREE.Mesh(new THREE.CylinderGeometry(0.058, 0.075, 0.075, 28), baseMat);
+poleCollar.position.set(0, FLOOR_Y + BASE_H + 0.038, POLE_Z);
+poleCollar.castShadow = true;
+scene.add(poleCollar);
+
+const standGroup = new THREE.Group();
+scene.add(standGroup);
+let pivotRing = null;
+
+/* إدارة ذاكرة نظيفة: نُحرّر الهندسات والنسيج، لكن نترك المواد المشتركة */
+function clearGroup(g) {
+  while (g.children.length) {
+    const c = g.children.pop();
+    g.remove(c);
+    c.traverse(o => {
+      if (o.geometry) o.geometry.dispose();
+      if (o.material) {
+        const mats = Array.isArray(o.material) ? o.material : [o.material];
+        mats.forEach(m => {
+          if (m && !m.__shared) {
+            if (m.map) m.map.dispose();
+            m.dispose();
+          }
+        });
+      }
+    });
+  }
+}
+
+function buildStand() {
+  clearGroup(standGroup);
+
+  const POLE_BOTTOM = FLOOR_Y + BASE_H;
+  const POLE_TOP = PIVOT_Y + 0.42;
+  const POLE_H = POLE_TOP - POLE_BOTTOM;
+  const POLE_R = 0.032;
+
+  const pole = new THREE.Mesh(new THREE.CylinderGeometry(POLE_R, POLE_R, POLE_H, 24), poleMat);
+  pole.position.set(0, POLE_BOTTOM + POLE_H / 2, POLE_Z);
+  pole.castShadow = true; pole.receiveShadow = true;
+  standGroup.add(pole);
+
+  const poleCap = new THREE.Mesh(new THREE.SphereGeometry(POLE_R * 1.25, 20, 16), poleMat);
+  poleCap.position.set(0, POLE_TOP, POLE_Z);
+  poleCap.castShadow = true;
+  standGroup.add(poleCap);
+
+  const ARM_LEN = Math.abs(POLE_Z);
+  const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.026, 0.026, ARM_LEN, 20), poleMat);
+  arm.rotation.x = Math.PI / 2;
+  arm.position.set(0, PIVOT_Y, POLE_Z / 2);
+  arm.castShadow = true;
+  standGroup.add(arm);
+
+  const armClamp = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.11, 0.10), baseMat);
+  armClamp.position.set(0, PIVOT_Y, POLE_Z);
+  armClamp.castShadow = true;
+  standGroup.add(armClamp);
+
+  const clampBolt = new THREE.Mesh(new THREE.CylinderGeometry(0.014, 0.014, 0.14, 12), boltMat);
+  clampBolt.rotation.z = Math.PI / 2;
+  clampBolt.position.set(0.08, PIVOT_Y, POLE_Z);
+  standGroup.add(clampBolt);
+
+  const pivotSleeve = new THREE.Mesh(new THREE.CylinderGeometry(0.052, 0.052, 0.09, 22), brassMat);
+  pivotSleeve.rotation.x = Math.PI / 2;
+  pivotSleeve.position.set(0, PIVOT_Y, -0.02);
+  pivotSleeve.castShadow = true;
+  standGroup.add(pivotSleeve);
+
+  const pivotBall = new THREE.Mesh(new THREE.SphereGeometry(0.058, 22, 18), metalMat);
+  pivotBall.position.set(0, PIVOT_Y, 0);
+  pivotBall.castShadow = true;
+  standGroup.add(pivotBall);
+
+  pivotRing = new THREE.Mesh(
+    new THREE.TorusGeometry(0.088, 0.008, 10, 36),
+    new THREE.MeshBasicMaterial({ color: 0x4da3ff, transparent: true, opacity: 0.7 })
+  );
+  pivotRing.position.set(0, PIVOT_Y, 0);
+  standGroup.add(pivotRing);
+
+  pendulum.position.set(0, PIVOT_Y, 0);
+
+  const targetY = Math.max(1.0, PIVOT_Y * 0.55);
+  controls.target.set(0, targetY, 0);
+}
+
+/* =========================================================
+   7) البندول
+   ========================================================= */
+const pendulum = new THREE.Group();
+pendulum.position.set(0, PIVOT_Y, 0);
+scene.add(pendulum);
+
+let stringMesh = null, blockMesh = null, embeddedBullet = null;
+let blockHalf = getBlockHalf(params.M);
+
+function makeBulletMesh(scale = 1) {
+  const g = new THREE.Group();
+  const bodyGeo = new THREE.CylinderGeometry(
+    BULLET_R * scale, BULLET_R * scale,
+    (BULLET_LEN - BULLET_R * 2) * scale, 18
+  );
+  bodyGeo.rotateZ(Math.PI / 2);
+  const body = new THREE.Mesh(bodyGeo, bulletMat);
+  body.castShadow = true;
+  g.add(body);
+  const tip = new THREE.Mesh(
+    new THREE.ConeGeometry(BULLET_R * scale, BULLET_R * 2 * scale, 18), bulletMat
+  );
+  tip.rotation.z = -Math.PI / 2;
+  tip.position.x = (BULLET_LEN / 2 - BULLET_R) * scale;
+  tip.castShadow = true;
+  g.add(tip);
+  return g;
+}
+
+function buildPendulum() {
+  clearGroup(pendulum);
+  const L = params.L;
+  blockHalf = getBlockHalf(params.M);
+
+  const stringVisLen = Math.max(0.05, L - blockHalf);
+  stringMesh = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.007, 0.007, stringVisLen, 10), stringMat
+  );
+  stringMesh.position.y = -stringVisLen / 2;
+  stringMesh.castShadow = true;
+  pendulum.add(stringMesh);
+
+  blockMesh = new THREE.Mesh(
+    new THREE.BoxGeometry(blockHalf * 2, blockHalf * 2, blockHalf * 2), blockMat
+  );
+  blockMesh.position.y = -L;
+  blockMesh.castShadow = true; blockMesh.receiveShadow = true;
+  pendulum.add(blockMesh);
+
+  embeddedBullet = makeBulletMesh(1);
+  const bulletCenterX = blockHalf - BULLET_LEN / 2 + 0.03;
+  embeddedBullet.position.set(bulletCenterX, -L, 0);
+  embeddedBullet.visible = false;
+  pendulum.add(embeddedBullet);
+
+  impactLight.position.set(0, PIVOT_Y - L, 0);
+}
+
+/* =========================================================
+   8) الرصاصة + الأثر + الوميض + موجة الصدمة
+   ========================================================= */
+const flyingBullet = makeBulletMesh(1);
+flyingBullet.visible = false;
+scene.add(flyingBullet);
+
+// الأثر: أسطوانة أفقية ممتدة على المحور X مباشرة (بدون تدوير للهندسة)
+const trailGeo = new THREE.CylinderGeometry(0.010, 0.002, 1, 12);
+trailGeo.rotateZ(Math.PI / 2); // يمدّ المحور X
+const trailMat = new THREE.MeshBasicMaterial({
+  color: 0xffc46b, transparent: true, opacity: 0.5,
+  blending: THREE.AdditiveBlending, depthWrite: false
+});
+const trail = new THREE.Mesh(trailGeo, trailMat);
+trail.visible = false;
+scene.add(trail);
+
+// وميض الفوهة
+const muzzleFlash = new THREE.PointLight(0xffcc66, 0, 3.5, 2);
+scene.add(muzzleFlash);
+const muzzleSprite = new THREE.Sprite(new THREE.SpriteMaterial({
+  color: 0xffd58a, transparent: true, opacity: 0,
+  blending: THREE.AdditiveBlending, depthWrite: false
+}));
+muzzleSprite.scale.set(0.35, 0.35, 1);
+scene.add(muzzleSprite);
+let muzzleTimer = 0;
+
+// ضوء الاصطدام
+const impactLight = new THREE.PointLight(0xffa53a, 0, 5, 2);
+scene.add(impactLight);
+let flashTimer = 0;
+
+// موجة الصدمة عند الاصطدام
+const shockRing = new THREE.Mesh(
+  new THREE.RingGeometry(0.06, 0.10, 40),
+  new THREE.MeshBasicMaterial({
+    color: 0xffd08a, transparent: true, opacity: 0,
+    side: THREE.DoubleSide, blending: THREE.AdditiveBlending, depthWrite: false
+  })
+);
+shockRing.rotation.x = -Math.PI / 2;
+shockRing.position.y = 0.02;
+scene.add(shockRing);
+let shockTimer = 0;
+
+/* =========================================================
+   9) الأقواس والخطوط المرجعية
+   ========================================================= */
+const ARC_SEG = 96;
+const arcGeo = new THREE.BufferGeometry();
+arcGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array((ARC_SEG + 1) * 3), 3));
+const arcLine = new THREE.Line(arcGeo, new THREE.LineBasicMaterial({
+  color: 0x4da3ff, transparent: true, opacity: 0.35
+}));
+scene.add(arcLine);
+
+const arcMaxGeo = new THREE.BufferGeometry();
+arcMaxGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array((ARC_SEG + 1) * 3), 3));
+const arcMaxLine = new THREE.Line(arcMaxGeo, new THREE.LineBasicMaterial({
+  color: 0xffb74d, transparent: true, opacity: 0.6
+}));
+scene.add(arcMaxLine);
+
+const refLine = new THREE.Line(
+  new THREE.BufferGeometry(),
+  new THREE.LineDashedMaterial({
+    color: 0x5f7a9a, dashSize: 0.07, gapSize: 0.07, transparent: true, opacity: 0.5
+  })
+);
+scene.add(refLine);
+
+function updateRefLine() {
+  const old = refLine.geometry;
+  refLine.geometry = new THREE.BufferGeometry().setFromPoints([
+    new THREE.Vector3(0, PIVOT_Y, 0),
+    new THREE.Vector3(0, FLOOR_Y + 0.05, 0)
+  ]);
+  refLine.computeLineDistances();
+  if (old) old.dispose();
+}
+
+let maxHeightLine = null;
+
+function updateMaxHeightLine() {
+  if (maxHeightLine) {
+    scene.remove(maxHeightLine);
+    maxHeightLine.geometry.dispose();
+    maxHeightLine.material.dispose();
+    maxHeightLine = null;
+  }
+  const yTop = PIVOT_Y - params.L + hMax;
+  const geo = new THREE.BufferGeometry().setFromPoints([
+    new THREE.Vector3(-0.9, yTop, 0),
+    new THREE.Vector3(0.9, yTop, 0)
+  ]);
+  maxHeightLine = new THREE.Line(geo, new THREE.LineDashedMaterial({
+    color: 0x7ed957, dashSize: 0.08, gapSize: 0.06, transparent: true, opacity: 0.6
+  }));
+  maxHeightLine.computeLineDistances();
+  scene.add(maxHeightLine);
+}
+
+function updateArcLines(phi) {
+  const R = params.L;
+  const pos = arcGeo.attributes.position;
+  const n = Math.max(2, Math.round(ARC_SEG * Math.min(1, Math.abs(phi) / Math.PI)));
+  for (let i = 0; i <= n; i++) {
+    const t = phi * (i / n);
+    pos.setXYZ(i, R * Math.sin(t), PIVOT_Y - R * Math.cos(t), 0);
+  }
+  for (let i = n + 1; i <= ARC_SEG; i++) {
+    pos.setXYZ(i, R * Math.sin(phi), PIVOT_Y - R * Math.cos(phi), 0);
+  }
+  pos.needsUpdate = true;
+  arcGeo.setDrawRange(0, n + 1);
+
+  const posMax = arcMaxGeo.attributes.position;
+  for (let i = 0; i <= ARC_SEG; i++) {
+    const t = thetaMax * (i / ARC_SEG);
+    posMax.setXYZ(i, R * Math.sin(t), PIVOT_Y - R * Math.cos(t), 0);
+  }
+  posMax.needsUpdate = true;
+}
+
+/* =========================================================
+   10) التسميات النصية
+   ========================================================= */
+function makeLabel(text, color = '#ffffff', size = 84) {
+  const c = document.createElement('canvas');
+  c.width = 256; c.height = 128;
+  const ctx = c.getContext('2d');
+  ctx.clearRect(0, 0, 256, 128);
+  ctx.font = `bold ${size}px "Segoe UI", Tahoma, sans-serif`;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.shadowColor = 'rgba(0,0,0,0.85)'; ctx.shadowBlur = 14;
+  ctx.fillStyle = color; ctx.fillText(text, 128, 64);
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  const mat = new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false });
+  const sp = new THREE.Sprite(mat);
+  sp.scale.set(0.55, 0.28, 1); sp.renderOrder = 999;
+  return sp;
+}
+
+let labelM = null, labelLittleM = null, labelV = null;
+
+function buildLabels() {
+  [labelM, labelLittleM, labelV].forEach(lbl => {
+    if (!lbl) return;
+    scene.remove(lbl);
+    if (lbl.material.map) lbl.material.map.dispose();
+    lbl.material.dispose();
+  });
+  labelM = makeLabel('M', '#8fd0ff'); scene.add(labelM);
+  labelLittleM = makeLabel('m', '#ffd08a', 76); scene.add(labelLittleM);
+  labelV = makeLabel('v', '#ff8a80', 70); scene.add(labelV);
+}
+
+/* =========================================================
+   11) حالة الفيزياء
+   ========================================================= */
+let phase = 'ready';
+let theta = 0, omega = 0, flightT = 0, peaks = 0;
+
+function resetSim() {
+  phase = 'ready'; theta = 0; omega = 0; flightT = 0; peaks = 0;
+  flashTimer = 0; shockTimer = 0; muzzleTimer = 0;
+  impactLight.intensity = 0;
+  muzzleFlash.intensity = 0;
+  muzzleSprite.material.opacity = 0;
+  shockRing.material.opacity = 0;
+  pendulum.rotation.z = 0;
+  flyingBullet.visible = false;
+  flyingBullet.position.set(START_X, PIVOT_Y - params.L, 0);
+  trail.visible = false;
+  if (embeddedBullet) embeddedBullet.visible = false;
+  computeDerived();
+  updateArcLines(0);
+  updateMaxHeightLine();
+  updatePanelDerived();
+  updateHUD(true);
+  btnFire.disabled = false;
+  btnFreeze.disabled = true;
+  btnFreeze.textContent = '⏸ تجميد';
+  document.getElementById('hud').classList.remove('frozen');
+}
+
+function fire() {
+  if (phase !== 'ready') return;
+  AudioEngine.resume();
+  AudioEngine.gunshot();
+  computeDerived();
+  phase = 'flight'; flightT = 0;
+  flyingBullet.visible = true;
+  flyingBullet.position.set(START_X, PIVOT_Y - params.L, 0);
+  trail.visible = true;
+  trailMat.opacity = 0.55;
+  // وميض الفوهة
+  muzzleTimer = 0.14;
+  muzzleFlash.position.set(START_X + 0.02, PIVOT_Y - params.L, 0);
+  muzzleSprite.position.copy(muzzleFlash.position);
+  muzzleFlash.intensity = 55;
+  muzzleSprite.material.opacity = 1;
+  btnFire.disabled = true;
+  btnFreeze.disabled = true;
+}
+
+function toggleFreeze() {
+  if (phase === 'swing') {
+    AudioEngine.freezeClick();
+    phase = 'frozen';
+    btnFreeze.textContent = '▶ استئناف';
+    document.getElementById('hud').classList.add('frozen');
+  } else if (phase === 'frozen') {
+    AudioEngine.freezeClick();
+    phase = 'swing';
+    btnFreeze.textContent = '⏸ تجميد';
+    document.getElementById('hud').classList.remove('frozen');
+  }
+}
+
+/* =========================================================
+   12) واجهة التحكم
+   ========================================================= */
+const btnFire = document.getElementById('btnFire');
+const btnReset = document.getElementById('btnReset');
+const btnFreeze = document.getElementById('btnFreeze');
+const autoStopCheck = document.getElementById('autoStop');
+const soundOnCheck = document.getElementById('soundOn');
+const volSlider = document.getElementById('s_vol');
+const volOut = document.getElementById('v_vol');
+const gSlider = document.getElementById('s_g');
+const gOut = document.getElementById('v_g');
+const presetButtons = document.querySelectorAll('.presets button');
+
+function refreshGeometry() {
+  PIVOT_Y = computePivotY();
+  buildStand();
+  updateRefLine();
+  buildPendulum();
+  buildLabels();
+  computeDerived();
+  updateMaxHeightLine();
+  updateArcLines(phase === 'swing' || phase === 'frozen' ? theta : 0);
+  updatePanelDerived();
+}
+
+const sliders = [
+  { id: 's_m',  out: 'v_m',  key: 'm',         fmt: v => v.toFixed(3), rebuild: false },
+  { id: 's_v',  out: 'v_v',  key: 'v',         fmt: v => v.toFixed(0), rebuild: false },
+  { id: 's_M',  out: 'v_M',  key: 'M',         fmt: v => v.toFixed(2), rebuild: true  },
+  { id: 's_L',  out: 'v_L',  key: 'L',         fmt: v => v.toFixed(2), rebuild: true  },
+  { id: 's_ts', out: 'v_ts', key: 'timeScale', fmt: v => v.toFixed(2), rebuild: false }
+];
+
+sliders.forEach(s => {
+  const el = document.getElementById(s.id);
+  const out = document.getElementById(s.out);
+  out.textContent = s.fmt(parseFloat(el.value));
+  params[s.key] = parseFloat(el.value);
+
+  el.addEventListener('input', () => {
+    const val = parseFloat(el.value);
+    params[s.key] = val;
+    out.textContent = s.fmt(val);
+    if (s.rebuild) {
+      refreshGeometry();
+      if (phase !== 'ready') resetSim();
+      else flyingBullet.position.set(START_X, PIVOT_Y - params.L, 0);
+    } else {
+      // تحديث فوري للقيم المشتقة حتى لو لم نُعد بناء الهندسة
+      computeDerived();
+      updatePanelDerived();
+    }
+  });
+  el.addEventListener('change', () => { if (phase !== 'ready') resetSim(); });
+});
+
+function updateGravityUI() {
+  gOut.textContent = params.g.toFixed(2);
+  presetButtons.forEach(b => {
+    const bg = parseFloat(b.dataset.g);
+    b.classList.toggle('active', Math.abs(bg - params.g) < 0.05);
+  });
+}
+
+gSlider.addEventListener('input', () => {
+  params.g = parseFloat(gSlider.value);
+  updateGravityUI();
+  computeDerived();
+  updateMaxHeightLine();
+  updateArcLines(phase === 'swing' || phase === 'frozen' ? theta : 0);
+  updatePanelDerived();
+});
+
+presetButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const gVal = parseFloat(btn.dataset.g);
+    params.g = gVal;
+    gSlider.value = gVal;
+    updateGravityUI();
+    computeDerived();
+    updateMaxHeightLine();
+    updateArcLines(0);
+    updatePanelDerived();
+    if (phase !== 'ready') resetSim();
+    AudioEngine.resume();
+    AudioEngine.freezeClick();
+  });
+});
+
+volSlider.addEventListener('input', () => {
+  const v = parseInt(volSlider.value) / 100;
+  volOut.textContent = volSlider.value;
+  AudioEngine.setVolume(v);
+});
+soundOnCheck.addEventListener('change', () => {
+  AudioEngine.setEnabled(soundOnCheck.checked);
+});
+AudioEngine.setVolume(parseInt(volSlider.value) / 100);
+
+btnFire.addEventListener('click', fire);
+btnReset.addEventListener('click', () => {
+  AudioEngine.resume();
+  AudioEngine.resetTone();
+  resetSim();
+});
+btnFreeze.addEventListener('click', toggleFreeze);
+
+/* =========================================================
+   13) تحديث اللوحات
+   ========================================================= */
+const rTheta = document.getElementById('r_theta');
+const rH     = document.getElementById('r_h');
+const rOmega = document.getElementById('r_omega');
+const rV     = document.getElementById('r_v');
+const rKE    = document.getElementById('r_ke');
+const rPE    = document.getElementById('r_pe');
+const rPeaks = document.getElementById('r_peaks');
+const dPivot = document.getElementById('d_pivot');
+const dSize  = document.getElementById('d_size');
+const dV     = document.getElementById('d_V');
+const dW0    = document.getElementById('d_w0');
+const dHmax  = document.getElementById('d_hmax');
+const dTmax  = document.getElementById('d_tmax');
+const dLoss  = document.getElementById('d_loss');
+
+function updatePanelDerived() {
+  dPivot.textContent = PIVOT_Y.toFixed(3) + ' m';
+  dSize.textContent  = (blockHalf * 2).toFixed(3) + ' m';
+  dV.textContent     = V.toFixed(3) + ' m/s';
+  dW0.textContent    = omega0.toFixed(3) + ' rad/s';
+  dHmax.textContent  = hMax.toFixed(3) + ' m';
+  dTmax.textContent  = (thetaMax * 180 / Math.PI).toFixed(1) + '°';
+  const loss = KEbefore - KEafter;
+  const pct  = KEbefore > 0 ? (loss / KEbefore * 100) : 0;
+  dLoss.textContent = pct.toFixed(1) + '%';
+}
+
+function updateHUD(force = false) {
+  const h = params.L * (1 - Math.cos(theta));
+  // الطاقات أثناء الحركة (بالنسبة لأدنى موضع)
+  const mtot = params.M + params.m;
+  const w = (phase === 'swing' || phase === 'frozen') ? omega : 0;
+  const vlin = w * params.L;
+  const KE = 0.5 * mtot * vlin * vlin;
+  const PE = mtot * params.g * h;
+
+  rTheta.textContent = (theta * 180 / Math.PI).toFixed(1) + '°';
+  rH.textContent = h.toFixed(3) + ' m';
+  rOmega.textContent = omega.toFixed(3) + ' rad/s';
+  rV.textContent = vlin.toFixed(3) + ' m/s';
+  rKE.textContent = KE.toFixed(3) + ' J';
+  rPE.textContent = PE.toFixed(3) + ' J';
+
+  // تمييز الإشارة
+  rOmega.classList.toggle('pos', omega > 0.001);
+  rOmega.classList.toggle('neg', omega < -0.001);
+
+  if (force || rPeaks.textContent !== String(peaks)) rPeaks.textContent = peaks;
+}
+
+/* =========================================================
+   14) التكامل الفيزيائي
+   ========================================================= */
+function accel(th) { return -(params.g / params.L) * Math.sin(th); }
+
+function stepPhysics(dt) {
+  const MAX_H = 0.002;
+  let remaining = dt, guard = 0;
+  const omegaBefore = omega;
+  while (remaining > 1e-9 && guard < 3000) {
+    const h = Math.min(MAX_H, remaining);
+    remaining -= h; guard++;
+    const k1t = omega,               k1o = accel(theta);
+    const k2t = omega + 0.5*h*k1o,   k2o = accel(theta + 0.5*h*k1t);
+    const k3t = omega + 0.5*h*k2o,   k3o = accel(theta + 0.5*h*k2t);
+    const k4t = omega + h*k3o,       k4o = accel(theta + h*k3t);
+    theta += (h/6) * (k1t + 2*k2t + 2*k3t + k4t);
+    omega += (h/6) * (k1o + 2*k2o + 2*k3o + k4o);
+  }
+  return omegaBefore;
+}
+
+/* =========================================================
+   15) حلقة الرسم
+   ========================================================= */
+const clock = new THREE.Clock();
+let hudTick = 0;
+
+function animate() {
+  requestAnimationFrame(animate);
+  let dt = clock.getDelta();
+  if (dt > 0.05) dt = 0.05;
+
+  // وميض الفوهة
+  if (muzzleTimer > 0) {
+    muzzleTimer -= dt;
+    const f = Math.max(0, muzzleTimer / 0.14);
+    muzzleFlash.intensity = 55 * f * f;
+    muzzleSprite.material.opacity = f;
+    muzzleSprite.scale.setScalar(0.35 + (1 - f) * 0.25);
+  } else if (muzzleFlash.intensity > 0) {
+    muzzleFlash.intensity = 0;
+    muzzleSprite.material.opacity = 0;
+  }
+
+  if (phase === 'flight') {
+    flightT += dt;
+    const p = Math.min(flightT / FLIGHT_DUR, 1);
+    const x = START_X + (0 - START_X) * p;
+    flyingBullet.position.set(x, PIVOT_Y - params.L, 0);
+    const len = Math.max(0.001, x - START_X);
+    trail.scale.x = len;
+    trail.position.set(START_X + len / 2, PIVOT_Y - params.L, 0);
+    trailMat.opacity = 0.55 * (1 - p * 0.35);
+    if (p >= 1) {
+      AudioEngine.woodImpact();
+      flyingBullet.visible = false;
+      trail.visible = false;
+      embeddedBullet.visible = true;
+      theta = 0; omega = omega0; phase = 'swing';
+      flashTimer = 0.28; shockTimer = 0.6;
+      shockRing.position.set(0, PIVOT_Y - params.L, 0);
+      shockRing.scale.setScalar(1);
+      shockRing.material.opacity = 0.9;
+      btnFreeze.disabled = false;
+    }
+  }
+  else if (phase === 'swing') {
+    const simDt = dt * params.timeScale;
+    const omegaBefore = stepPhysics(simDt);
+    const crossedPositivePeak = (omegaBefore > 0 && omega <= 0);
+    const crossedNegativePeak = (omegaBefore < 0 && omega >= 0);
+    if (crossedPositivePeak || crossedNegativePeak) {
+      peaks++;
+      if (autoStopCheck.checked && crossedPositivePeak && theta > 0.01) {
+        AudioEngine.freezeClick();
+        phase = 'frozen'; omega = 0;
+        theta = Math.min(theta, thetaMax);
+        btnFreeze.textContent = '▶ استئناف';
+        document.getElementById('hud').classList.add('frozen');
+      }
+    }
+    pendulum.rotation.z = theta;
+    updateArcLines(theta);
+  }
+  else if (phase === 'frozen') {
+    pendulum.rotation.z = theta;
+  }
+
+  if (flashTimer > 0) {
+    flashTimer -= dt;
+    const f = Math.max(0, flashTimer / 0.28);
+    impactLight.intensity = 32 * f * f;
+  } else impactLight.intensity = 0;
+
+  if (shockTimer > 0) {
+    shockTimer -= dt;
+    const f = Math.max(0, shockTimer / 0.6);
+    const k = 1 - f;
+    shockRing.scale.setScalar(1 + k * 6);
+    shockRing.material.opacity = 0.9 * f * f;
+  } else shockRing.material.opacity = 0;
+
+  if (pivotRing) pivotRing.material.opacity = 0.4 + 0.3 * Math.sin(performance.now() * 0.003);
+
+  if (labelM && blockMesh) {
+    const wp = new THREE.Vector3();
+    blockMesh.getWorldPosition(wp);
+    labelM.position.set(wp.x, wp.y + blockHalf + 0.20, wp.z);
+  }
+  if (labelLittleM) {
+    if (phase === 'flight') {
+      labelLittleM.position.set(flyingBullet.position.x, flyingBullet.position.y + 0.28, flyingBullet.position.z - 0.15);
+      labelLittleM.visible = true;
+      labelV.visible = true;
+      labelV.position.set(flyingBullet.position.x, flyingBullet.position.y - 0.30, flyingBullet.position.z - 0.15);
+    } else if (phase === 'ready') {
+      labelLittleM.position.set(START_X, PIVOT_Y - params.L + 0.28, -0.15);
+      labelLittleM.visible = true;
+      labelV.visible = true;
+      labelV.position.set(START_X, PIVOT_Y - params.L - 0.30, -0.15);
+    } else {
+      labelLittleM.visible = false;
+      labelV.visible = false;
+    }
+  }
+
+  // تحديث HUD كل 3 إطارات لتخفيف إعادة التدفق
+  if ((hudTick++ % 3) === 0) updateHUD();
+
+  controls.update();
+  renderer.render(scene, camera);
+}
+
+/* =========================================================
+   16) بدء التشغيل
+   ========================================================= */
+function fitStage() {
+  const w = container.clientWidth, h = container.clientHeight;
+  if (w < 10 || h < 10) return;
+  camera.aspect = w / h; camera.updateProjectionMatrix(); renderer.setSize(w, h);
+}
+new ResizeObserver(fitStage).observe(container);
+window.addEventListener('resize', fitStage);
+
+params.L         = parseFloat(document.getElementById('s_L').value);
+params.M         = parseFloat(document.getElementById('s_M').value);
+params.m         = parseFloat(document.getElementById('s_m').value);
+params.v         = parseFloat(document.getElementById('s_v').value);
+params.timeScale = parseFloat(document.getElementById('s_ts').value);
+params.g         = parseFloat(gSlider.value);
+
+PIVOT_Y = computePivotY();
+buildStand();
+updateRefLine();
+buildPendulum();
+buildLabels();
+updateGravityUI();
+
+resetSim();
+animate();
+</script>
+
+<script>
+/* مسار القسم الأم */
+var PARENT_URL = '';
+(function () {
+  if (!PARENT_URL) return;
+  var old = document.getElementById('parentCrumb'), a = document.createElement('a');
+  a.id = 'parentCrumb'; a.href = PARENT_URL; a.textContent = old.textContent; old.replaceWith(a);
+})();
+/* الوضع الليلي/النهاري */
+(function () {
+  var t = document.getElementById('themeToggle'), saved = null;
+  try { saved = localStorage.getItem('theme'); } catch (e) {}
+  if (saved === 'light') { document.body.classList.add('light-mode'); t.textContent = '☀️'; }
+  t.addEventListener('click', function () {
+    document.body.classList.toggle('light-mode');
+    var l = document.body.classList.contains('light-mode'); t.textContent = l ? '☀️' : '🌙';
+    try { localStorage.setItem('theme', l ? 'light' : 'dark'); } catch (e) {}
+  });
+})();
+</script>
+</body>
+</html>
