@@ -201,8 +201,8 @@
 <div id="dataPanel">
   <h2>البيانات المباشرة</h2>
   <div class="dataRow"><span>زاوية الدوران ↻</span><b id="outTheta">0.0°</b></div>
-  <div class="dataRow"><span>السرعة الزاوية ω</span><b id="outOmega">3.00 rad/s</b></div>
-  <div class="dataRow"><span>التردد f</span><b id="outFreq">0.48 Hz</b></div>
+  <div class="dataRow"><span>السرعة الزاوية الفعلية ω</span><b id="outOmega">0.00 rad/s</b></div>
+  <div class="dataRow"><span>التردد f</span><b id="outFreq">0.000 Hz</b></div>
   <div class="dataRow"><span>التدفق اللحظي Φ</span><b id="outFlux" class="flux">+2.40 ويبر</b></div>
   <div class="dataRow"><span>EMF (موحّد)</span><b id="outEMF" class="dc">0.00 V</b></div>
   <div class="dataRow"><span>EMF العظمى</span><b id="outEMFmax">7.20 V</b></div>
@@ -260,6 +260,10 @@
   </div>
 
   <div class="legend">
+    <label><input type="checkbox" id="showMagnets" checked>
+      <i style="background:#d93a3a;color:#d93a3a"></i>قطبا المغناطيس (N / S)</label>
+    <label><input type="checkbox" id="showCoil" checked>
+      <i style="background:#d08c3a;color:#d08c3a"></i>الملف الدوار (الوشيعة)</label>
     <label><input type="checkbox" id="showLabels" checked>
       <i style="background:#a8e6cf;color:#a8e6cf"></i>تسميات a·b·c·d و x·y</label>
     <label><input type="checkbox" id="showParticles" checked>
@@ -312,7 +316,6 @@ const MAG_Z    = 2.4;
 
 const COIL_AREA = (2 * H_COIL) * (2 * L_COIL);
 
-/* ★★★ المصباح كرة في المستوى XY ★★★ */
 const LAMP_POS = new THREE.Vector3(0, -3.5, 0);
 const BULB_R   = 0.22;
 
@@ -332,6 +335,7 @@ const AREA_RING_TUB = 0.013;
 const state = {
   theta: 0,
   omega: 3.0,
+  omegaActual: 0,
   B: 0.5,
   R: 10,
   running: true,
@@ -340,6 +344,8 @@ const state = {
   emfHistory: new Array(220).fill(0),
   lastEmf: 0
 };
+
+let omegaManSmoothed = 0;
 
 /* ================= المشهد ================= */
 const container = document.getElementById('scene');
@@ -469,15 +475,19 @@ const matSFace = new THREE.MeshStandardMaterial({
 const matNArr = [matNFace, matNPlain, matNFace, matNPlain, matNFace, matNPlain];
 const matSArr = [matSPlain, matSFace, matSFace, matSPlain, matSFace, matSPlain];
 
+/* ★★★ مجموعة المغناطيسين — لتسهيل الإخفاء ★★★ */
+const magnetGroup = new THREE.Group();
+scene.add(magnetGroup);
+
 const magN = new THREE.Mesh(new THREE.BoxGeometry(MAG_W, MAG_Y, MAG_Z), matNArr);
 magN.position.set(-MAG_X, 0, 0);
 magN.castShadow = true; magN.receiveShadow = true;
-scene.add(magN);
+magnetGroup.add(magN);
 
 const magS = new THREE.Mesh(new THREE.BoxGeometry(MAG_W, MAG_Y, MAG_Z), matSArr);
 magS.position.set(MAG_X, 0, 0);
 magS.castShadow = true; magS.receiveShadow = true;
-scene.add(magS);
+magnetGroup.add(magS);
 
 const magEdgeMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.25 });
 magN.add(new THREE.LineSegments(new THREE.EdgesGeometry(magN.geometry), magEdgeMat));
@@ -626,35 +636,39 @@ function makeBar(p1, p2, radius, mat) {
   return m;
 }
 
-rotor.add(makeBar(cA, cB, COIL_R, copperMat));
-rotor.add(makeBar(cC, cD, COIL_R, copperMat));
-rotor.add(makeBar(cD, cA, COIL_R, copperMat));
+/* --- مجموعة الملف (يمكن إخفاؤها) --- */
+const coilGroup = new THREE.Group();
+rotor.add(coilGroup);
+
+coilGroup.add(makeBar(cA, cB, COIL_R, copperMat));
+coilGroup.add(makeBar(cC, cD, COIL_R, copperMat));
+coilGroup.add(makeBar(cD, cA, COIL_R, copperMat));
 
 const cornerGeo = new THREE.SphereGeometry(COIL_R * 1.1, 14, 10);
 [cA, cB, cC, cD].forEach(p => {
   const s = new THREE.Mesh(cornerGeo, copperMat);
   s.position.copy(p);
   s.castShadow = true;
-  rotor.add(s);
+  coilGroup.add(s);
 });
 
 const cornerColor = '#a8e6cf';
 
 const labelB_ = makeLetter('b', cornerColor);
 labelB_.position.set(cA.x + 0.05, cA.y - 0.22, cA.z - 0.22);
-rotor.add(labelB_);
+coilGroup.add(labelB_);
 
 const labelA_ = makeLetter('a', cornerColor);
 labelA_.position.set(cB.x + 0.05, cB.y - 0.22, cB.z + 0.22);
-rotor.add(labelA_);
+coilGroup.add(labelA_);
 
 const labelD_ = makeLetter('d', cornerColor);
 labelD_.position.set(cC.x + 0.05, cC.y + 0.22, cC.z + 0.22);
-rotor.add(labelD_);
+coilGroup.add(labelD_);
 
 const labelC_ = makeLetter('c', cornerColor);
 labelC_.position.set(cD.x + 0.05, cD.y + 0.22, cD.z - 0.22);
-rotor.add(labelC_);
+coilGroup.add(labelC_);
 
 /* ============================================================
    المبدّل
@@ -700,7 +714,7 @@ const markSeg2 = new THREE.Mesh(
 markSeg2.position.set(0, -COMM_R, COMM_Z);
 rotor.add(markSeg2);
 
-/* ---- أسلاك الملف → المبدّل ---- */
+/* ---- أسلاك الملف → المبدّل (تابعة لمجموعة الملف) ---- */
 const lead1Pts = [
   new THREE.Vector3(0, -H_COIL,          L_COIL),
   new THREE.Vector3(0.18, -H_COIL * 0.7,  L_COIL + 0.18),
@@ -714,7 +728,7 @@ const lead1Mesh = new THREE.Mesh(
   new THREE.TubeGeometry(lead1Curve, 100, WIRE_R, 12, false), copperMat
 );
 lead1Mesh.castShadow = true;
-rotor.add(lead1Mesh);
+coilGroup.add(lead1Mesh);
 
 const lead2Pts = [
   new THREE.Vector3(0,  H_COIL,          L_COIL),
@@ -729,7 +743,7 @@ const lead2Mesh = new THREE.Mesh(
   new THREE.TubeGeometry(lead2Curve, 100, WIRE_R, 12, false), copperMat
 );
 lead2Mesh.castShadow = true;
-rotor.add(lead2Mesh);
+coilGroup.add(lead2Mesh);
 
 /* ================= متجه المساحة A ================= */
 const areaVectorGroup = new THREE.Group();
@@ -808,11 +822,10 @@ const wireMat = new THREE.MeshStandardMaterial({
   emissive: 0x220000, emissiveIntensity: 0.25
 });
 
-const BRUSH_X_OUT = COMM_R + COMM_TUB + 0.32;   /* = 0.88 */
+const BRUSH_X_OUT = COMM_R + COMM_TUB + 0.32;
 const BRUSH_Y_OUT = -(COMM_R + COMM_TUB + 0.32);
 const LAMP_Y = LAMP_POS.y;
 
-/* ★★★ مسار السلك الأيمن — انسيابي L-shape ★★★ */
 const wireXCurve = new THREE.CatmullRomCurve3([
   new THREE.Vector3(BRUSH_X_OUT,        0.00, COMM_Z),
   new THREE.Vector3(BRUSH_X_OUT,       -3.10, COMM_Z),
@@ -825,7 +838,6 @@ circuitGroup.add(new THREE.Mesh(
   new THREE.TubeGeometry(wireXCurve, 120, WIRE_R * 1.05, 12, false), wireMat
 ));
 
-/* ★★★ مسار السلك الأيسر (مرآة) ★★★ */
 const wireYCurve = new THREE.CatmullRomCurve3([
   new THREE.Vector3(BRUSH_Y_OUT,        0.00, COMM_Z),
   new THREE.Vector3(BRUSH_Y_OUT,       -3.10, COMM_Z),
@@ -838,7 +850,6 @@ circuitGroup.add(new THREE.Mesh(
   new THREE.TubeGeometry(wireYCurve, 120, WIRE_R * 1.05, 12, false), wireMat
 ));
 
-/* ---- المصباح (كرة) ---- */
 const bulbGlassMat = new THREE.MeshPhysicalMaterial({
   color: 0xfff5d5, metalness: 0.0, roughness: 0.08,
   transmission: 0.85, transparent: true, opacity: 0.75,
@@ -907,17 +918,17 @@ function addParticleSegment(opts) {
   });
 }
 
-addParticleSegment({ parent: rotor, kind: 'line', from: cB, to: cA, count: 8, directionMode: 'coil' });
-addParticleSegment({ parent: rotor, kind: 'line', from: cA, to: cD, count: 5, directionMode: 'coil' });
-addParticleSegment({ parent: rotor, kind: 'line', from: cD, to: cC, count: 8, directionMode: 'coil' });
-addParticleSegment({ parent: rotor, kind: 'curve', curve: lead2Curve, count: 5, reverse: false, directionMode: 'coil' });
-addParticleSegment({ parent: rotor, kind: 'curve', curve: lead1Curve, count: 5, reverse: true,  directionMode: 'coil' });
+/* جزيئات الملف والأسلاك الواصلة — داخل coilGroup لتختفي معها */
+addParticleSegment({ parent: coilGroup, kind: 'line', from: cB, to: cA, count: 8, directionMode: 'coil' });
+addParticleSegment({ parent: coilGroup, kind: 'line', from: cA, to: cD, count: 5, directionMode: 'coil' });
+addParticleSegment({ parent: coilGroup, kind: 'line', from: cD, to: cC, count: 8, directionMode: 'coil' });
+addParticleSegment({ parent: coilGroup, kind: 'curve', curve: lead2Curve, count: 5, reverse: false, directionMode: 'coil' });
+addParticleSegment({ parent: coilGroup, kind: 'curve', curve: lead1Curve, count: 5, reverse: true,  directionMode: 'coil' });
 
-/* الدارة الخارجية (اتجاه ثابت: y → مصباح → x) */
+/* الدارة الخارجية (اتجاه ثابت) */
 addParticleSegment({ parent: scene, kind: 'curve', curve: wireYCurve, count: 9, reverse: false, directionMode: 'const' });
 addParticleSegment({ parent: scene, kind: 'curve', curve: wireXCurve, count: 9, reverse: true,  directionMode: 'const' });
 
-/* داخل المصباح — مسار أفقي على محور X */
 addParticleSegment({
   parent: scene, kind: 'line',
   from: new THREE.Vector3(-BULB_R * 0.85, LAMP_Y, 0),
@@ -941,6 +952,8 @@ const outTheta = el('outTheta'), outOmega = el('outOmega'), outFreq = el('outFre
 const scopeCap = el('scopeCap');
 
 const playBtn = el('play'), resetBtn = el('reset');
+const cbMagnets   = el('showMagnets');
+const cbCoil      = el('showCoil');
 const cbLabels    = el('showLabels');
 const cbParticles = el('showParticles');
 const cbArea      = el('showArea');
@@ -982,6 +995,8 @@ manualModeCb.addEventListener('change', () => {
     const deg = ((state.theta * 180 / Math.PI) % 360 + 360) % 360;
     angleManS.value = deg.toFixed(1);
     angleManVal.textContent = deg.toFixed(1) + '°';
+  } else {
+    omegaManSmoothed = 0;
   }
 });
 
@@ -998,6 +1013,7 @@ playBtn.addEventListener('click', () => {
     manualModeCb.checked = false;
     state.manualMode = false;
     angleManS.disabled = true;
+    omegaManSmoothed = 0;
   }
   state.running = !state.running;
   playBtn.textContent = state.running ? '⏸ إيقاف' : '▶ تشغيل';
@@ -1005,6 +1021,8 @@ playBtn.addEventListener('click', () => {
 
 resetBtn.addEventListener('click', () => {
   state.theta = 0;
+  state.omegaActual = 0;
+  omegaManSmoothed = 0;
   state.brightness = 0;
   state.emfHistory.fill(0);
   state.manualMode = false;
@@ -1020,6 +1038,13 @@ resetBtn.addEventListener('click', () => {
   });
   updateReadouts();
 });
+
+/* ★★★ إخفاء/إظهار قطبي المغناطيس ★★★ */
+cbMagnets.addEventListener('change', () => {
+  magnetGroup.visible = cbMagnets.checked;
+});
+
+cbCoil.addEventListener('change', () => { coilGroup.visible = cbCoil.checked; });
 
 cbLabels.addEventListener('change', () => {
   const v = cbLabels.checked;
@@ -1038,8 +1063,7 @@ cbComm.addEventListener('change', () => {
   commSeg2.visible = cbComm.checked;
   markSeg1.visible = cbComm.checked;
   markSeg2.visible = cbComm.checked;
-  lead1Mesh.visible = cbComm.checked;
-  lead2Mesh.visible = cbComm.checked;
+  /* الأسلاك الرابطة انتقلت إلى coilGroup */
 });
 cbBrushes.addEventListener('change', () => { brushGroup.visible = cbBrushes.checked; });
 cbCircuit.addEventListener('change', () => {
@@ -1117,13 +1141,17 @@ function drawScope() {
 /* ================= تحديث حبيبات التيار ================= */
 const _pv = new THREE.Vector3();
 
-function updateParticles(dt, sinT) {
-  const signInternal = sinT >= 0 ? 1 : -1;
-  const mag = Math.abs(sinT);
-  const visible = cbParticles.checked && mag > 0.025;
+function updateParticles(dt, emfExt, refMax) {
+  const mag = Math.min(1, Math.abs(emfExt) / refMax);
+  const moving = Math.abs(state.omegaActual) > 0.02;
+  const visible = cbParticles.checked && mag > 0.02 && moving;
+
   particleMat.opacity = Math.min(1.0, mag * 3.2);
 
-  const baseSpeed = PARTICLE_SPEED_FACTOR * state.omega;
+  const sinT = Math.sin(state.theta);
+  const signInternal = sinT >= 0 ? 1 : -1;
+
+  const baseSpeed = PARTICLE_SPEED_FACTOR * Math.abs(state.omegaActual);
 
   currentSegments.forEach(seg => {
     const tSpeed = baseSpeed / seg.length;
@@ -1155,9 +1183,10 @@ function animate(now) {
   const dt = Math.min((now - lastT) / 1000, 0.05);
   lastT = now;
 
-  if (state.manualMode) {
-    /* لا شيء */
-  } else if (state.running) {
+  const thetaBefore = state.theta;
+
+  /* --- تقدّم الزاوية --- */
+  if (!state.manualMode && state.running) {
     state.theta += state.omega * dt;
     if (state.theta > Math.PI * 2) state.theta -= Math.PI * 2;
 
@@ -1166,25 +1195,45 @@ function animate(now) {
     angleManVal.textContent = degNow.toFixed(1) + '°';
   }
 
-  const emfInternal = state.B * COIL_AREA * state.omega * Math.sin(state.theta);
+  /* --- حساب السرعة الزاوية الفعلية --- */
+  let dTheta = state.theta - thetaBefore;
+  if (dTheta >  Math.PI) dTheta -= Math.PI * 2;
+  if (dTheta < -Math.PI) dTheta += Math.PI * 2;
+
+  if (state.manualMode) {
+    const raw = dt > 1e-4
+      ? THREE.MathUtils.clamp(dTheta / dt, -12, 12)
+      : 0;
+    omegaManSmoothed += (raw - omegaManSmoothed) * (1 - Math.exp(-dt * 14));
+    state.omegaActual = omegaManSmoothed;
+  } else if (state.running) {
+    state.omegaActual = state.omega;
+  } else {
+    state.omegaActual = 0;
+  }
+
+  /* --- EMF (بعد المبدّل) --- */
+  const emfInternal = state.B * COIL_AREA * state.omegaActual * Math.sin(state.theta);
   const emfExt = Math.abs(emfInternal);
   state.lastEmf = emfExt;
+
+  const refMax = Math.max(0.01, state.B * COIL_AREA * state.omega);
 
   if (state.running && !state.manualMode) {
     state.emfHistory.push(emfExt);
     if (state.emfHistory.length > 220) state.emfHistory.shift();
-
-    const target = Math.min(1, emfExt / Math.max(0.01, state.B * COIL_AREA * state.omega));
-    state.brightness += (target - state.brightness) * (1 - Math.exp(-dt * 18));
-  } else {
-    const target = Math.min(1, emfExt / Math.max(0.01, state.B * COIL_AREA * state.omega));
-    state.brightness = target;
+  } else if (!state.running && !state.manualMode) {
+    state.emfHistory.push(0);
+    if (state.emfHistory.length > 220) state.emfHistory.shift();
   }
+
+  /* --- سطوع المصباح --- */
+  const target = Math.min(1, emfExt / refMax);
+  state.brightness += (target - state.brightness) * (1 - Math.exp(-dt * 16));
 
   rotor.rotation.z = -state.theta;
 
-  const sinT = Math.sin(state.theta);
-  updateParticles(dt, sinT);
+  updateParticles(dt, emfExt, refMax);
 
   const b = state.brightness;
   bulbGlassMat.emissive.setRGB(1.0 * b, 0.88 * b, 0.5 * b);
@@ -1207,12 +1256,12 @@ function updateReadouts() {
   const emfMax = state.B * COIL_AREA * state.omega;
   const current = emfExt / state.R;
   const power = current * current * state.R;
-  const f = state.omega / (2 * Math.PI);
+  const f = Math.abs(state.omegaActual) / (2 * Math.PI);
 
   const flux = state.B * COIL_AREA * Math.cos(state.theta);
 
   outTheta.textContent = thetaDeg.toFixed(1) + '°';
-  outOmega.textContent = state.omega.toFixed(2) + ' rad/s';
+  outOmega.textContent = state.omegaActual.toFixed(2) + ' rad/s';
   outFreq.textContent  = f.toFixed(3) + ' Hz';
 
   const fluxSign = flux >= 0 ? '+' : '';
@@ -1227,19 +1276,23 @@ function updateReadouts() {
   outBright.textContent  = Math.round(state.brightness * 100) + ' %';
 
   const sinT = Math.sin(state.theta);
-  if (Math.abs(sinT) < 0.04) {
+  const refMax = Math.max(1e-6, emfMax);
+  if (Math.abs(emfExt) < 0.04 * refMax || Math.abs(state.omegaActual) < 0.02) {
     outDir.textContent = 'صفر';
     outDir.style.color = '#8b9cc0';
-  } else if (sinT > 0) {
-    outDir.textContent = 'a→b→c→d';
-    outDir.style.color = '#ff4444';
+    outExtDir.textContent = 'صفر';
+    outExtDir.style.color = '#8b9cc0';
   } else {
-    outDir.textContent = 'd→c→b→a';
-    outDir.style.color = '#ffa833';
+    if (sinT > 0) {
+      outDir.textContent = 'a→b→c→d';
+      outDir.style.color = '#ff4444';
+    } else {
+      outDir.textContent = 'd→c→b→a';
+      outDir.style.color = '#ffa833';
+    }
+    outExtDir.textContent = 'y → مصباح → x';
+    outExtDir.className = 'dc';
   }
-
-  outExtDir.textContent = 'y → مصباح → x';
-  outExtDir.className = 'dc';
 
   scopeCap.textContent = emfExt.toFixed(2) + ' V';
 }

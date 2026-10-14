@@ -217,8 +217,8 @@
 <div id="dataPanel">
   <h2>البيانات المباشرة</h2>
   <div class="dataRow"><span>زاوية الدوران θ (من 0°)</span><b id="outTheta">0.0°</b></div>
-  <div class="dataRow"><span>السرعة الزاوية ω</span><b id="outOmega">3.00 rad/s</b></div>
-  <div class="dataRow"><span>التردد f</span><b id="outFreq">0.477 Hz</b></div>
+  <div class="dataRow"><span>السرعة الزاوية الفعلية ω</span><b id="outOmega">0.00 rad/s</b></div>
+  <div class="dataRow"><span>التردد f</span><b id="outFreq">0.000 Hz</b></div>
   <div class="dataRow"><span>عدد الملفات n</span><b id="outN" class="violet">1</b></div>
   <div class="dataRow"><span>عدد اللفات N</span><b id="outTurns" class="violet">1</b></div>
   <div class="dataRow"><span>EMF اللحظية</span><b id="outEMF" class="pos">0.00 V</b></div>
@@ -290,6 +290,10 @@
   </div>
 
   <div class="legend">
+    <label><input type="checkbox" id="showMagnets" checked>
+      <i style="background:#d93a3a;color:#d93a3a"></i>قطبا المغناطيس (N / S)</label>
+    <label><input type="checkbox" id="showCoil" checked>
+      <i style="background:#ff6b6b;color:#ff6b6b"></i>الملف الدوار (الوشيعة)</label>
     <label><input type="checkbox" id="showLabels" checked>
       <i style="background:#a8e6cf;color:#a8e6cf"></i>تسميات a·b·c·d و x·y</label>
     <label><input type="checkbox" id="showParticles" checked>
@@ -356,26 +360,17 @@ const AREA_RING_TUB = 0.013;
 
 /* ================= ألوان الملفات ================= */
 const COIL_COLORS_HEX = [
-  0xff6b6b, // أحمر
-  0x4dd0e1, // سماوي
-  0x81c784, // أخضر
-  0xba68c8, // بنفسجي
-  0xffd54f, // ذهبي
-  0xf48fb1  // وردي
+  0xff6b6b, 0x4dd0e1, 0x81c784, 0xba68c8, 0xffd54f, 0xf48fb1
 ];
 const COIL_COLORS_CSS = [
-  '#ff6b6b',
-  '#4dd0e1',
-  '#81c784',
-  '#ba68c8',
-  '#ffd54f',
-  '#f48fb1'
+  '#ff6b6b', '#4dd0e1', '#81c784', '#ba68c8', '#ffd54f', '#f48fb1'
 ];
 
 /* ================= الحالة ================= */
 const state = {
   theta: 0,
   omega: 3.0,
+  omegaActual: 0,     /* ← السرعة الفعلية (صفر عند التوقف) */
   B: 0.5,
   R: 10,
   coils: 1,
@@ -388,6 +383,8 @@ const state = {
   coilHistories: [],
   shapeMax: 1
 };
+
+let omegaManSmoothed = 0;   /* للتحكم اليدوي */
 
 function E0() { return state.turns * state.B * COIL_AREA * state.omega; }
 
@@ -500,15 +497,19 @@ const matSFace  = new THREE.MeshStandardMaterial({ map: texS, metalness: 0.35, r
 const matNArr = [matNFace, matNPlain, matNFace, matNPlain, matNFace, matNPlain];
 const matSArr = [matSPlain, matSFace, matSFace, matSPlain, matSFace, matSPlain];
 
+/* ★★★ مجموعة المغناطيسين ★★★ */
+const magnetGroup = new THREE.Group();
+scene.add(magnetGroup);
+
 const magN = new THREE.Mesh(new THREE.BoxGeometry(MAG_W, MAG_Y, MAG_Z), matNArr);
 magN.position.set(-MAG_X, 0, 0);
 magN.castShadow = true; magN.receiveShadow = true;
-scene.add(magN);
+magnetGroup.add(magN);
 
 const magS = new THREE.Mesh(new THREE.BoxGeometry(MAG_W, MAG_Y, MAG_Z), matSArr);
 magS.position.set(MAG_X, 0, 0);
 magS.castShadow = true; magS.receiveShadow = true;
-scene.add(magS);
+magnetGroup.add(magS);
 
 const magEdgeMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.25 });
 magN.add(new THREE.LineSegments(new THREE.EdgesGeometry(magN.geometry), magEdgeMat));
@@ -669,6 +670,7 @@ let coilParts = [];
 let ring1Mesh = null, ring2Mesh = null;
 let labelLetters = [];
 let areaVectorGroup = null;
+let coilGroup = null;   /* ★★★ مجموعة الملف كاملاً لإخفائها ★★★ */
 
 const ringMat = new THREE.MeshStandardMaterial({
   color: 0xffd700, metalness: 0.95, roughness: 0.18,
@@ -693,6 +695,11 @@ function buildArmature() {
   labelLetters = [];
   areaVectorGroup = null;
 
+  /* ★★★ إنشاء مجموعة الملف الجديدة ★★★ */
+  coilGroup = new THREE.Group();
+  coilGroup.visible = document.getElementById('showCoil').checked;
+  rotor.add(coilGroup);
+
   const n = state.coils;
 
   for (let k = 0; k < n; k++) {
@@ -712,34 +719,33 @@ function buildArmature() {
     const cs = Math.cos(phi), sn = Math.sin(phi);
     const RZ = v => new THREE.Vector3(v.x * cs - v.y * sn, v.x * sn + v.y * cs, v.z);
 
-    const A = RZ(new THREE.Vector3(0, -H_COIL, -L_COIL));  // b (bottom-back)
-    const B = RZ(new THREE.Vector3(0, -H_COIL,  L_COIL));  // a (bottom-front)
-    const C = RZ(new THREE.Vector3(0,  H_COIL,  L_COIL));  // d (top-front)
-    const D = RZ(new THREE.Vector3(0,  H_COIL, -L_COIL));  // c (top-back)
+    const A = RZ(new THREE.Vector3(0, -H_COIL, -L_COIL));
+    const B = RZ(new THREE.Vector3(0, -H_COIL,  L_COIL));
+    const C = RZ(new THREE.Vector3(0,  H_COIL,  L_COIL));
+    const D = RZ(new THREE.Vector3(0,  H_COIL, -L_COIL));
 
-    /* 3 أضلاع: a-b ، c-d ، c-b (خلفي) */
-    rotor.add(makeBar(A, B, COIL_R, coilMat));
-    rotor.add(makeBar(C, D, COIL_R, coilMat));
-    rotor.add(makeBar(D, A, COIL_R, coilMat));
+    /* كل قضبان الملف إلى coilGroup */
+    coilGroup.add(makeBar(A, B, COIL_R, coilMat));
+    coilGroup.add(makeBar(C, D, COIL_R, coilMat));
+    coilGroup.add(makeBar(D, A, COIL_R, coilMat));
 
     [A, B, C, D].forEach(p => {
       const s = new THREE.Mesh(cornerSphereGeo, coilMat);
       s.position.copy(p);
       s.castShadow = true;
-      rotor.add(s);
+      coilGroup.add(s);
     });
 
-    /* أسلاك الوصل بالحلقتين (زاوية الاتصال = ضعف زاوية الملف لتوزيعها) */
     const connAngle = 2 * phi;
     const ccs = Math.cos(connAngle), csn = Math.sin(connAngle);
 
     const target1 = new THREE.Vector3(RING1_R * ccs, RING1_R * csn, RING1_Z);
     const target2 = new THREE.Vector3(RING2_R * ccs, RING2_R * csn, RING2_Z);
 
-    rotor.add(makeBar(B, target1, WIRE_R * 0.85, coilMat));
-    rotor.add(makeBar(C, target2, WIRE_R * 0.85, coilMat));
+    /* أسلاك الوصل إلى coilGroup (لتختفي مع الملف) */
+    coilGroup.add(makeBar(B, target1, WIRE_R * 0.85, coilMat));
+    coilGroup.add(makeBar(C, target2, WIRE_R * 0.85, coilMat));
 
-    /* منحنى الحبيبات: A → B → target1 (حلقة 1) → target2 (حلقة 2) → C → D → A */
     const curve = new LoopCurve([A, B, target1, target2, C, D]);
 
     const particles = [];
@@ -747,13 +753,13 @@ function buildArmature() {
     for (let i = 0; i < count; i++) {
       const m = new THREE.Mesh(particleGeo, pMat);
       m.renderOrder = 18;
-      rotor.add(m);
+      coilGroup.add(m);
       particles.push({ mesh: m, t: i / count });
     }
     coilParts.push({ curve, phi, particles, coilMat, particleMat: pMat, colorHex });
   }
 
-  /* ---- الحلقتان المنزلقتان ---- */
+  /* ---- الحلقتان المنزلقتان (تبقيان على rotor لأن لها خياراً مستقلاً) ---- */
   ring1Mesh = new THREE.Mesh(
     new THREE.TorusGeometry(RING1_R, RING_TUB, 14, 48), ringMat
   );
@@ -768,7 +774,7 @@ function buildArmature() {
   ring2Mesh.castShadow = true;
   rotor.add(ring2Mesh);
 
-  /* ---- متجه المساحة A (يظهر للملف الأول) ---- */
+  /* ---- متجه المساحة A ---- */
   areaVectorGroup = new THREE.Group();
   rotor.add(areaVectorGroup);
 
@@ -803,11 +809,11 @@ function buildArmature() {
   areaLabel.position.set(AREA_LEN + 0.35, 0, 0);
   areaVectorGroup.add(areaLabel);
 
-  /* ---- تسميات a b c d (للملف الأول فقط) ---- */
+  /* ---- تسميات a b c d (ضمن coilGroup لتختفي مع الملف) ---- */
   const mkLbl = (text, x, y, z) => {
     const sp = makeLetter(text, '#a8e6cf');
     sp.position.set(x, y, z);
-    rotor.add(sp);
+    coilGroup.add(sp);
     labelLetters.push(sp);
   };
   mkLbl('b', 0.06, -H_COIL - 0.22, -L_COIL - 0.22);
@@ -955,6 +961,8 @@ const scopeCap = el('scopeCap');
 const scopeLegend = el('scopeLegend');
 
 const playBtn = el('play'), resetBtn = el('reset');
+const cbMagnets   = el('showMagnets');   /* ★★★ جديد ★★★ */
+const cbCoil      = el('showCoil');      /* ★★★ جديد ★★★ */
 const cbLabels    = el('showLabels');
 const cbParticles = el('showParticles');
 const cbArea      = el('showArea');
@@ -963,6 +971,7 @@ const cbRings     = el('showRings');
 const cbBrushes   = el('showBrushes');
 const cbCircuit   = el('showCircuit');
 const cbAxis      = el('showAxis');
+
 const CUSTOM_PAGE = { url: 'induction.html', label: 'الحث الكهرومغناطيسي' };
 el('btnCustom').href = CUSTOM_PAGE.url;
 el('customBtnLabel').textContent = CUSTOM_PAGE.label;
@@ -1052,6 +1061,8 @@ manualModeCb.addEventListener('change', () => {
     const deg = ((state.theta * 180 / Math.PI) % 360 + 360) % 360;
     angleManS.value = deg.toFixed(1);
     angleManVal.textContent = deg.toFixed(1) + '°';
+  } else {
+    omegaManSmoothed = 0;
   }
 });
 
@@ -1068,6 +1079,7 @@ playBtn.addEventListener('click', () => {
     manualModeCb.checked = false;
     state.manualMode = false;
     angleManS.disabled = true;
+    omegaManSmoothed = 0;
   }
   state.running = !state.running;
   playBtn.textContent = state.running ? '⏸ إيقاف' : '▶ تشغيل';
@@ -1075,6 +1087,8 @@ playBtn.addEventListener('click', () => {
 
 resetBtn.addEventListener('click', () => {
   state.theta = 0;
+  state.omegaActual = 0;
+  omegaManSmoothed = 0;
   state.brightness = 0;
   state.emf = 0;
   state.emfHistory.fill(0);
@@ -1090,6 +1104,16 @@ resetBtn.addEventListener('click', () => {
   coilParts.forEach(cp => cp.particles.forEach((p, i) => { p.t = i / cp.particles.length; }));
   circuitParts.forEach(cp => cp.particles.forEach((p, i) => { p.t = i / cp.particles.length; }));
   updateReadouts();
+});
+
+/* ★★★ إخفاء/إظهار المغناطيس ★★★ */
+cbMagnets.addEventListener('change', () => {
+  magnetGroup.visible = cbMagnets.checked;
+});
+
+/* ★★★ إخفاء/إظهار الملف كاملاً ★★★ */
+cbCoil.addEventListener('change', () => {
+  if (coilGroup) coilGroup.visible = cbCoil.checked;
 });
 
 cbLabels.addEventListener('change', () => {
@@ -1152,7 +1176,6 @@ function drawScope() {
   scopeCtx.lineTo(W, midY);
   scopeCtx.stroke();
 
-  /* موجات الملفات الفردية */
   state.coilHistories.forEach((hist, k) => {
     if (!hist || hist.length < 2) return;
     const color = COIL_COLORS_CSS[k % COIL_COLORS_CSS.length];
@@ -1171,7 +1194,6 @@ function drawScope() {
     scopeCtx.globalAlpha = 1;
   });
 
-  /* الموجة الكلية */
   if (state.coils > 1) {
     const N = state.emfHistory.length;
     scopeCtx.beginPath();
@@ -1197,31 +1219,31 @@ function updateParticles(dt) {
   const showP = cbParticles.checked;
   const eMax = Math.max(1e-6, state.shapeMax * E0());
   const mag = Math.min(1, Math.abs(state.emf) / eMax);
+  const moving = Math.abs(state.omegaActual) > 0.02;
+  const visible = showP && moving && mag > 0.02;
 
   coilParts.forEach(cp => {
     cp.particleMat.opacity = Math.min(1, 0.3 + mag * 1.1);
-    /* اتجاه التيار في كل ملف حسب طوره */
     const s = Math.sin(state.theta - cp.phi);
     const dir = s >= 0 ? 1 : -1;
     const f = Math.min(1, Math.abs(s) * 3);
-    const step = PARTICLE_SPEED_FACTOR * state.omega * mag * f * dt;
+    const step = PARTICLE_SPEED_FACTOR * Math.abs(state.omegaActual) * mag * f * dt;
     cp.particles.forEach(p => {
-      p.mesh.visible = showP;
-      if (!showP) return;
+      p.mesh.visible = visible;
+      if (!visible) return;
       p.t = ((p.t + dir * step) % 1 + 1) % 1;
       cp.curve.getPoint(p.t, _pv);
       p.mesh.position.copy(_pv);
     });
   });
 
-  /* حبيبات الدارة الخارجية - الاتجاه ثابت (تيار متردد لكن نظهر اتجاه اللحظة) */
   circuitParticleMat.opacity = Math.min(1, 0.3 + mag * 1.1);
   const extDir = state.emf >= 0 ? 1 : -1;
   circuitParts.forEach(seg => {
     seg.particles.forEach(p => {
-      p.mesh.visible = showP;
-      if (!showP) return;
-      const d = extDir * (seg.reverse ? -1 : 1) * PARTICLE_SPEED_FACTOR * state.omega * mag * dt;
+      p.mesh.visible = visible;
+      if (!visible) return;
+      const d = extDir * (seg.reverse ? -1 : 1) * PARTICLE_SPEED_FACTOR * Math.abs(state.omegaActual) * mag * dt;
       p.t = ((p.t + d) % 1 + 1) % 1;
       seg.curve.getPoint(p.t, _pv);
       p.mesh.position.copy(_pv);
@@ -1238,9 +1260,10 @@ function animate(now) {
   const dt = Math.min((now - lastT) / 1000, 0.05);
   lastT = now;
 
-  if (state.manualMode) {
-    /* لا شيء */
-  } else if (state.running) {
+  const thetaBefore = state.theta;
+
+  /* --- تقدّم الزاوية --- */
+  if (!state.manualMode && state.running) {
     state.theta += state.omega * dt;
     if (state.theta > Math.PI * 2) state.theta -= Math.PI * 2;
 
@@ -1249,9 +1272,27 @@ function animate(now) {
     angleManVal.textContent = degNow.toFixed(1) + '°';
   }
 
+  /* --- حساب السرعة الزاوية الفعلية --- */
+  let dTheta = state.theta - thetaBefore;
+  if (dTheta >  Math.PI) dTheta -= Math.PI * 2;
+  if (dTheta < -Math.PI) dTheta += Math.PI * 2;
+
+  if (state.manualMode) {
+    const raw = dt > 1e-4
+      ? THREE.MathUtils.clamp(dTheta / dt, -12, 12)
+      : 0;
+    omegaManSmoothed += (raw - omegaManSmoothed) * (1 - Math.exp(-dt * 14));
+    state.omegaActual = omegaManSmoothed;
+  } else if (state.running) {
+    state.omegaActual = state.omega;
+  } else {
+    state.omegaActual = 0;   /* ← عند التوقف لا يوجد تيار */
+  }
+
   rotor.rotation.z = -state.theta;
 
-  const e0 = E0();
+  /* --- EMF محسوبة من السرعة الفعلية --- */
+  const e0 = state.turns * state.B * COIL_AREA * state.omegaActual;
   let total = 0;
   const coilVals = [];
   for (let k = 0; k < state.coils; k++) {
@@ -1261,34 +1302,24 @@ function animate(now) {
   }
   state.emf = total;
 
-  if (state.running && !state.manualMode) {
-    state.emfHistory.push(state.emf);
-    if (state.emfHistory.length > 220) state.emfHistory.shift();
+  /* --- دفع القيم للسجل --- */
+  state.emfHistory.push(state.emf);
+  if (state.emfHistory.length > 220) state.emfHistory.shift();
 
-    for (let k = 0; k < state.coils; k++) {
-      const h = state.coilHistories[k];
-      if (!h) continue;
-      h.push(coilVals[k]);
-      if (h.length > 220) h.shift();
-    }
-  } else {
-    /* في الوضع اليدوي نعرض فقط اللحظة الحالية (بدون دفع للسجل) */
-    for (let k = 0; k < state.coils; k++) {
-      const h = state.coilHistories[k];
-      if (!h) continue;
-      h.push(coilVals[k]);
-      if (h.length > 220) h.shift();
-    }
-    state.emfHistory.push(state.emf);
-    if (state.emfHistory.length > 220) state.emfHistory.shift();
+  for (let k = 0; k < state.coils; k++) {
+    const h = state.coilHistories[k];
+    if (!h) continue;
+    h.push(coilVals[k]);
+    if (h.length > 220) h.shift();
   }
 
-  const eRef = Math.max(1e-6, state.shapeMax * e0);
+  /* --- سطوع المصباح --- */
+  const eRef = Math.max(1e-6, state.shapeMax * E0());
   const target = Math.min(1, Math.abs(state.emf) / eRef);
   if (state.running && !state.manualMode) {
     state.brightness += (target - state.brightness) * (1 - Math.exp(-dt * 18));
   } else {
-    state.brightness = target;
+    state.brightness += (target - state.brightness) * (1 - Math.exp(-dt * 14));
   }
 
   updateParticles(dt);
@@ -1310,15 +1341,15 @@ function animate(now) {
 /* ================= القراءات ================= */
 function updateReadouts() {
   const thetaDeg = ((state.theta * 180 / Math.PI) % 360 + 360) % 360;
-  const e0 = E0();
+  const e0 = E0();  /* يستخدم السرعة المضبوطة (للعرض الأقصى) */
   const emf = state.emf;
   const emfMax = state.shapeMax * e0;
   const current = emf / state.R;
   const power = current * current * state.R;
-  const f = state.omega / (2 * Math.PI);
+  const f = Math.abs(state.omegaActual) / (2 * Math.PI);
 
   outTheta.textContent = thetaDeg.toFixed(1) + '°';
-  outOmega.textContent = state.omega.toFixed(2) + ' rad/s';
+  outOmega.textContent = state.omegaActual.toFixed(2) + ' rad/s';
   outFreq.textContent  = f.toFixed(3) + ' Hz';
   outN.textContent     = state.coils;
   outTurns.textContent = state.turns;
@@ -1331,7 +1362,8 @@ function updateReadouts() {
   outBright.textContent  = Math.round(state.brightness * 100) + ' %';
 
   const sinT = Math.sin(state.theta);
-  if (Math.abs(sinT) < 0.04) {
+  const refMax = Math.max(1e-6, emfMax);
+  if (Math.abs(emf) < 0.04 * refMax || Math.abs(state.omegaActual) < 0.02) {
     outDir.textContent = 'صفر (لا تيار)';
     outDir.style.color = '#8b9cc0';
   } else if (sinT > 0) {
