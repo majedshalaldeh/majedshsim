@@ -370,7 +370,7 @@ const COIL_COLORS_CSS = [
 const state = {
   theta: 0,
   omega: 3.0,
-  omegaActual: 0,     /* ← السرعة الفعلية (صفر عند التوقف) */
+  omegaActual: 0,
   B: 0.5,
   R: 10,
   coils: 1,
@@ -384,7 +384,7 @@ const state = {
   shapeMax: 1
 };
 
-let omegaManSmoothed = 0;   /* للتحكم اليدوي */
+let omegaManSmoothed = 0;
 
 function E0() { return state.turns * state.B * COIL_AREA * state.omega; }
 
@@ -497,7 +497,6 @@ const matSFace  = new THREE.MeshStandardMaterial({ map: texS, metalness: 0.35, r
 const matNArr = [matNFace, matNPlain, matNFace, matNPlain, matNFace, matNPlain];
 const matSArr = [matSPlain, matSFace, matSFace, matSPlain, matSFace, matSPlain];
 
-/* ★★★ مجموعة المغناطيسين ★★★ */
 const magnetGroup = new THREE.Group();
 scene.add(magnetGroup);
 
@@ -670,7 +669,7 @@ let coilParts = [];
 let ring1Mesh = null, ring2Mesh = null;
 let labelLetters = [];
 let areaVectorGroup = null;
-let coilGroup = null;   /* ★★★ مجموعة الملف كاملاً لإخفائها ★★★ */
+let coilGroup = null;
 
 const ringMat = new THREE.MeshStandardMaterial({
   color: 0xffd700, metalness: 0.95, roughness: 0.18,
@@ -695,7 +694,6 @@ function buildArmature() {
   labelLetters = [];
   areaVectorGroup = null;
 
-  /* ★★★ إنشاء مجموعة الملف الجديدة ★★★ */
   coilGroup = new THREE.Group();
   coilGroup.visible = document.getElementById('showCoil').checked;
   rotor.add(coilGroup);
@@ -724,7 +722,6 @@ function buildArmature() {
     const C = RZ(new THREE.Vector3(0,  H_COIL,  L_COIL));
     const D = RZ(new THREE.Vector3(0,  H_COIL, -L_COIL));
 
-    /* كل قضبان الملف إلى coilGroup */
     coilGroup.add(makeBar(A, B, COIL_R, coilMat));
     coilGroup.add(makeBar(C, D, COIL_R, coilMat));
     coilGroup.add(makeBar(D, A, COIL_R, coilMat));
@@ -736,13 +733,22 @@ function buildArmature() {
       coilGroup.add(s);
     });
 
-    const connAngle = 2 * phi;
-    const ccs = Math.cos(connAngle), csn = Math.sin(connAngle);
+    /* ============================================================
+       ★★★ التصحيح: التوصيل عند نفس الزاوية الشعاعية للطرف ★★★
+       - زاوية B في XY = φ − π/2 ،  زاوية C في XY = φ + π/2
+       - بذلك يصبح كل سلك شعاعياً تماماً (لا يتقاطع مع ملف آخر)
+       ============================================================ */
+    const angB = phi - Math.PI / 2;
+    const angC = phi + Math.PI / 2;
 
-    const target1 = new THREE.Vector3(RING1_R * ccs, RING1_R * csn, RING1_Z);
-    const target2 = new THREE.Vector3(RING2_R * ccs, RING2_R * csn, RING2_Z);
+    const target1 = new THREE.Vector3(
+      RING1_R * Math.cos(angB), RING1_R * Math.sin(angB), RING1_Z
+    );
+    const target2 = new THREE.Vector3(
+      RING2_R * Math.cos(angC), RING2_R * Math.sin(angC), RING2_Z
+    );
 
-    /* أسلاك الوصل إلى coilGroup (لتختفي مع الملف) */
+    /* سلكان مستقيمان شعاعيان: B → ring1 ، C → ring2 */
     coilGroup.add(makeBar(B, target1, WIRE_R * 0.85, coilMat));
     coilGroup.add(makeBar(C, target2, WIRE_R * 0.85, coilMat));
 
@@ -759,7 +765,7 @@ function buildArmature() {
     coilParts.push({ curve, phi, particles, coilMat, particleMat: pMat, colorHex });
   }
 
-  /* ---- الحلقتان المنزلقتان (تبقيان على rotor لأن لها خياراً مستقلاً) ---- */
+  /* ---- الحلقتان المنزلقتان ---- */
   ring1Mesh = new THREE.Mesh(
     new THREE.TorusGeometry(RING1_R, RING_TUB, 14, 48), ringMat
   );
@@ -809,7 +815,7 @@ function buildArmature() {
   areaLabel.position.set(AREA_LEN + 0.35, 0, 0);
   areaVectorGroup.add(areaLabel);
 
-  /* ---- تسميات a b c d (ضمن coilGroup لتختفي مع الملف) ---- */
+  /* ---- تسميات a b c d ---- */
   const mkLbl = (text, x, y, z) => {
     const sp = makeLetter(text, '#a8e6cf');
     sp.position.set(x, y, z);
@@ -961,8 +967,8 @@ const scopeCap = el('scopeCap');
 const scopeLegend = el('scopeLegend');
 
 const playBtn = el('play'), resetBtn = el('reset');
-const cbMagnets   = el('showMagnets');   /* ★★★ جديد ★★★ */
-const cbCoil      = el('showCoil');      /* ★★★ جديد ★★★ */
+const cbMagnets   = el('showMagnets');
+const cbCoil      = el('showCoil');
 const cbLabels    = el('showLabels');
 const cbParticles = el('showParticles');
 const cbArea      = el('showArea');
@@ -1106,12 +1112,10 @@ resetBtn.addEventListener('click', () => {
   updateReadouts();
 });
 
-/* ★★★ إخفاء/إظهار المغناطيس ★★★ */
 cbMagnets.addEventListener('change', () => {
   magnetGroup.visible = cbMagnets.checked;
 });
 
-/* ★★★ إخفاء/إظهار الملف كاملاً ★★★ */
 cbCoil.addEventListener('change', () => {
   if (coilGroup) coilGroup.visible = cbCoil.checked;
 });
@@ -1262,7 +1266,6 @@ function animate(now) {
 
   const thetaBefore = state.theta;
 
-  /* --- تقدّم الزاوية --- */
   if (!state.manualMode && state.running) {
     state.theta += state.omega * dt;
     if (state.theta > Math.PI * 2) state.theta -= Math.PI * 2;
@@ -1272,7 +1275,6 @@ function animate(now) {
     angleManVal.textContent = degNow.toFixed(1) + '°';
   }
 
-  /* --- حساب السرعة الزاوية الفعلية --- */
   let dTheta = state.theta - thetaBefore;
   if (dTheta >  Math.PI) dTheta -= Math.PI * 2;
   if (dTheta < -Math.PI) dTheta += Math.PI * 2;
@@ -1286,12 +1288,11 @@ function animate(now) {
   } else if (state.running) {
     state.omegaActual = state.omega;
   } else {
-    state.omegaActual = 0;   /* ← عند التوقف لا يوجد تيار */
+    state.omegaActual = 0;
   }
 
   rotor.rotation.z = -state.theta;
 
-  /* --- EMF محسوبة من السرعة الفعلية --- */
   const e0 = state.turns * state.B * COIL_AREA * state.omegaActual;
   let total = 0;
   const coilVals = [];
@@ -1302,7 +1303,6 @@ function animate(now) {
   }
   state.emf = total;
 
-  /* --- دفع القيم للسجل --- */
   state.emfHistory.push(state.emf);
   if (state.emfHistory.length > 220) state.emfHistory.shift();
 
@@ -1313,7 +1313,6 @@ function animate(now) {
     if (h.length > 220) h.shift();
   }
 
-  /* --- سطوع المصباح --- */
   const eRef = Math.max(1e-6, state.shapeMax * E0());
   const target = Math.min(1, Math.abs(state.emf) / eRef);
   if (state.running && !state.manualMode) {
@@ -1341,7 +1340,7 @@ function animate(now) {
 /* ================= القراءات ================= */
 function updateReadouts() {
   const thetaDeg = ((state.theta * 180 / Math.PI) % 360 + 360) % 360;
-  const e0 = E0();  /* يستخدم السرعة المضبوطة (للعرض الأقصى) */
+  const e0 = E0();
   const emf = state.emf;
   const emfMax = state.shapeMax * e0;
   const current = emf / state.R;
@@ -1383,7 +1382,6 @@ addEventListener('resize', () => {
   renderer.setSize(innerWidth, innerHeight);
 });
 
-/* ================= التشغيل ================= */
 recalcStats();
 resetCoilHistories();
 buildArmature();
