@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>قنطرة ويتستون | الأستاذ ماجد شلالدة</title>
+<style>
+:root{--radius-sm:8px;--radius-md:12px;--radius-lg:16px;--radius-pill:50px;--transition-fast:.2s ease;--transition-normal:.3s ease}
+body{--bg-color:#0b1329;--bg-secondary:#0f1a35;--main-card-bg:#1c2541;--sub-card-bg:#3a506b;--sub-card-hover:#465f7e;--text-color:#fff;--text-muted:#c0c8d8;--accent-cyan:#00b4d8;--accent-blue:#4cc9f0;--accent-green:#06d6a0;--accent-gold:#ffd166;--accent-red:#ef476f;--border-soft:rgba(255,255,255,.08);--shadow-soft:0 10px 30px rgba(0,0,0,.3);--shadow-hover:0 12px 30px rgba(6,214,160,.2);
+--card:var(--main-card-bg);--tx:var(--text-color);--mut:var(--text-muted);--ln:var(--sub-card-bg);--gbg:var(--bg-secondary);--wire:#4cc9f0;--res:#ef476f;--ok:#06d6a0;--acc:#00b4d8;--bad:#ff9f1c;
+font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg-color);color:var(--text-color);margin:0;min-height:100vh;line-height:1.6;transition:background var(--transition-normal),color var(--transition-normal)}
+body.light-mode{--bg-color:#f0f4f8;--bg-secondary:#e2e8f0;--main-card-bg:#fff;--sub-card-bg:#e8eef5;--sub-card-hover:#d8e2ec;--text-color:#1a202c;--text-muted:#4a5568;--border-soft:rgba(0,0,0,.08);--shadow-soft:0 10px 30px rgba(0,0,0,.08);--wire:#1d4ed8;--res:#dc2626;--ok:#059669;--acc:#0284c7;--bad:#c2410c}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+::-webkit-scrollbar{width:10px}::-webkit-scrollbar-track{background:var(--bg-color)}::-webkit-scrollbar-thumb{background:var(--sub-card-bg);border-radius:5px}::-webkit-scrollbar-thumb:hover{background:var(--accent-green)}
+.watermark-overlay{position:fixed;inset:0;background-image:url('../logo.png');background-size:180px;background-repeat:repeat;opacity:.03;pointer-events:none;z-index:0}
+.navbar{position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:12px 24px;background:rgba(28,37,65,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border-soft)}
+body.light-mode .navbar{background:rgba(255,255,255,.92)}
+.nav-brand{font-size:1.1rem;font-weight:700;color:var(--accent-green);display:flex;align-items:center;gap:8px}
+.nav-links{display:flex;gap:6px;flex-wrap:wrap}
+.nav-links a{color:var(--text-color);text-decoration:none;padding:8px 14px;border-radius:var(--radius-sm);font-size:.9rem;transition:background var(--transition-fast),color var(--transition-fast)}
+.nav-links a:hover{background:var(--accent-green);color:#000}
+.theme-toggle{background:transparent;border:1px solid var(--border-soft);color:var(--text-color);font-size:1.2rem;width:40px;height:40px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform var(--transition-fast),background var(--transition-fast)}
+.theme-toggle:hover{transform:rotate(20deg);background:var(--sub-card-bg)}
+.container{max-width:1750px;margin:0 auto;padding:20px;position:relative;z-index:1}
+.breadcrumb{display:flex;align-items:center;gap:8px;padding:12px 0;font-size:.9rem;color:var(--text-muted);flex-wrap:wrap}
+.breadcrumb a{color:var(--accent-green);text-decoration:none;transition:color var(--transition-fast)}.breadcrumb a:hover{color:var(--accent-cyan)}
+.breadcrumb .separator{opacity:.5}.breadcrumb .current{color:var(--text-color);font-weight:700}
+header.page-header{text-align:center;padding:20px 20px 30px}
+header.page-header h1{font-size:2.4rem;color:var(--accent-green);margin:0 0 12px;line-height:1.3}
+header.page-header p{color:var(--text-muted);font-size:1.05rem;margin:0 auto;max-width:700px}
+.tag{display:inline-block;background:rgba(6,214,160,.12);color:var(--accent-gold);padding:5px 14px;border-radius:var(--radius-pill);font-size:.85rem;margin-top:14px;font-weight:700;font-family:'Courier New',monospace;direction:ltr;border:1px solid rgba(6,214,160,.25)}
+.section-title{color:var(--accent-green);font-size:1.6rem;margin:0 0 22px;padding-bottom:10px;border-bottom:3px solid var(--accent-green);display:inline-block}
+footer.page-footer{text-align:center;padding:30px 20px;color:var(--text-muted);font-size:.88rem;border-top:1px solid var(--border-soft);margin-top:20px}
+footer.page-footer strong{color:var(--accent-green)}
+.back-to-top{position:fixed;bottom:25px;left:25px;width:46px;height:46px;border-radius:50%;background:var(--accent-green);color:#000;border:none;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(6,214,160,.4);opacity:0;pointer-events:none;transform:translateY(20px);transition:opacity var(--transition-normal),transform var(--transition-normal);z-index:99}
+.back-to-top.visible{opacity:1;pointer-events:auto;transform:translateY(0)}
+/* ===== المحاكاة ===== */
+.wrap{display:grid;grid-template-columns:340px minmax(0,1fr) 310px;gap:22px;margin:0 0 30px;align-items:start;position:relative;z-index:1}
+.wrap>section{background:var(--main-card-bg);border:1px solid var(--border-soft);border-radius:var(--radius-lg);padding:20px;box-shadow:var(--shadow-soft)}
+.wrap h2{font-size:1.2rem;margin:0 0 12px;color:var(--accent-cyan)}
+.ctls{grid-column:1;grid-row:1}.diagram{grid-column:2;grid-row:1}.meas{grid-column:3;grid-row:1}.laws,.full{grid-column:1/-1}
+svg#svg{width:100%;height:auto;max-height:78vh;display:block;background:var(--bg-secondary);border-radius:var(--radius-md);border:1px solid var(--border-soft)}
+.lab{font-size:20px;font-weight:700;fill:var(--tx)}.lab .sub{font-size:14px}
+.nodel{font-size:22px;font-weight:700;fill:var(--tx);font-style:italic}
+.hit{stroke:transparent;stroke-width:24;fill:none;cursor:pointer;pointer-events:stroke}
+.realonly{display:none}svg.real .realonly{display:inline}svg.real .symonly{display:none}svg.real .tk{stroke:#111}svg.real #gdial{fill:#f8fafc;stroke:#374151}svg.real .glab{fill:#111}
+.wrap button,.wrap select,.wrap input{font:inherit;color:var(--text-color);background:var(--sub-card-bg);border:1px solid var(--border-soft);border-radius:var(--radius-sm);padding:5px 9px}
+.wrap button{cursor:pointer;transition:all var(--transition-fast)}
+.wrap button:hover{background:var(--sub-card-hover);border-color:var(--accent-green);transform:translateY(-1px)}
+.wrap button.p{background:var(--accent-green);color:#000;border-color:var(--accent-green);font-weight:700}
+.wrap button.p:hover{box-shadow:var(--shadow-hover)}
+.row{display:grid;grid-template-columns:34px 1fr 78px 64px;gap:6px;align-items:center;margin-bottom:8px}
+.row input[type=range]{padding:0;width:100%;grid-column:2/-1;accent-color:var(--accent-green)}.row .num{width:100%}
+.row label{font-weight:700;color:var(--accent-gold)}.wrap input.bad{border-color:var(--accent-red)}
+.bar{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(125px,1fr));gap:8px}
+.c{background:var(--sub-card-bg);border:1px solid var(--border-soft);border-radius:var(--radius-md);padding:7px 10px}
+.c small{color:var(--text-muted);display:block;font-size:.75rem}.c b{font-size:1.02rem;direction:ltr;unicode-bidi:plaintext;display:block;text-align:right}
+#status{font-weight:700}.ok{color:var(--ok)}.no{color:var(--bad)}
+#info,#msg{min-height:1.6em;margin-top:8px;font-size:.92rem;color:var(--text-muted)}
+.laws p{margin:4px 0;font-size:.92rem;color:var(--text-muted)}
+.eq{direction:ltr;text-align:center;font-family:'Courier New',monospace;font-weight:700;color:var(--accent-gold);background:var(--sub-card-bg);border-radius:var(--radius-sm);padding:4px}
+@media(max-width:1280px){.wrap{grid-template-columns:340px minmax(0,1fr)}.meas{grid-column:1/-1;grid-row:2}}
+@media(max-width:980px){.wrap{grid-template-columns:1fr}.ctls,.diagram,.meas{grid-column:1;grid-row:auto}.diagram{order:1}.ctls{order:2}.meas{order:3}.laws,#tests{order:4}}
+@media(max-width:768px){header.page-header h1{font-size:1.7rem}header.page-header p{font-size:.95rem}.navbar{padding:10px 15px;flex-wrap:wrap;gap:10px}.nav-links{order:3;width:100%;justify-content:center}.nav-links a{padding:6px 10px;font-size:.82rem}.section-title{font-size:1.3rem}}
+@media(max-width:480px){.nav-brand span{display:none}header.page-header h1{font-size:1.4rem}}
+.logo-box{display:flex;justify-content:center;margin-bottom:10px}
+.main-logo{width:270px;height:270px;max-width:100%;object-fit:cover;border-radius:50%;box-shadow:0 4px 25px rgba(0,180,216,.25);border:3px solid rgba(0,180,216,.3)}
+.logo-placeholder{width:270px;height:270px;max-width:100%;border-radius:50%;background:linear-gradient(135deg,var(--accent-cyan),#b185ff);display:flex;align-items:center;justify-content:center;font-size:6.6rem;box-shadow:0 4px 25px rgba(0,180,216,.25)}
+.fitonly{display:none}
+/* وضع بلا تمرير: على الشاشات الكبيرة تتسع الصفحة لارتفاع النافذة */
+@media (min-width:1100px) and (min-height:620px){
+ .fitonly{display:inline-block}
+ html,body{height:100%;overflow:hidden}
+ body{display:flex;flex-direction:column}
+ .navbar{padding:6px 24px}.nav-links a{padding:5px 12px}.theme-toggle{width:34px;height:34px;font-size:1rem}
+ .container{flex:1;min-height:0;display:flex;flex-direction:column;padding:4px 16px 0;width:100%}
+ .breadcrumb{padding:2px 0;font-size:.8rem}
+ header.page-header{padding:0 0 6px;display:flex;align-items:center;justify-content:center;gap:16px}
+ header.page-header h1{font-size:1.35rem;margin:0}header.page-header p{display:none}header.page-header .tag{margin:0;padding:2px 12px}
+ .section-title{display:none}
+ main{flex:1;min-height:0;display:flex;flex-direction:column}
+ .wrap{grid-template-columns:310px minmax(0,1fr) 290px;grid-template-rows:minmax(0,1fr);flex:1;min-height:0;margin:0;gap:12px;align-items:stretch}
+ .ctls{grid-column:1}.diagram{grid-column:2}.meas{grid-column:3;grid-row:1}
+ .wrap>section{padding:12px;min-height:0;overflow:auto}
+ .diagram{display:flex;flex-direction:column}
+ svg#svg{flex:1 1 0;height:0;min-height:240px;max-height:none}
+ .row{margin-bottom:4px}.wrap h2{font-size:1rem;margin:0 0 6px}
+ .cards{gap:5px;grid-template-columns:repeat(2,1fr)}.c{padding:3px 8px}.c small{font-size:.68rem;line-height:1.2}.c b{font-size:.9rem}
+ #edu{font-size:.82rem}
+ footer.page-footer{padding:4px;margin:0;display:flex;justify-content:center;gap:18px;font-size:.75rem}footer.page-footer p{margin:0}
+ .laws,#tests{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(600px,92vw);max-height:80vh;z-index:200;box-shadow:0 0 0 100vmax rgba(0,0,0,.55)}
+ .laws.open{display:block}#tests[style*="block"]{display:block!important}
+ .x{float:left}
+ .main-logo,.logo-placeholder{width:192px;height:192px}.logo-placeholder{font-size:5rem}.logo-box{margin-bottom:6px}
+}
+</style>
+</head>
+<body>
+<div class="watermark-overlay"></div>
+<nav class="navbar">
+ <div class="nav-brand">⚛️ <span>فيزياء ماجد شلالدة</span></div>
+ <div class="nav-links">
+  <a href="../index.html#mechanics">⚙️ الميكانيكا</a>
+  <a href="../index.html#electricity">⚡ الكهرباء</a>
+  <a href="../index.html#magnetism">🧲 المغناطيسية</a>
+  <a href="../index.html#modern">🔬 الحديثة</a>
+ </div>
+ <button class="theme-toggle" id="themeToggle" aria-label="تبديل الوضع">🌙</button>
+</nav>
+<div class="container">
+ <div class="breadcrumb">
+  <a href="../index.html">🏠 الرئيسية</a><span class="separator">›</span>
+  <a href="../index.html#electricity">⚡ الكهرباء المتحركة</a><span class="separator">›</span>
+  <a href="dc-circuits.html#electricity">🔋 دارات التيار المستمر</a><span class="separator">›</span>
+  <span class="current">⚖️ قنطرة ويتستون</span>
+ </div>
+ <header class="page-header">
+  <h1>⚖️ مختبر قنطرة ويتستون التفاعلي</h1>
+  <p>إعداد الأستاذ ماجد شلالدة — غيّر المقاومات والجهد وراقب تيار الجلفانومتر وحالة اتزان القنطرة بصورة تفاعلية.</p>
+  <span class="tag">R₁ / R₂ = R₃ / R₄</span>
+ </header>
+ <main>
+ <h2 class="section-title">⚡ المحاكاة التفاعلية</h2>
+<div class="wrap">
+ <section class="diagram">
+  <h2>الدائرة الكهربائية</h2>
+  <svg id="svg" viewBox="0 0 800 620" role="img" aria-label="دائرة قنطرة ويتستون"></svg>
+  <div class="bar">
+   <button id="pause" class="p" title="إيقاف أو متابعة حركة التيار">⏸ إيقاف مؤقت</button>
+   <button id="restart" title="إعادة تشغيل حركة التيار">↻ إعادة تشغيل الحركة</button>
+   <button id="real" title="التبديل بين الرمز القياسي والشكل الواقعي">🔬 عرض واقعي</button>
+  </div>
+  <div id="info"></div>
+ </section>
+
+ <section class="ctls">
+  <div class="logo-box"><img src="../logo.png" alt="شعار الأستاذ ماجد شلالدة" class="main-logo" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="logo-placeholder" style="display:none;">⚛️</div></div>
+  <h2>التحكم بالمكونات</h2>
+  <div id="ctl"></div>
+  <div class="row" title="مقاومة الجلفانومتر الداخلية"><label>R<sub>g</sub></label><input class="num" id="nG" type="number" step="any" min="1" max="100000"><span>Ω</span><span></span></div>
+  <div class="row" title="جهد البطارية من 0 إلى 24 فولت"><label>V</label><input class="num" id="nV" type="number" step="0.1" min="0" max="24"><span>فولت</span><span></span><input id="sV" type="range" min="0" max="24" step="0.1"></div>
+  <div class="bar">
+   <button id="bal" class="p" title="يحسب R3 = R1·R4 / R2">⚖ تحقيق الاتزان تلقائيًا</button>
+   <button id="reset">إعادة الضبط</button>
+   <button id="test">تشغيل الاختبارات</button>
+   <button id="lawsBtn" class="fitonly">📘 القوانين</button>
+  </div>
+  <div id="msg"></div>
+ </section>
+
+ <section class="meas">
+  <h2>القياسات الحية</h2>
+  <div class="cards" id="cards"></div>
+  <p>حالة القنطرة: <span id="status"></span></p>
+  <div id="edu"></div>
+ </section>
+
+ <section class="laws">
+  <button class="x fitonly" data-x="laws">✕</button><h2>القوانين المستخدمة</h2>
+  <p>قانون أوم: I = ΔV / R، والقدرة: P = I²R</p>
+  <p>قانون كيرشوف للعقد: مجموع التيارات الداخلة إلى أي عقدة = مجموع الخارجة منها. وتُحل الدائرة بمعادلتي العقدتين c وd (مع a = 0 فولت و b = V).</p>
+  <p>شرط الاتزان:</p><div class="eq">R1 / R2 = R3 / R4</div>
+ </section>
+ <section id="tests" class="full" style="display:none"><button class="x fitonly" data-x="tests">✕</button><h2>نتائج الاختبارات</h2><div id="tout"></div></section>
+</div>
+</main>
+ <footer class="page-footer">
+  <p>© 2025 المنصة التفاعلية للمحاكاة الفيزيائية — إعداد <strong>الأستاذ ماجد شلالدة</strong></p>
+  <p>📱 0599870176</p>
+ </footer>
+</div>
+<button class="back-to-top" id="backToTop" aria-label="العودة للأعلى">↑</button>
+<script>
+/* ============ النموذج الرياضي (منفصل عن الرسم) ============ */
+// الترتيب: R[0]=R1 (c-a)، R[1]=R2 (b-c)، R[2]=R3 (d-a) المتغيرة، R[3]=R4 (b-d)
+// النقطة a مرجع (0 فولت) و b عند +V. الجلفانومتر Rg بين c وd، واتجاهه الموجب من c إلى d.
+function solve(R,Rg,V){
+  const [g1,g2,g3,g4]=R.map(r=>1/r), gg=1/Rg;
+  // العقدة c: Vc(g1+g2+gg) - Vd·gg = V·g2
+  // العقدة d: -Vc·gg + Vd(g3+g4+gg) = V·g4
+  const a11=g1+g2+gg,a12=-gg,a21=-gg,a22=g3+g4+gg,b1=V*g2,b2=V*g4;
+  const det=a11*a22-a12*a21;
+  const Vc=(b1*a22-a12*b2)/det, Vd=(a11*b2-a21*b1)/det; // قاعدة كرامر
+  const I1=Vc/R[0], I2=(V-Vc)/R[1], I3=Vd/R[2], I4=(V-Vd)/R[3], Ig=(Vc-Vd)/Rg, It=I2+I4;
+  // التحقق من كيرشوف عند كل عقدة (c, d, b, a)
+  const kcl=Math.max(Math.abs(I2-I1-Ig),Math.abs(I4+Ig-I3),Math.abs(It-I2-I4),Math.abs(I1+I3-It));
+  return {Vc,Vd,Vcd:Vc-Vd,I1,I2,I3,I4,Ig,It,kcl,P:[I1*I1*R[0],I2*I2*R[1],I3*I3*R[2],I4*I4*R[3]]};
+}
+const isBalanced=(m,V)=>Math.abs(m.Vcd)<=1e-6*V+1e-12;
+
+/* ============ تنسيق القيم ============ */
+function eng(x,u){const a=Math.abs(x),s=x<0?'−':'';if(a<1e-15)return '0 '+u;
+ for(const [f,p] of [[1e9,'G'],[1e6,'M'],[1e3,'k'],[1,''],[1e-3,'m'],[1e-6,'µ'],[1e-9,'n'],[1e-12,'p']])
+  if(a>=f*0.9995)return s+(+(a/f).toPrecision(4))+' '+p+u;
+ return s+a.toExponential(2)+' '+u;}
+const sgn=(x,u)=>(x>1e-15?'+':'')+eng(x,u);
+
+/* ============ الحالة ============ */
+const DEF={R:[1000,1000,1000,1000],V:12,Rg:100};
+let S=JSON.parse(JSON.stringify(DEF)),M,paused=false,sel=null,changing=0,needle=0;
+const $=s=>document.querySelector(s),MINR=1,MAXR=1e5;
+
+/* ============ رسم الدائرة (SVG) ============ */
+const N={c:[400,70],b:[170,260],a:[630,260],d:[400,450]};
+function resSVG(id,p1,p2,lx,ly,anc,vari){
+ const dx=p2[0]-p1[0],dy=p2[1]-p1[1],L=Math.hypot(dx,dy),ang=Math.atan2(dy,dx)*180/Math.PI;
+ const z=110,s=(L-z)/2,n=8,st=z/n;let d=`M${s} 0`;
+ for(let i=0;i<n;i++)d+=`L${s+st*(i+.5)} ${i%2?9:-9}`;d+=`L${s+z} 0`;
+ let g=`<g transform="translate(${p1[0]} ${p1[1]}) rotate(${ang})"><path d="M0 0L${s} 0M${s+z} 0L${L} 0" stroke="var(--wire)" stroke-width="4" fill="none"/><g class="symonly"><path id="zz${id}" d="${d}" fill="none" stroke="var(--res)" stroke-width="5" stroke-linejoin="round"/>`;
+ if(vari)g+=`<path d="M${L/2-30} 22L${L/2+26} -21" stroke="var(--res)" stroke-width="3"/><polygon fill="var(--res)" points="${L/2+30} -24 ${L/2+23.5} -12.7 ${L/2+17.5} -20.7"/>`;
+ g+='</g><g class="realonly" id="rb'+id+'">';
+ if(vari){g+=`<rect x="${s}" y="-14" width="${z}" height="28" rx="6" fill="#e5e7eb" stroke="#6b7280" stroke-width="2"/>`;for(let k=0;k<14;k++)g+=`<line x1="${s+8+k*7.2}" y1="-12" x2="${s+8+k*7.2}" y2="12" stroke="#b45309" stroke-width="2.4"/>`;g+=`<g id="sl3"><polygon points="-7,-34 7,-34 0,-16" fill="#111"/><rect x="-10" y="-46" width="20" height="12" rx="3" fill="var(--res)"/></g>`;}
+ else{g+=`<rect x="${s}" y="-13" width="${z}" height="26" rx="12" fill="#d9b88f" stroke="#8b6b3d" stroke-width="2"/>`;[16,34,52,88].forEach((o,k)=>{g+=`<rect id="bd${id}_${k}" x="${s+o}" y="-13" width="9" height="26" fill="#111"/>`;});}
+ g+='</g></g>';
+ return g+`<text class="lab" x="${lx}" y="${ly}" text-anchor="${anc}">R<tspan class="sub">${id}</tspan> = <tspan id="v${id}"></tspan></text>`;
+}
+// ألوان حلقات المقاومة حسب قيمتها (رقمان + مضاعف + التسامح ذهبي)
+function bands(R){let e=Math.floor(Math.log10(R)),m=Math.round(R/Math.pow(10,e-1));if(m>=100){m=10;e++;}
+ const C=['#111','#7c3f00','#dc2626','#f97316','#facc15','#16a34a','#2563eb','#7c3aed','#9ca3af','#f8fafc'],mu=e-1;
+ return [C[Math.floor(m/10)],C[m%10],mu<0?(mu==-1?'#d4af37':'#c0c0c0'):C[mu],'#d4af37'];}
+const SLX=r=>106+88*Math.log10(r)/5; // موضع المزلق في R3 الواقعية
+const pl=p=>p.map(q=>q.join(',')).join(' ');
+// الفروع: نقاط المسار باتجاه التيار الاصطلاحي الموجب
+const br=[
+ {name:'السلك الأيسر (القطب − للمصدر ↔ b)',pts:[[385,540],[60,540],[60,260],N.b],I:()=>M.It,dir:'من المصدر نحو b',rdir:'من b نحو المصدر'},
+ {name:'المقاومة R2',pts:[N.b,N.c],I:()=>M.I2,dir:'من b إلى c',rdir:'من c إلى b'},
+ {name:'المقاومة R1',pts:[N.c,N.a],I:()=>M.I1,dir:'من c إلى a',rdir:'من a إلى c'},
+ {name:'المقاومة R4',pts:[N.b,N.d],I:()=>M.I4,dir:'من b إلى d',rdir:'من d إلى b'},
+ {name:'المقاومة R3',pts:[N.d,N.a],I:()=>M.I3,dir:'من d إلى a',rdir:'من a إلى d'},
+ {name:'الجلفانومتر G',pts:[N.c,N.d],I:()=>M.Ig,dir:'من c إلى d (موجب)',rdir:'من d إلى c (سالب)'},
+ {name:'السلك الأيمن (a ↔ القطب + للمصدر)',pts:[N.a,[740,260],[740,540],[415,540]],I:()=>M.It,dir:'من a نحو المصدر',rdir:'من المصدر نحو a'}];
+br.forEach(b=>{b.cum=[0];for(let i=1;i<b.pts.length;i++)b.cum.push(b.cum[i-1]+Math.hypot(b.pts[i][0]-b.pts[i-1][0],b.pts[i][1]-b.pts[i-1][1]));b.len=b.cum.at(-1);b.ph=0;});
+const NDOT=14;
+function build(){
+ let h='';
+ h+=`<polyline points="${pl(br[0].pts)}" fill="none" stroke="var(--wire)" stroke-width="4"/><polyline points="${pl(br[6].pts)}" fill="none" stroke="var(--wire)" stroke-width="4"/>`;
+ h+=`<polyline points="${pl([N.c,[400,228]])}" stroke="var(--wire)" stroke-width="4" fill="none"/><polyline points="${pl([[400,292],N.d])}" stroke="var(--wire)" stroke-width="4" fill="none"/>`;
+ h+=resSVG(2,N.b,N.c,215,105,'end')+resSVG(1,N.c,N.a,585,105,'start')+resSVG(4,N.b,N.d,225,415,'end')+resSVG(3,N.d,N.a,575,415,'start',1);
+ // مؤشرات التيار
+ br.forEach((b,i)=>{h+=`<g id="dots${i}">`+'<circle r="4.6" cy="-100" cx="-100"/>'.repeat(NDOT)+'</g>';});
+ // الجلفانومتر
+ let tk='';for(let a=-60;a<=60;a+=20){const r=a*Math.PI/180,x1=400+Math.sin(r)*20,y1=260-Math.cos(r)*20,x2=400+Math.sin(r)*26,y2=260-Math.cos(r)*26;tk+=`<line class="tk" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="var(--tx)" stroke-width="${a==0?3:1.5}"/>`;}
+ h+=`<g><g class="realonly"><rect x="354" y="214" width="92" height="92" rx="14" fill="#1f2937" stroke="#0b1220" stroke-width="2"/><circle cx="400" cy="214" r="6" fill="#dc2626"/><circle cx="400" cy="306" r="6" fill="#111"/><circle cx="364" cy="224" r="3" fill="#6b7280"/><circle cx="436" cy="224" r="3" fill="#6b7280"/><circle cx="364" cy="296" r="3" fill="#6b7280"/><circle cx="436" cy="296" r="3" fill="#6b7280"/></g><circle class="symonly" cx="400" cy="260" r="42" fill="none" stroke="var(--ln)" stroke-width="3"/><circle id="gdial" cx="400" cy="260" r="34" fill="var(--card)" stroke="var(--wire)" stroke-width="4"/>${tk}<text x="400" y="288" text-anchor="middle" class="lab glab" style="font-size:16px">G</text><g id="needle"><line x1="400" y1="260" x2="400" y2="238" stroke="var(--res)" stroke-width="3" stroke-linecap="round"/></g><circle cx="400" cy="260" r="3.5" fill="var(--tx)"/><text x="448" y="266" class="lab" style="font-size:16px" id="gread" direction="ltr"></text><text x="352" y="238" text-anchor="end" style="font-size:12px;fill:var(--mut)">−</text><text x="448" y="238" style="font-size:12px;fill:var(--mut)">+</text></g>`;
+ // البطارية: الجانب الأيسر (الصفيحة الطويلة) هو القطب الموجب
+ h+=`<g class="symonly"><rect x="372" y="506" width="56" height="68" rx="12" fill="var(--card)" stroke="var(--ln)" stroke-width="2"/><line x1="415" y1="518" x2="415" y2="562" stroke="#2563eb" stroke-width="5"/><line x1="385" y1="528" x2="385" y2="552" stroke="#2563eb" stroke-width="8"/></g>`;
+ h+=`<line x1="415" y1="540" x2="740" y2="540" stroke="var(--wire)" stroke-width="4"/><line x1="60" y1="540" x2="385" y2="540" stroke="var(--wire)" stroke-width="4"/>`;
+ h+=`<g class="symonly"><circle cx="362" cy="516" r="11" fill="var(--wire)"/><text x="362" y="522" text-anchor="middle" style="font-size:18px;font-weight:700;fill:#fff">−</text><circle cx="438" cy="516" r="11" fill="var(--res)"/><text x="438" y="522" text-anchor="middle" style="font-size:18px;font-weight:700;fill:#fff">+</text></g><g class="realonly"><rect x="448" y="526" width="12" height="28" rx="3" fill="#d4af37"/><rect x="340" y="512" width="108" height="56" rx="9" fill="#111827" stroke="#374151" stroke-width="2"/><rect x="340" y="512" width="24" height="56" rx="9" fill="#9ca3af"/><rect x="364" y="522" width="68" height="36" rx="4" fill="#f59e0b"/><text x="398" y="546" text-anchor="middle" style="font-size:15px;font-weight:700;fill:#111827">DC</text><text x="352" y="546" text-anchor="middle" style="font-size:18px;font-weight:700;fill:#111">−</text><text x="440" y="546" text-anchor="middle" style="font-size:18px;font-weight:700;fill:#fbbf24">+</text></g><text id="vV" x="400" y="598" text-anchor="middle" class="lab"></text>`;
+ for(const k in N){const [x,y]=N[k],o={c:[0,-16],b:[-24,-8],a:[24,-8],d:[0,34]}[k];h+=`<circle cx="${x}" cy="${y}" r="6" fill="var(--wire)"/><text class="nodel" x="${x+o[0]}" y="${y+o[1]}" text-anchor="middle">${k}</text>`;}
+ // مناطق التفاعل (تمرير/نقر)
+ br.forEach((b,i)=>{h+=`<polyline class="hit" data-i="${i}" points="${pl(b.pts)}"><title>${b.name}</title></polyline>`;});
+ $('#svg').innerHTML=h;
+ document.querySelectorAll('.hit').forEach(e=>{const f=()=>{sel=+e.dataset.i;info();};e.addEventListener('pointerenter',f);e.addEventListener('click',f);});
+}
+function pointAt(b,u){const t=u*b.len;let i=1;while(i<b.cum.length-1&&b.cum[i]<t)i++;const f=(t-b.cum[i-1])/((b.cum[i]-b.cum[i-1])||1);return [b.pts[i-1][0]+(b.pts[i][0]-b.pts[i-1][0])*f,b.pts[i-1][1]+(b.pts[i][1]-b.pts[i-1][1])*f];}
+
+/* ============ التحريك: السرعة والكثافة من التيارات المحسوبة فقط ============ */
+let last=performance.now();
+function frame(t){
+ const dt=Math.min(.05,(t-last)/1000);last=t;
+ br.forEach((b,i)=>{
+  const I=b.I(),a=Math.abs(I),g=$('#dots'+i).children;
+  // مقياس لوغاريتمي: يتباطأ تدريجيًا إلى الصفر عند اقتراب التيار من 1 µA
+  const s=a<1e-9?0:Math.max(0,Math.min(1,Math.log10(a/1e-6)/6));
+  const n=s>0?3+Math.round(s*(NDOT-3)):0;
+  if(!paused&&n>0)b.ph=(b.ph+Math.sign(I)*s*220*dt/b.len+1)%1;
+  const col=`hsl(${52-52*s},95%,${58-6*s}%)`;
+  for(let k=0;k<NDOT;k++){const c=g[k];
+   if(k<n){const p=pointAt(b,(((k/n)+b.ph)%1+1)%1);c.setAttribute('cx',p[0]);c.setAttribute('cy',p[1]);c.setAttribute('fill',col);c.setAttribute('r',3.6+2*s);}
+   else{c.setAttribute('cx',-100);}}
+ });
+ // مؤشر الجلفانومتر يعكس قيمة الاتجاه والمقدار الحقيقيين (مقياس تشبّع ناعم عند 1 mA)
+ const target=60*Math.tanh(M.Ig/1e-3);
+ needle+=(target-needle)*Math.min(1,dt*8);
+ $('#needle').setAttribute('transform',`rotate(${needle.toFixed(2)} 400 260)`);
+ requestAnimationFrame(frame);
+}
+
+/* ============ التحديث وواجهة القياسات ============ */
+function info(){
+ if(sel==null){$('#info').textContent='مرّر المؤشر أو انقر على أي فرع لعرض اتجاه التيار وقيمته.';return;}
+ const b=br[sel],I=b.I();
+ $('#info').innerHTML=`<b>${b.name}</b>: `+(Math.abs(I)<1e-12?'لا يمر تيار':eng(Math.abs(I),'A')+' — '+(I>0?b.dir:b.rdir));
+}
+function update(){
+ M=solve(S.R,S.Rg,-S.V); // القطبية معكوسة: a موجب وb سالب (b عند −V نسبةً إلى a)
+ S.R.forEach((r,i)=>$('#v'+(i+1)).textContent=eng(r,'Ω'));
+ $('#vV').textContent=S.V.toFixed(1).replace(/\.0$/,'')+' V';
+ $('#gread').textContent=sgn(M.Ig,'A');
+ // توهج المقاومة يزداد مع القدرة المستهلكة وتتغير ألوان الحلقات مع القيمة
+ [1,2,3,4].forEach(i=>{const P=M.P[i-1],gl=Math.max(0,Math.min(1,Math.log10(P/1e-3)/3)),f=gl>0?`drop-shadow(0 0 ${2+10*gl}px var(--res))`:'none';
+  ['zz','rb'].forEach(k=>{const e=$('#'+k+i);if(e)e.style.filter=f;});
+  if(i!==3)bands(S.R[i-1]).forEach((c,k)=>{const e=$('#bd'+i+'_'+k);if(e)e.setAttribute('fill',c);});});
+ $('#sl3').setAttribute('transform',`translate(${SLX(S.R[2])} 0)`);
+ const bal=isBalanced(M,S.V),req=1/solve(S.R,S.Rg,1).It;
+ const L=[['جهد المصدر',eng(S.V,'V')],['التيار الكلي',eng(M.It,'A')],['تيار R1',eng(M.I1,'A')],['تيار R2',eng(M.I2,'A')],['تيار R3',eng(M.I3,'A')],['تيار R4',eng(M.I4,'A')],
+  ['تيار G (c→d)',sgn(M.Ig,'A')],['V(c) − V(d)',sgn(M.Vcd,'V')],['V(c) نسبةً إلى a',eng(M.Vc,'V')],['V(d) نسبةً إلى a',eng(M.Vd,'V')],['المقاومة المكافئة',eng(req,'Ω')],
+  ['قدرة R1',eng(M.P[0],'W')],['قدرة R2',eng(M.P[1],'W')],['قدرة R3',eng(M.P[2],'W')],['قدرة R4',eng(M.P[3],'W')]];
+ const box=$('#cards');if(box.children.length!==L.length)box.innerHTML=L.map(()=>'<div class="c"><small></small><b></b></div>').join('');
+ L.forEach((x,i)=>{box.children[i].children[0].textContent=x[0];box.children[i].children[1].textContent=x[1];});
+ const st=$('#status'),now=performance.now();
+ if(now<changing){st.textContent='تغيّر جارٍ…';st.className='';}
+ else{st.textContent=bal?'متزنة':'غير متزنة';st.className=bal?'ok':'no';}
+ const q=(S.R[0]/S.R[1]),w=(S.R[2]/S.R[3]);
+ $('#edu').innerHTML=(S.V===0?'جهد المصدر صفر: لا يمر تيار في أي فرع.':bal
+  ?'القنطرة متزنة: جهد c يساوي جهد d، لذلك يكون تيار الجلفانومتر صفرًا تقريبًا رغم استمرار مرور التيار في بقية الأذرع.'
+  :'غير متزنة: جهدا c وd مختلفان فيمر تيار في G.')+`<br>R1/R2 = ${+q.toPrecision(5)} ، R3/R4 = ${+w.toPrecision(5)}`;
+ info();syncInputs();
+}
+function touch(){changing=performance.now()+250;setTimeout(update,270);update();}
+
+/* ============ لوحة التحكم ============ */
+function buildCtl(){
+ $('#ctl').innerHTML=[1,2,3,4].map(i=>`<div class="row" title="المقاومة R${i}"><label>R<sub>${i}</sub></label><input class="num" id="n${i}" type="number" step="any" min="1"><select id="u${i}"><option value="1">Ω</option><option value="1000">kΩ</option></select>${i==3?'<span><button id="m3" title="إنقاص 10 Ω">−</button><button id="p3" title="زيادة 10 Ω">+</button></span>':'<span></span>'}<input id="s${i}" type="range" min="0" max="5" step="0.0005"></div>`).join('');
+ [1,2,3,4].forEach(i=>{
+  $('#n'+i).addEventListener('input',e=>{const v=parseFloat(e.target.value),r=v*(+$('#u'+i).value);
+   if(!(v>0)||r<MINR||r>MAXR||!isFinite(r)){e.target.classList.add('bad');$('#msg').textContent='القيمة المسموحة: من 1 Ω إلى 100 kΩ.';return;}
+   e.target.classList.remove('bad');$('#msg').textContent='';S.R[i-1]=r;touch();});
+  $('#n'+i).addEventListener('change',()=>{$('#n'+i).classList.remove('bad');update();});
+  $('#u'+i).addEventListener('change',update);
+  $('#s'+i).addEventListener('input',e=>{S.R[i-1]=Math.pow(10,+e.target.value);touch();});
+ });
+ const step=d=>{S.R[2]=Math.min(MAXR,Math.max(MINR,Math.round(S.R[2])+d));touch();};
+ $('#m3').onclick=()=>step(-10);$('#p3').onclick=()=>step(10);
+}
+function syncInputs(){
+ const act=document.activeElement;
+ [1,2,3,4].forEach(i=>{const r=S.R[i-1],u=+$('#u'+i).value;
+  if(act!==$('#n'+i))$('#n'+i).value=+(r/u).toPrecision(6);
+  if(act!==$('#s'+i))$('#s'+i).value=Math.log10(r);});
+ if(act!==$('#nG'))$('#nG').value=+S.Rg.toPrecision(6);
+ if(act!==$('#nV'))$('#nV').value=+S.V.toFixed(2);
+ if(act!==$('#sV'))$('#sV').value=S.V;
+}
+$('#nG').addEventListener('input',e=>{const v=parseFloat(e.target.value);if(!(v>=MINR&&v<=MAXR)){e.target.classList.add('bad');return;}e.target.classList.remove('bad');S.Rg=v;touch();});
+$('#nG').addEventListener('change',()=>{$('#nG').classList.remove('bad');update();});
+$('#nV').addEventListener('input',e=>{const v=parseFloat(e.target.value);if(!(v>=0&&v<=24)){e.target.classList.add('bad');$('#msg').textContent='جهد المصدر من 0 إلى 24 V.';return;}e.target.classList.remove('bad');$('#msg').textContent='';S.V=v;touch();});
+$('#nV').addEventListener('change',()=>{$('#nV').classList.remove('bad');update();});
+$('#sV').addEventListener('input',e=>{S.V=+e.target.value;touch();});
+$('#reset').onclick=()=>{S=JSON.parse(JSON.stringify(DEF));$('#msg').textContent='تمت إعادة الضبط إلى القيم الافتراضية.';touch();};
+$('#pause').onclick=()=>{paused=!paused;$('#pause').textContent=paused?'▶ متابعة':'⏸ إيقاف مؤقت';};
+$('#restart').onclick=()=>{paused=false;$('#pause').textContent='⏸ إيقاف مؤقت';br.forEach(b=>b.ph=0);};
+$('#bal').onclick=()=>{const r=S.R[0]*S.R[3]/S.R[1];
+ if(r<MINR||r>MAXR){$('#msg').textContent=`القيمة المطلوبة لـ R3 هي ${eng(r,'Ω')} وهي خارج النطاق (1 Ω – 100 kΩ).`;return;}
+ S.R[2]=r;$('#msg').textContent=`تم ضبط R3 على ${eng(r,'Ω')} حسب R3 = R1·R4 / R2.`;touch();};
+$('#real').onclick=()=>{const on=$('#svg').classList.toggle('real');$('#real').textContent=on?'📐 عرض الرموز':'🔬 عرض واقعي';};
+// نظام الواجهة: الوضع الليلي افتراضي، والتفضيل يُحفظ كما في بقية صفحات الموقع
+(function(){const tt=$('#themeToggle'),bt=$('#backToTop');let sv=null;try{sv=localStorage.getItem('theme');}catch(e){}
+ if(sv==='light'){document.body.classList.add('light-mode');tt.textContent='☀️';}
+ tt.addEventListener('click',()=>{document.body.classList.toggle('light-mode');const l=document.body.classList.contains('light-mode');tt.textContent=l?'☀️':'🌙';try{localStorage.setItem('theme',l?'light':'dark');}catch(e){}});
+ addEventListener('scroll',()=>bt.classList.toggle('visible',scrollY>400),{passive:true});
+ bt.addEventListener('click',()=>scrollTo({top:0,behavior:'smooth'}));})();
+$('#lawsBtn').onclick=()=>$('.laws').classList.toggle('open');
+document.querySelectorAll('.x').forEach(b=>b.onclick=()=>{const t=b.dataset.x==='laws'?$('.laws'):$('#tests');t.classList.remove('open');t.style.display='none';});
+
+/* ============ اختبارات صحة المحاكاة ============ */
+function runTests(){
+ const T=[],ok=(n,p,d)=>T.push([n,p,d]);
+ let m=solve([1e3,1e3,1e3,1e3],100,12);
+ ok('1) قنطرة متزنة (مقاومات متساوية)',Math.abs(m.Vcd)<1e-9&&Math.abs(m.Ig)<1e-12,`Vcd=${eng(m.Vcd,'V')}`);
+ const m2=solve([1e3,1e3,1500,1e3],100,12);
+ ok('2) غير متزنة عند تغيير R3 فقط (مؤشر لليسار)',Math.abs(m2.Vcd)>1e-3&&m2.Ig<0,`Ig=${sgn(m2.Ig,'A')}`);
+ const m3=solve([1e3,1e3,500,1e3],100,12);
+ ok('3) انعكاس اتجاه تيار G (مؤشر لليمين)',m3.Ig>0&&m2.Ig<0,`Ig=${sgn(m3.Ig,'A')}`);
+ const m4=solve([1e3,1e3,1500,1e3],100,24),m5=solve([1e3,1e3,1e3,1e3],100,24);
+ ok('4) مضاعفة الجهد تضاعف التيارات وتبقي حالة الاتزان',Math.abs(m4.It/m2.It-2)<1e-9&&Math.abs(m4.Ig/m2.Ig-2)<1e-9&&isBalanced(m5,24)&&!isBalanced(m4,24),`نسبة التيار=${+(m4.It/m2.It).toPrecision(8)}`);
+ const R3=2200*3300/470,m6=solve([2200,470,R3,3300],100,12);
+ ok('5) الاتزان التلقائي يعطي R3 النظري',Math.abs(m6.Vcd)<1e-9,`R3=${eng(R3,'Ω')}`);
+ let worst=0;for(const R of [[1,1e5,1,1e5],[1e5,1,1e5,1],[470,1500,33,1e4],[1,1,1,1],[1e5,1e5,1e5,1e5]]){const x=solve(R,100,12);worst=Math.max(worst,x.kcl/(Math.abs(x.It)+1e-12));}
+ ok('6) قانون كيرشوف عند العقد a,b,c,d',worst<1e-9,`أكبر خطأ نسبي=${worst.toExponential(1)}`);
+ $('#tests').style.display='block';
+ $('#tout').innerHTML=T.map(t=>`<p class="${t[1]?'ok':'no'}">${t[1]?'✔':'✘'} ${t[0]} <small>(${t[2]})</small></p>`).join('');
+}
+$('#test').onclick=runTests;
+
+buildCtl();build();update();
+// الأرقام في حقول التحكم باللغة الإنجليزية (0-9) مهما كانت لغة المتصفح
+document.querySelectorAll('.wrap input[type=number]').forEach(e=>{e.lang='en';e.style.direction='ltr';e.style.textAlign='center';});requestAnimationFrame(t=>{last=t;frame(t);});
+</script>
+</body>
+</html>

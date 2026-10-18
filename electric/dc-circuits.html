@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دارات التيار المستمر | الأستاذ ماجد شلالدة</title>
+    <style>
+        :root {
+            --bg-color: #0b1329;
+            --bg-secondary: #0f1a35;
+            --main-card-bg: #1c2541;
+            --sub-card-bg: #3a506b;
+            --sub-card-hover: #465f7e;
+            --text-color: #ffffff;
+            --text-muted: #c0c8d8;
+            --accent-cyan: #00b4d8;
+            --accent-blue: #4cc9f0;
+            --accent-green: #06d6a0;
+            --accent-gold: #ffd166;
+            --accent-purple: #b185ff;
+            --accent-red: #ef476f;
+            --border-soft: rgba(255, 255, 255, 0.08);
+            --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.3);
+            --shadow-hover: 0 12px 30px rgba(6, 214, 160, 0.2);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-pill: 50px;
+            --transition-fast: 0.2s ease;
+            --transition-normal: 0.3s ease;
+        }
+
+        body.light-mode {
+            --bg-color: #f0f4f8;
+            --bg-secondary: #e2e8f0;
+            --main-card-bg: #ffffff;
+            --sub-card-bg: #e8eef5;
+            --sub-card-hover: #d8e2ec;
+            --text-color: #1a202c;
+            --text-muted: #4a5568;
+            --border-soft: rgba(0, 0, 0, 0.08);
+            --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 12px 30px rgba(6, 214, 160, 0.2);
+        }
+
+        * { box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            line-height: 1.6;
+            transition: background-color var(--transition-normal),
+                        color var(--transition-normal);
+        }
+
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: var(--bg-color); }
+        ::-webkit-scrollbar-thumb {
+            background: var(--sub-card-bg);
+            border-radius: 5px;
+        }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-green); }
+
+        /* ✅ المسار الصحيح: ../logo.png */
+        .watermark-overlay {
+            position: fixed;
+            inset: 0;
+            background-image: url('../logo.png');
+            background-size: 180px;
+            background-repeat: repeat;
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 24px;
+            background: rgba(28, 37, 65, 0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-soft);
+            transition: background var(--transition-normal);
+        }
+
+        body.light-mode .navbar {
+            background: rgba(255, 255, 255, 0.92);
+        }
+
+        .nav-brand {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--accent-green);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: var(--text-color);
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: var(--radius-sm);
+            font-size: 0.9rem;
+            transition: background var(--transition-fast),
+                        color var(--transition-fast);
+        }
+
+        .nav-links a:hover {
+            background: var(--accent-green);
+            color: #000;
+        }
+
+        .theme-toggle {
+            background: transparent;
+            border: 1px solid var(--border-soft);
+            color: var(--text-color);
+            font-size: 1.2rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform var(--transition-fast),
+                        background var(--transition-fast);
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(20deg);
+            background: var(--sub-card-bg);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 0;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            flex-wrap: wrap;
+        }
+
+        .breadcrumb a {
+            color: var(--accent-green);
+            text-decoration: none;
+            transition: color var(--transition-fast);
+        }
+
+        .breadcrumb a:hover { color: var(--accent-cyan); }
+
+        .breadcrumb .separator { opacity: 0.5; }
+
+        .breadcrumb .current {
+            color: var(--text-color);
+            font-weight: bold;
+        }
+
+        header.page-header {
+            text-align: center;
+            padding: 20px 20px 30px;
+        }
+
+        header.page-header h1 {
+            font-size: 2.4rem;
+            color: var(--accent-green);
+            margin: 0 0 12px 0;
+            line-height: 1.3;
+        }
+
+        header.page-header p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            margin: 0 auto;
+            max-width: 700px;
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+            gap: 22px;
+            margin: 20px 0 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .topic-card {
+            background-color: var(--main-card-bg);
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            text-decoration: none;
+            color: var(--text-color);
+            border: 1px solid var(--border-soft);
+            box-shadow: var(--shadow-soft);
+            transition: transform var(--transition-normal),
+                        border-color var(--transition-normal),
+                        box-shadow var(--transition-normal);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .topic-card::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-green), var(--accent-cyan));
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform var(--transition-normal);
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        }
+
+        .topic-card:hover::before { transform: scaleX(1); }
+
+        .topic-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--accent-green);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .topic-card.clickable { cursor: pointer; }
+
+        .topic-card.clickable::after {
+            content: "↗";
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            font-size: 1.1rem;
+            color: var(--accent-green);
+            opacity: 0;
+            transform: translate(-5px, 5px);
+            transition: opacity var(--transition-normal),
+                        transform var(--transition-normal);
+        }
+
+        .topic-card.clickable:hover::after {
+            opacity: 1;
+            transform: translate(0, 0);
+        }
+
+        .topic-card .icon {
+            font-size: 3.4rem;
+            margin-bottom: 14px;
+            transition: transform var(--transition-normal);
+            display: inline-block;
+        }
+
+        .topic-card:hover .icon {
+            transform: scale(1.15) rotate(-5deg);
+        }
+
+        .topic-card h3 {
+            margin: 0 0 12px 0;
+            font-size: 1.3rem;
+            color: var(--accent-cyan);
+            line-height: 1.4;
+        }
+
+        .topic-card p {
+            margin: 0;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.65;
+            flex-grow: 1;
+        }
+
+        .tag {
+            background-color: rgba(6, 214, 160, 0.12);
+            color: var(--accent-gold);
+            padding: 5px 14px;
+            border-radius: var(--radius-pill);
+            font-size: 0.8rem;
+            margin-top: 16px;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            direction: ltr;
+            border: 1px solid rgba(6, 214, 160, 0.25);
+            line-height: 1.4;
+        }
+
+        .section-title {
+            color: var(--accent-green);
+            font-size: 1.6rem;
+            margin: 0 0 22px 0;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--accent-green);
+            display: inline-block;
+        }
+
+        footer.page-footer {
+            text-align: center;
+            padding: 30px 20px;
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            border-top: 1px solid var(--border-soft);
+            margin-top: 20px;
+        }
+
+        footer.page-footer strong { color: var(--accent-green); }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 25px;
+            left: 25px;
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: var(--accent-green);
+            color: #000;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 20px rgba(6, 214, 160, 0.4);
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(20px);
+            transition: opacity var(--transition-normal),
+                        transform var(--transition-normal);
+            z-index: 99;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+
+        .back-to-top:hover { transform: translateY(-3px); }
+
+        @media (max-width: 768px) {
+            header.page-header h1 { font-size: 1.7rem; }
+            header.page-header p { font-size: 0.95rem; }
+
+            .navbar {
+                padding: 10px 15px;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .nav-links {
+                order: 3;
+                width: 100%;
+                justify-content: center;
+            }
+
+            .nav-links a {
+                padding: 6px 10px;
+                font-size: 0.82rem;
+            }
+
+            .grid-layout { grid-template-columns: 1fr; }
+            .topic-card { padding: 20px; }
+            .topic-card h3 { font-size: 1.15rem; }
+            .section-title { font-size: 1.3rem; }
+        }
+
+        @media (max-width: 480px) {
+            .nav-brand span { display: none; }
+            header.page-header h1 { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="watermark-overlay"></div>
+
+    <!-- ✅ شريط التنقل — الروابط بمستوى واحد فقط -->
+    <nav class="navbar">
+        <div class="nav-brand">⚛️ <span>فيزياء ماجد شلالدة</span></div>
+        <div class="nav-links">
+            <a href="../index.html#mechanics">⚙️ الميكانيكا</a>
+            <a href="../index.html#electricity">⚡ الكهرباء</a>
+            <a href="../index.html#magnetism">🧲 المغناطيسية</a>
+            <a href="../index.html#modern">🔬 الحديثة</a>
+        </div>
+        <button class="theme-toggle" id="themeToggle" aria-label="تبديل الوضع">🌙</button>
+    </nav>
+
+    <div class="container">
+
+        <!-- ✅ Breadcrumb -->
+        <div class="breadcrumb">
+            <a href="../index.html">🏠 الرئيسية</a>
+            <span class="separator">›</span>
+            <a href="../index.html#electricity">⚡ الكهرباء المتحركة</a>
+            <span class="separator">›</span>
+            <span class="current">🔋 دارات التيار المستمر</span>
+        </div>
+
+        <header class="page-header">
+            <h1>🔋 دارات التيار المستمر</h1>
+            <p>إعداد الأستاذ ماجد شلالدة — استكشف دارات التيار المستمر من خلال محاكاة قنطرة ويتستون وبناء الدارات الكهربائية وقياس كمياتها.</p>
+        </header>
+
+        <main>
+
+            <h2 class="section-title">🔋 محاكاة دارات التيار المستمر</h2>
+
+            <div class="grid-layout">
+
+                <a href="wheatstone.html" class="topic-card clickable">
+                    <div class="icon">⚖️</div>
+                    <h3>قنطرة ويتستون</h3>
+                    <p>استكشف مبدأ قنطرة ويتستون، وغيّر قيم المقاومات لمتابعة حالة الاتزان وفرق الجهد والتيار في فروع الدارة.</p>
+                    <span class="tag">R₁ / R₂ = R₃ / R₄</span>
+                </a>
+
+                <a href="circuit-builder.html" class="topic-card clickable">
+                    <div class="icon">🔌</div>
+                    <h3>بناء الدارات الكهربائية</h3>
+                    <p>أنشئ دارات التيار المستمر بإضافة البطاريات والمقاومات والمفاتيح وأجهزة القياس، ثم صِل العناصر وشغّل الدارة لدراسة التيار وفرق الجهد.</p>
+                    <span class="tag">V = I · R</span>
+                </a>
+
+            </div>
+        </main>
+
+        <footer class="page-footer">
+            <p>© 2025 المنصة التفاعلية للمحاكاة الفيزيائية — إعداد <strong>الأستاذ ماجد شلالدة</strong></p>
+            <p>📱 0599870176</p>
+        </footer>
+    </div>
+
+    <button class="back-to-top" id="backToTop" aria-label="العودة للأعلى">↑</button>
+
+    <script>
+        (function() {
+            'use strict';
+
+            const themeToggle = document.getElementById('themeToggle');
+            if (themeToggle) {
+                const savedTheme = localStorage.getItem('theme');
+                if (savedTheme === 'light') {
+                    document.body.classList.add('light-mode');
+                    themeToggle.textContent = '☀️';
+                }
+                themeToggle.addEventListener('click', () => {
+                    document.body.classList.toggle('light-mode');
+                    const isLight = document.body.classList.contains('light-mode');
+                    themeToggle.textContent = isLight ? '☀️' : '🌙';
+                    localStorage.setItem('theme', isLight ? 'light' : 'dark');
+                });
+            }
+
+            const backToTop = document.getElementById('backToTop');
+            if (backToTop) {
+                window.addEventListener('scroll', () => {
+                    backToTop.classList.toggle('visible', window.scrollY > 400);
+                }, { passive: true });
+                backToTop.addEventListener('click', () => {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            }
+        })();
+    </script>
+
+</body>
+</html>
