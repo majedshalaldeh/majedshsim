@@ -2,217 +2,241 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>محاكاة انفجار جسم على سطح أفقي أملس</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>انفجار الجسم | الأستاذ ماجد شلالدة</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
-  :root{
-    --bg-deep:#0b1220;
-    --line:#25324a;
-    --text:#e7ecf5;
-    --text-dim:#8b97ad;
-    --accent:#f2a541;
-  }
-  *{box-sizing:border-box;}
-  html,body{
-    margin:0; padding:0; width:100%; height:100%; overflow:hidden;
-    background:var(--bg-deep);
-    font-family:"Tahoma","Segoe UI",Arial,sans-serif;
-    color:var(--text);
-  }
-  #scene-container{position:absolute; inset:0;}
-  #scene-container canvas{display:block; cursor:grab;}
-  #scene-container canvas:active{cursor:grabbing;}
+:root{--radius-sm:8px;--radius-md:12px;--radius-lg:16px;--radius-pill:50px;--transition-fast:.2s ease;--transition-normal:.3s ease}
+body{--warn:#ef476f;--bg-color:#0b1329;--bg-secondary:#0f1a35;--main-card-bg:#1c2541;--sub-card-bg:#3a506b;--sub-card-hover:#465f7e;--text-color:#fff;--text-muted:#c0c8d8;--accent-cyan:#00b4d8;--accent-blue:#4cc9f0;--accent-green:#06d6a0;--accent-gold:#ffd166;--accent-red:#ef476f;--border-soft:rgba(255,255,255,.08);--shadow-soft:0 10px 30px rgba(0,0,0,.3);--shadow-hover:0 12px 30px rgba(6,214,160,.2);
+--card:var(--main-card-bg);--tx:var(--text-color);--mut:var(--text-muted);--ln:var(--sub-card-bg);--gbg:var(--bg-secondary);--wire:#4cc9f0;--res:#ef476f;--ok:#06d6a0;--acc:#00b4d8;--bad:#ff9f1c;
+font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg-color);color:var(--text-color);margin:0;min-height:100vh;line-height:1.6;transition:background var(--transition-normal),color var(--transition-normal)}
+body.light-mode{--warn:#dc2626;--bg-color:#f0f4f8;--bg-secondary:#e2e8f0;--main-card-bg:#fff;--sub-card-bg:#e8eef5;--sub-card-hover:#d8e2ec;--text-color:#1a202c;--text-muted:#4a5568;--border-soft:rgba(0,0,0,.08);--shadow-soft:0 10px 30px rgba(0,0,0,.08);--wire:#1d4ed8;--res:#dc2626;--ok:#059669;--acc:#0284c7;--bad:#c2410c}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+::-webkit-scrollbar{width:10px}::-webkit-scrollbar-track{background:var(--bg-color)}::-webkit-scrollbar-thumb{background:var(--sub-card-bg);border-radius:5px}::-webkit-scrollbar-thumb:hover{background:var(--accent-green)}
+.watermark-overlay{position:fixed;inset:0;background-image:url('../../logo.png');background-size:180px;background-repeat:repeat;opacity:.03;pointer-events:none;z-index:0}
+.navbar{position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:12px 24px;background:rgba(28,37,65,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border-soft)}
+body.light-mode .navbar{background:rgba(255,255,255,.92)}
+.nav-brand{font-size:1.1rem;font-weight:700;color:var(--accent-blue);display:flex;align-items:center;gap:8px}
+.nav-links{display:flex;gap:6px;flex-wrap:wrap}
+.nav-links a{color:var(--text-color);text-decoration:none;padding:8px 14px;border-radius:var(--radius-sm);font-size:.9rem;transition:background var(--transition-fast),color var(--transition-fast)}
+.nav-links a:hover{background:var(--accent-green);color:#000}
+.theme-toggle{background:transparent;border:1px solid var(--border-soft);color:var(--text-color);font-size:1.2rem;width:40px;height:40px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform var(--transition-fast),background var(--transition-fast)}
+.theme-toggle:hover{transform:rotate(20deg);background:var(--sub-card-bg)}
+.container{max-width:1750px;margin:0 auto;padding:20px;position:relative;z-index:1}
+.breadcrumb{display:flex;align-items:center;gap:8px;padding:12px 0;font-size:.9rem;color:var(--text-muted);flex-wrap:wrap}
+.breadcrumb a{color:var(--accent-blue);text-decoration:none;transition:color var(--transition-fast)}.breadcrumb a:hover{color:var(--accent-cyan)}
+.breadcrumb .separator{opacity:.5}.breadcrumb .current{color:var(--text-color);font-weight:700}
+header.page-header{text-align:center;padding:20px 20px 30px}
+header.page-header h1{font-size:2.4rem;color:var(--accent-blue);margin:0 0 12px;line-height:1.3}
+header.page-header p{color:var(--text-muted);font-size:1.05rem;margin:0 auto;max-width:700px}
+.tag{display:inline-block;background:rgba(6,214,160,.12);color:var(--accent-gold);padding:5px 14px;border-radius:var(--radius-pill);font-size:.85rem;margin-top:14px;font-weight:700;font-family:'Courier New',monospace;direction:ltr;border:1px solid rgba(6,214,160,.25)}
+.section-title{color:var(--accent-blue);font-size:1.6rem;margin:0 0 22px;padding-bottom:10px;border-bottom:3px solid var(--accent-blue);display:inline-block}
+footer.page-footer{text-align:center;padding:30px 20px;color:var(--text-muted);font-size:.88rem;border-top:1px solid var(--border-soft);margin-top:20px}
+footer.page-footer strong{color:var(--accent-blue)}
+.back-to-top{position:fixed;bottom:25px;left:25px;width:46px;height:46px;border-radius:50%;background:var(--accent-green);color:#000;border:none;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(6,214,160,.4);opacity:0;pointer-events:none;transform:translateY(20px);transition:opacity var(--transition-normal),transform var(--transition-normal);z-index:99}
+.back-to-top.visible{opacity:1;pointer-events:auto;transform:translateY(0)}
 
-  .hud{
-    position:absolute; z-index:5;
-    background:rgba(18,27,46,0.88);
-    border:1px solid var(--line);
-    border-radius:10px;
-    backdrop-filter:blur(6px);
-  }
-
-  #titleBar{
-    top:14px; left:50%; transform:translateX(-50%);
-    text-align:center; padding:10px 28px 12px; pointer-events:none;
-  }
-  #titleBar .title{ font-size:19px; font-weight:800; color:var(--text); }
-  #titleBar .credit{ margin-top:4px; font-size:11.5px; color:var(--accent); font-weight:700; }
-
-  #status{ top:16px; left:16px; padding:8px 14px; font-size:12.5px; color:var(--text-dim); }
-
-  #cameraControls{ bottom:16px; left:16px; display:flex; gap:8px; padding:8px; }
-  #status b{ color:var(--accent); }
-
-  #navBar{ top:16px; right:16px; display:flex; gap:8px; padding:8px; }
-  .navBtn{
-    padding:8px 12px; border-radius:7px; border:1px solid var(--line);
-    background:#1b273f; color:var(--text); font-size:12px; font-weight:600;
-    cursor:pointer; font-family:inherit; white-space:nowrap;
-  }
-  .navBtn:hover{ background:#233254; border-color:#3a4b6e; }
-
-  #logoBadgeWrap{
-    top:62px; right:16px; width:340px;
-    display:flex; justify-content:center; padding:8px 0;
-    background:transparent; border:none; backdrop-filter:none;
-  }
-  #logoBadgeImg{
-    width:100px; height:100px; border-radius:50%; object-fit:cover;
-    box-shadow:0 0 0 1px var(--line), 0 4px 18px rgba(0,0,0,0.45);
-    background:#0b1220;
-  }
-
-  #panel{
-    top:178px; right:16px; width:340px;
-    padding:12px 18px 16px;
-    max-height:calc(100vh - 194px);
-    overflow-y:auto;
-  }
-  #panel .panelHead{ font-size:13px; margin:0 0 8px; font-weight:700; text-align:center; color:var(--text-dim); }
-  .sectionTitle{ font-size:12px; font-weight:700; color:var(--accent); margin:2px 0 8px; }
-
-  .field{ margin-bottom:9px; }
-  .field label{
-    display:flex; justify-content:space-between; align-items:baseline;
-    font-size:12.5px; color:var(--text-dim); margin-bottom:3px;
-  }
-  .field label span.val{ color:var(--accent); font-weight:700; font-variant-numeric:tabular-nums; }
-  input[type=range]{ width:100%; accent-color:var(--accent); height:4px; cursor:pointer; display:block; margin:2px 0; }
-  .hint{ font-size:10.5px; color:#5c6a80; margin-top:2px; line-height:1.35; }
-
-  .divider{ height:1px; background:var(--line); margin:10px 0; }
-
-  #fragmentsList{ max-height:280px; overflow-y:auto; padding-right:4px; margin-bottom:4px; }
-  .fragCard{
-    background:#0f1830; border:1px solid var(--line); border-radius:8px;
-    padding:9px 10px; margin-bottom:8px; border-right:4px solid var(--accent);
-  }
-  .fragCard:last-child{ margin-bottom:0; }
-  .fragHeader{
-    display:flex; align-items:center; gap:6px; font-size:12px; font-weight:700;
-    color:var(--text); margin-bottom:6px;
-  }
-  .fragDot{ width:10px; height:10px; border-radius:50%; flex:none; }
-
-  .btn-row{ display:flex; gap:8px; margin-top:4px; }
-  button{
-    flex:1; padding:9px 8px; border-radius:7px; border:1px solid var(--line);
-    background:#1b273f; color:var(--text); font-size:13px; font-weight:600;
-    cursor:pointer; font-family:inherit; transition:background .15s, border-color .15s;
-  }
-  button:hover{ background:#233254; border-color:#3a4b6e; }
-  button#startBtn{ background:var(--accent); color:#241705; border-color:var(--accent); }
-  button#startBtn:hover{ filter:brightness(1.08); }
-  button:disabled{ opacity:0.4; cursor:not-allowed; }
-
-  #results{
-    top:66px; left:16px; width:300px;
-    max-height:calc(100vh - 82px); overflow-y:auto;
-    padding:14px 18px; font-size:12.5px;
-  }
-  #results h2{ font-size:12.5px; margin:0 0 10px; color:var(--text-dim); font-weight:700; }
-  .row{ display:flex; justify-content:space-between; gap:8px; padding:4px 0; border-bottom:1px dashed var(--line); }
-  .row:last-child{ border-bottom:none; }
-  .row .k{ color:var(--text-dim); }
-  .row .v{ font-weight:700; font-variant-numeric:tabular-nums; text-align:left; }
-  #results.empty .row .v{ color:#3c4863; }
-
-  ::-webkit-scrollbar{ width:6px; }
-  ::-webkit-scrollbar-thumb{ background:#2c3a58; border-radius:4px; }
-
-  @media (max-width:760px){
-    #panel, #navBar, #logoBadgeWrap{ width:min(88vw,340px); }
-    #results{ width:min(84vw,300px); }
-    #titleBar .title{ font-size:15px; }
-  }
-</style>
-</head>
+/* ===== محاكاة الانفجار ===== */
+.wrap{display:grid;grid-template-columns:350px minmax(0,1fr) 310px;gap:14px;margin:0 0 24px;align-items:stretch;position:relative;z-index:1}
+.card{background:var(--main-card-bg);border:1px solid var(--border-soft);border-radius:var(--radius-lg);box-shadow:var(--shadow-soft);padding:14px;min-width:0}
+#panel{grid-column:1;display:flex;flex-direction:column;padding:0;overflow:hidden}
+.scenecard{grid-column:2;display:flex;flex-direction:column;padding:10px}
+#results{grid-column:3;overflow-y:auto;font-size:.88rem}
+.logo-box{display:flex;justify-content:center;padding:12px 0 2px}
+.main-logo{width:160px;max-width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;border-radius:50%;box-shadow:0 4px 25px rgba(0,180,216,.25);border:3px solid rgba(0,180,216,.3)}
+.logo-placeholder{width:160px;aspect-ratio:1/1;border-radius:50%;background:linear-gradient(135deg,var(--accent-cyan),#b185ff);display:none;align-items:center;justify-content:center;font-size:4rem}
+.panelHead{font-size:1rem;margin:0;padding:8px 16px;font-weight:700;text-align:center;color:var(--accent-cyan);display:flex;align-items:center;justify-content:center;gap:8px}
+.statusPill{font-size:.72rem;padding:2px 8px;border-radius:10px;font-weight:700;border:1px solid transparent}
+.statusPill.ok{background:rgba(6,214,160,.15);color:var(--ok);border-color:rgba(6,214,160,.45)}
+.statusPill.warn{background:rgba(239,71,111,.15);color:var(--warn);border-color:rgba(239,71,111,.5)}
+.tabs{display:flex;gap:4px;padding:0 12px;border-bottom:1px solid var(--border-soft);flex:none}
+.tabBtn{flex:1;padding:9px 4px;border:none;background:transparent;color:var(--text-muted);font:inherit;font-size:.88rem;font-weight:700;cursor:pointer;border-bottom:2px solid transparent;transition:color var(--transition-fast),border-color var(--transition-fast)}
+.tabBtn:hover{color:var(--text-color)}.tabBtn.active{color:var(--accent-green);border-bottom-color:var(--accent-green)}
+.tabBody{display:none;padding:12px 16px;overflow-y:auto;flex:1 1 auto;min-height:0}.tabBody.active{display:block}
+.field{margin-bottom:12px}
+.field label{display:flex;justify-content:space-between;align-items:center;font-size:.88rem;color:var(--text-muted);margin-bottom:6px;white-space:nowrap}
+.field label span.val{color:var(--accent-gold);font-weight:700;font-variant-numeric:tabular-nums;direction:ltr}
+input[type=range]{width:100%;accent-color:var(--accent-green);height:6px;cursor:pointer;display:block;margin:6px 0}
+.hint{font-size:.76rem;color:var(--text-muted);margin-top:2px;line-height:1.4}
+.divider{height:1px;background:var(--border-soft);margin:10px 0}
+#fragmentsList{margin-bottom:6px}
+.fragCard{background:var(--sub-card-bg);border:1px solid var(--border-soft);border-radius:var(--radius-sm);padding:8px 10px;margin-bottom:8px;border-right:4px solid var(--accent-gold)}
+.fragHeader{display:flex;align-items:center;gap:8px;font-size:.85rem;font-weight:700;margin-bottom:6px}
+.fragBadge{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#0b1220;font-weight:800;font-size:.75rem;flex:none}
+.fragResetBtn{margin-right:auto;padding:0;width:22px;height:22px;flex:none;border-radius:6px;border:1px solid var(--border-soft);background:var(--main-card-bg);color:var(--text-muted);cursor:pointer;font-size:.9rem;line-height:1}
+.fragResetBtn:hover{color:var(--accent-green);border-color:var(--accent-green)}
+.miniRow{display:grid;grid-template-columns:52px 1fr 78px;align-items:center;gap:6px;margin:4px 0}
+.miniRow .mk{font-size:.8rem;color:var(--text-muted)}
+.miniRow .mv{font-size:.8rem;font-weight:700;color:var(--accent-gold);text-align:left;font-variant-numeric:tabular-nums;direction:ltr}
+.miniRow input[type=range]{margin:0}
+.panelFooter{flex:none;border-top:1px solid var(--border-soft);padding:8px 12px 10px;display:flex;flex-direction:column;gap:6px}
+.panelStatus{font-size:.82rem;color:var(--text-muted);text-align:center}.panelStatus b{color:var(--accent-gold)}
+.btn-row{display:flex;gap:8px}
+.btn-row button,#muteBtn{padding:8px;border-radius:var(--radius-sm);border:1px solid var(--border-soft);background:var(--sub-card-bg);color:var(--text-color);font:inherit;font-size:.88rem;font-weight:600;cursor:pointer;transition:all var(--transition-fast)}
+.btn-row button{flex:1}
+.btn-row button:hover,#muteBtn:hover{background:var(--sub-card-hover);border-color:var(--accent-green)}
+.btn-row button#startBtn{background:var(--accent-green);color:#000;border-color:var(--accent-green);font-weight:700}
+.btn-row button#startBtn:hover{box-shadow:var(--shadow-hover)}
+.btn-row button:disabled{opacity:.4;cursor:not-allowed}
+.btn-row button.small{font-size:.8rem;padding:6px}
+#muteBtn{padding:4px 10px;font-size:.8rem}#muteBtn.muted{border-color:var(--accent-red);color:var(--accent-red)}
+.scenebar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px;font-size:.9rem;color:var(--text-muted)}
+.scenebar b{color:var(--accent-gold)}
+#scene-container{position:relative;flex:1 1 auto;min-height:340px;border-radius:var(--radius-md);overflow:hidden;background:#0b1220;border:1px solid var(--border-soft)}
+#scene-container canvas{position:absolute;inset:0;width:100%!important;height:100%!important;display:block;cursor:grab}
+#scene-container canvas:active{cursor:grabbing}
+#results h2{font-size:1.05rem;margin:0 0 10px;color:var(--accent-cyan)}
+.row{display:flex;justify-content:space-between;gap:8px;padding:5px 0;border-bottom:1px dashed var(--border-soft);align-items:center}
+.row:last-of-type{border-bottom:none}
+.row .k{color:var(--text-muted);display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.row .v{font-weight:700;font-variant-numeric:tabular-nums;text-align:left;direction:ltr}
+.row .v.good{color:var(--ok)}.row .v.bad{color:var(--warn)}
+#results.empty .row .v{color:var(--text-muted);opacity:.5}
+.badge{display:inline-block;font-size:.68rem;padding:1px 5px;border-radius:4px;font-weight:700}
+.badge.ok{background:rgba(6,214,160,.15);color:var(--ok);border:1px solid rgba(6,214,160,.4)}
+.badge.warn{background:rgba(239,71,111,.15);color:var(--warn);border:1px solid rgba(239,71,111,.5)}
+.badge.neutral{background:var(--sub-card-bg);color:var(--text-muted);border:1px solid var(--border-soft)}
+#warningBar{display:none;margin-top:8px;padding:7px 10px;background:rgba(239,71,111,.12);border:1px solid rgba(239,71,111,.45);border-radius:var(--radius-sm);font-size:.82rem;color:var(--warn);line-height:1.4}
+#warningBar.show{display:block}#warningBar.ok{background:rgba(6,214,160,.12);border-color:rgba(6,214,160,.4);color:var(--ok)}
+@media (max-width:1099px),(max-height:619px){
+ .wrap{grid-template-columns:1fr}.scenecard,#panel,#results{grid-column:1}.scenecard{order:1}#panel{order:2}#results{order:3}
+ #scene-container{min-height:60vh}.tabBody{max-height:60vh}
+}
+.fitonly{display:none}
+/* وضع بلا تمرير على الشاشات الكبيرة */
+@media (min-width:1100px) and (min-height:620px){
+ html,body{height:100%;overflow:hidden}
+ body{display:flex;flex-direction:column}
+ .navbar{padding:6px 24px}.nav-links a{padding:5px 12px}.theme-toggle{width:34px;height:34px;font-size:1rem}
+ .container{flex:1;min-height:0;display:flex;flex-direction:column;padding:4px 16px 0;width:100%}
+ .breadcrumb{padding:2px 0;font-size:.8rem}
+ header.page-header{padding:0 0 6px;display:flex;align-items:center;justify-content:center;gap:16px}
+ header.page-header h1{font-size:1.35rem;margin:0}header.page-header p{display:none}header.page-header .tag{margin:0;padding:2px 12px}
+ .section-title{display:none}
+ main{flex:1;min-height:0;display:flex;flex-direction:column}
+ .wrap{flex:1;min-height:0;margin:0;grid-template-columns:350px minmax(0,1fr) 300px;grid-template-rows:minmax(0,1fr)}
+ #scene-container{min-height:0}
+ .main-logo,.logo-placeholder{width:120px}.logo-placeholder{font-size:3rem}.logo-box{padding:8px 0 0}
+ footer.page-footer{padding:4px;margin:0;display:flex;justify-content:center;gap:18px;font-size:.75rem}footer.page-footer p{margin:0}
+}
+</style></head>
 <body>
+<div class="watermark-overlay"></div>
+<nav class="navbar">
+ <div class="nav-brand">⚛️ <span>فيزياء ماجد شلالدة</span></div>
+ <div class="nav-links">
+  <a href="../../index.html#mechanics">⚙️ الميكانيكا</a>
+  <a href="../../index.html#electricity">⚡ الكهرباء</a>
+  <a href="../../index.html#magnetism">🧲 المغناطيسية</a>
+  <a href="../../index.html#modern">🔬 الحديثة</a>
+ </div>
+ <button class="theme-toggle" id="themeToggle" aria-label="تبديل الوضع">🌙</button>
+</nav>
+<div class="container">
+ <div class="breadcrumb">
+  <a href="../../index.html">🏠 الرئيسية</a><span class="separator">›</span>
+  <a href="../../index.html#mechanics">⚙️ الميكانيكا</a><span class="separator">›</span>
+  <a href="momentum.html">🚀 الزخم الخطي</a><span class="separator">›</span>
+  <span class="current">💥 انفجار الجسم</span>
+ </div>
+ <header class="page-header">
+  <h1>💥 محاكاة انفجار جسم متحرك</h1>
+  <p>جسم يتحرك على سطح أفقي أملس ثم ينفجر إلى أجزاء: اضبط الكتلة والسرعة والأجزاء، وتحقّق من حفظ الزخم الخطي وحساب الطاقة المحرَّرة.</p>
+  <span class="tag">Σp قبل = Σp بعد</span>
+ </header>
+ <main>
+ <h2 class="section-title">⚡ المحاكاة التفاعلية</h2>
+ <div class="wrap">
+  <section class="card" id="panel">
+   <div class="logo-box"><img src="../../logo.png" alt="شعار الأستاذ ماجد شلالدة" class="main-logo" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="logo-placeholder">⚛️</div></div>
+  <p class="panelHead">إعدادات المحاكاة <span class="statusPill ok" id="consistencyPill">✓ متسق</span></p>
 
-<div id="scene-container"></div>
-
-<div class="hud" id="titleBar">
-  <div class="title">محاكاة انفجار جسم متحرك</div>
-  <div class="credit">إعداد وتطوير الأستاذ: ماجد شلالده 0599870176</div>
-</div>
-
-<div class="hud" id="status">الحالة: <b id="statusText">جاهز للإعداد</b></div>
-
-<div class="hud" id="cameraControls">
-  <button class="navBtn" id="viewTopBtn">منظر من الأعلى</button>
-  <button class="navBtn" id="viewBottomBtn">منظر من الأسفل</button>
-  <button class="navBtn" id="viewResetBtn">منظر افتراضي</button>
-</div>
-
-<div class="hud" id="navBar">
-  <button class="navBtn" id="homeBtn">الصفحة الرئيسية</button>
-  <button class="navBtn" id="explosionsBtn">الزخم الخطي</button>
-</div>
-
-<div class="hud" id="logoBadgeWrap">
-  <img id="logoBadgeImg" src="logo.png" alt="شعار الأستاذ ماجد شلالده">
-</div>
-
-<div class="hud" id="panel">
-  <p class="panelHead">إعدادات المحاكاة</p>
-
-  <div class="sectionTitle">الجسم قبل الانفجار</div>
-  <div class="field">
-    <label>كتلة الجسم M <span class="val" id="valM">2.0 kg</span></label>
-    <input type="range" id="mass" min="0.2" max="40" step="0.1" value="2">
-  </div>
-  <div class="field">
-    <label>سرعة الجسم V <span class="val" id="valV">4.0 m/s</span></label>
-    <input type="range" id="speed0" min="0" max="30" step="0.1" value="4">
-  </div>
-  <div class="field">
-    <label>اتجاه الحركة θ <span class="val" id="valTheta">0°</span></label>
-    <input type="range" id="theta0" min="0" max="359" step="1" value="0">
-    <div class="hint">تُقاس الزاوية من الخط الأحمر (0°) وتزداد عكس عقارب الساعة كما تُرى من الأعلى، حتى الخط الأزرق (90°).</div>
+  <div class="tabs" role="tablist">
+    <button class="tabBtn active" data-tab="body" role="tab">الجسم</button>
+    <button class="tabBtn" data-tab="frags" role="tab">الأجزاء</button>
+    <button class="tabBtn" data-tab="view" role="tab">العرض</button>
   </div>
 
-  <div class="divider"></div>
-
-  <div class="sectionTitle">الأجزاء الناتجة عن الانفجار</div>
-  <div class="field">
-    <label>عدد الأجزاء N <span class="val" id="valN">2</span></label>
-    <input type="range" id="fragCount" min="2" max="6" step="1" value="2">
-    <div class="hint">تغيير العدد يعيد بناء قائمة الأجزاء أدناه بقيم افتراضية.</div>
+  <div class="tabBody active" data-tab="body" role="tabpanel">
+    <div class="field">
+      <label>كتلة الجسم M <span class="val" id="valM">2.0 kg</span></label>
+      <input type="range" id="mass" min="0.2" max="40" step="0.1" value="2">
+    </div>
+    <div class="field">
+      <label>سرعة الجسم V <span class="val" id="valV">4.0 m/s</span></label>
+      <input type="range" id="speed0" min="0" max="50" step="0.1" value="4">
+    </div>
+    <div class="field">
+      <label>اتجاه الحركة θ <span class="val" id="valTheta">0°</span></label>
+      <input type="range" id="theta0" min="0" max="359" step="1" value="0">
+      <div class="hint">تُقاس الزاوية من الخط الأحمر (0°) وتزداد عكس عقارب الساعة كما تُرى من الأعلى، حتى الخط الأزرق (90°).</div>
+    </div>
   </div>
 
-  <div id="fragmentsList"></div>
-
-  <div class="divider"></div>
-
-  <div class="field">
-    <label>سرعة العرض <span class="val" id="valSpeedMul">1.0×</span></label>
-    <input type="range" id="playSpeed" min="0.25" max="2" step="0.25" value="1">
+  <div class="tabBody" data-tab="frags" role="tabpanel">
+    <div class="field">
+      <label>عدد الأجزاء N <span class="val" id="valN">2</span></label>
+      <input type="range" id="fragCount" min="2" max="6" step="1" value="2">
+      <div class="hint" id="massSumHint">مجموع كتل الأجزاء: — kg</div>
+    </div>
+    <div class="divider"></div>
+    <div id="fragmentsList"></div>
   </div>
 
-  <div class="divider"></div>
-
-  <div class="btn-row">
-    <button id="startBtn">ابدأ المحاكاة</button>
-    <button id="pauseBtn" disabled>إيقاف مؤقت</button>
+  <div class="tabBody" data-tab="view" role="tabpanel">
+    <div class="field">
+      <label>سرعة العرض <span class="val" id="valSpeedMul">1.0×</span></label>
+      <input type="range" id="playSpeed" min="0.25" max="2" step="0.25" value="1">
+    </div>
+    <div class="hint">تضاعف هذه القيمة سرعة تشغيل المحاكاة دون تغيير الفيزياء.</div>
+    <div class="divider"></div>
+    <div class="btn-row">
+      <button class="small" id="viewResetBtn">إعادة الكاميرا للمنظر الافتراضي</button>
+    </div>
+    <div class="hint">يمكنك أيضًا تدوير الكاميرا بالسحب بالماوس، والتكبير بعجلة الماوس.</div>
   </div>
-  <div class="btn-row" style="margin-top:8px;">
-    <button id="resetBtn">إعادة الضبط</button>
-  </div>
-</div>
 
-<div class="hud empty" id="results">
+  <div class="panelFooter">
+    <div class="panelStatus">الحالة: <b id="panelStatusText">جاهز للإعداد</b></div>
+    <div class="btn-row">
+      <button id="startBtn">ابدأ المحاكاة</button>
+      <button id="pauseBtn" disabled>إيقاف مؤقت</button>
+    </div>
+    <div class="btn-row">
+      <button class="small" id="autoMomentumBtn" title="يضبط آخر جزء ليكمل الزخم والكتلة">⚖ ضبط تلقائي للزخم</button>
+    </div>
+    <div class="btn-row">
+      <button class="small" id="resetBtn">إعادة الضبط</button>
+      <button class="small" id="defaultsBtn">الإعدادات الافتراضية</button>
+    </div>
+  </div>
+  </section>
+  <section class="card scenecard">
+   <div class="scenebar"><span>الحالة: <b id="statusText">جاهز للإعداد</b></span><button id="muteBtn">🔊 الصوت</button></div>
+   <div id="scene-container"></div>
+  </section>
+  <section class="card empty" id="results">
   <h2>نتائج الانفجار</h2>
   <div class="row"><span class="k">الزخم قبل الانفجار</span><span class="v" id="rPBefore">—</span></div>
-  <div class="row"><span class="k">الزخم بعد الانفجار</span><span class="v" id="rPAfter">—</span></div>
+  <div class="row"><span class="k">الزخم بعد الانفجار <span class="badge neutral" id="bMomentum">—</span></span><span class="v" id="rPAfter">—</span></div>
   <div class="row"><span class="k">فرق الزخم (اختبار الحفظ)</span><span class="v" id="rPDiff">—</span></div>
-  <div class="row"><span class="k">كتلة الجسم / مجموع كتل الأجزاء</span><span class="v" id="rMassCheck">—</span></div>
+  <div class="row"><span class="k">كتلة الجسم / مجموع كتل الأجزاء <span class="badge neutral" id="bMass">—</span></span><span class="v" id="rMassCheck">—</span></div>
   <div class="row"><span class="k">الطاقة الحركية قبل / بعد</span><span class="v" id="rKE">—</span></div>
-  <div class="row"><span class="k">الطاقة المُحرَّرة بالانفجار</span><span class="v" id="rEnergyReleased">—</span></div>
+  <div class="row"><span class="k">الطاقة المُحرَّرة بالانفجار <span class="badge neutral" id="bEnergy">—</span></span><span class="v" id="rEnergyReleased">—</span></div>
+  <div id="warningBar"></div>
+  </section>
+ </div>
+ </main>
+ <footer class="page-footer">
+  <p>© 2025 المنصة التفاعلية للمحاكاة الفيزيائية — إعداد <strong>الأستاذ ماجد شلالدة</strong></p>
+  <p>📱 0599870176</p>
+ </footer>
 </div>
-
+<button class="back-to-top" id="backToTop" aria-label="العودة للأعلى">↑</button>
 <script>
 /* ================= AUDIO ================= */
 let audioCtx = null;
+let audioMuted = false;
 function ensureAudio(){
   if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -220,9 +244,8 @@ function ensureAudio(){
 window.addEventListener('pointerdown', ()=>{ try{ ensureAudio(); }catch(e){} }, {once:true});
 
 function playExplosionSound(){
-  if (!audioCtx) return;
+  if (!audioCtx || audioMuted) return;
   const t0 = audioCtx.currentTime;
-
   const osc = audioCtx.createOscillator();
   const oGain = audioCtx.createGain();
   osc.type = 'sine';
@@ -233,7 +256,6 @@ function playExplosionSound(){
   oGain.gain.exponentialRampToValueAtTime(0.0001, t0+0.45);
   osc.connect(oGain); oGain.connect(audioCtx.destination);
   osc.start(t0); osc.stop(t0+0.5);
-
   const bufSize = Math.floor(audioCtx.sampleRate*0.45);
   const buffer = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate);
   const data = buffer.getChannelData(0);
@@ -252,58 +274,44 @@ function playExplosionSound(){
 }
 
 /* ================= PHYSICS ================= */
-const D_BEHIND = 5; // meters the body starts behind the origin
-
+const D_BEHIND = 5;
+const MAX_WAIT_TIME = 10;
 function dirVec(angleDeg){
   const r = angleDeg*Math.PI/180;
-  // Three.js is right-handed (Y up): rotating +x toward +z is clockwise as
-  // seen from above. Negating z makes increasing theta genuinely
-  // counterclockwise from above, matching the standard math/compass
-  // convention measured from the +x axis.
   return { x: Math.cos(r), z: -Math.sin(r) };
 }
-
-function buildScenario(params){
-  const { M, V, theta0deg, fragments } = params;
-  const dir = dirVec(theta0deg);
-  let T, startX, startZ;
-  if (V > 0.02){
-    T = D_BEHIND / V;
-    startX = -dir.x*D_BEHIND; startZ = -dir.z*D_BEHIND;
-  } else {
-    T = 0.3; startX = 0; startZ = 0;
-  }
-
-  const frags = fragments.map(f => ({
-    mass: f.mass, speed: f.speed, angleDeg: f.angle,
-    dir: dirVec(f.angle),
-    x:0, z:0
-  }));
-
-  // momentum / energy bookkeeping (computed once, shown after the explosion)
+function computeEventStats(M, V, dir, frags){
   const pxBefore = M*V*dir.x, pzBefore = M*V*dir.z;
   let pxAfter=0, pzAfter=0, keAfter=0, massAfter=0;
   frags.forEach(f=>{
-    pxAfter += f.mass*f.speed*f.dir.x;
-    pzAfter += f.mass*f.speed*f.dir.z;
+    const fd = dirVec(f.angle);
+    pxAfter += f.mass*f.speed*fd.x;
+    pzAfter += f.mass*f.speed*fd.z;
     keAfter += 0.5*f.mass*f.speed*f.speed;
     massAfter += f.mass;
   });
   const keBefore = 0.5*M*V*V;
   const pDiff = Math.hypot(pxAfter-pxBefore, pzAfter-pzBefore);
-
   return {
-    M, V, dir, T, startX, startZ, frags,
-    simTime:0, exploded:false,
-    event: {
-      pBefore: Math.hypot(pxBefore,pzBefore), pxBefore, pzBefore,
-      pAfter: Math.hypot(pxAfter,pzAfter), pxAfter, pzAfter,
-      pDiff, massBefore:M, massAfter,
-      keBefore, keAfter, energyReleased: keAfter-keBefore
-    }
+    pBefore: Math.hypot(pxBefore,pzBefore), pxBefore, pzBefore,
+    pAfter: Math.hypot(pxAfter,pzAfter), pxAfter, pzAfter,
+    pDiff, massBefore:M, massAfter, keBefore, keAfter, energyReleased: keAfter-keBefore
   };
 }
-
+function buildScenario(params){
+  const { M, V, theta0deg, fragments } = params;
+  const dir = dirVec(theta0deg);
+  let T, startX, startZ;
+  if (V > 0.02){
+    T = Math.min(D_BEHIND / V, MAX_WAIT_TIME);
+    startX = -dir.x*D_BEHIND; startZ = -dir.z*D_BEHIND;
+  } else {
+    T = 0.3; startX = 0; startZ = 0;
+  }
+  const frags = fragments.map(f => ({ mass: f.mass, speed: f.speed, angleDeg: f.angle, dir: dirVec(f.angle), x:0, z:0 }));
+  const event = computeEventStats(M, V, dir, fragments);
+  return { M, V, dir, T, startX, startZ, frags, simTime:0, exploded:false, event };
+}
 function stepScenario(sim, dt, onExplode){
   sim.simTime += dt;
   if (!sim.exploded){
@@ -320,7 +328,6 @@ function stepScenario(sim, dt, onExplode){
     });
   }
 }
-
 function bodyPos(sim){
   if (sim.exploded) return null;
   const t = sim.simTime;
@@ -331,7 +338,7 @@ function bodyPos(sim){
 const container = document.getElementById('scene-container');
 const renderer = new THREE.WebGLRenderer({antialias:true});
 renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
-renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setSize(container.clientWidth||800, container.clientHeight||500, false);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 container.appendChild(renderer.domElement);
@@ -339,9 +346,7 @@ container.appendChild(renderer.domElement);
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x0b1220);
 scene.fog = new THREE.Fog(0x0b1220, 20, 70);
-
-const camera = new THREE.PerspectiveCamera(48, window.innerWidth/window.innerHeight, 0.1, 300);
-
+const camera = new THREE.PerspectiveCamera(48, (container.clientWidth||800)/(container.clientHeight||500), 0.1, 300);
 const camTarget = new THREE.Vector3(0,0.6,0);
 let camRadius=16, camAzimuth=0.8, camPolar=1.0;
 function updateCamera(){
@@ -362,31 +367,17 @@ window.addEventListener('pointermove', e=>{
   if(!dragging) return;
   const dx=e.clientX-lastX, dy=e.clientY-lastY;
   lastX=e.clientX; lastY=e.clientY;
-  camAzimuth -= dx*0.006;
-  camPolar -= dy*0.006;
-  updateCamera();
+  camAzimuth -= dx*0.006; camPolar -= dy*0.006; updateCamera();
 });
 renderer.domElement.addEventListener('wheel', e=>{
-  e.preventDefault();
-  camRadius += e.deltaY*0.01;
-  updateCamera();
+  e.preventDefault(); camRadius += e.deltaY*0.01; updateCamera();
 }, {passive:false});
-
-document.getElementById('viewTopBtn').addEventListener('click', ()=>{
-  camPolar = 0.04; updateCamera();
-});
-document.getElementById('viewBottomBtn').addEventListener('click', ()=>{
-  camPolar = Math.PI-0.04; updateCamera();
-});
-document.getElementById('viewResetBtn').addEventListener('click', ()=>{
-  camAzimuth = 0.8; camPolar = 1.0; camRadius = 16; updateCamera();
-});
 
 scene.add(new THREE.AmbientLight(0x8fa2c9, 0.55));
 const key = new THREE.DirectionalLight(0xfff2da, 1.15);
-key.position.set(10,16,8);
-key.castShadow = true;
-key.shadow.mapSize.set(2048,2048);
+key.position.set(10,16,8); key.castShadow = true;
+const sm = window.innerWidth < 760 ? 1024 : 2048;
+key.shadow.mapSize.set(sm, sm);
 key.shadow.camera.left=-25; key.shadow.camera.right=25;
 key.shadow.camera.top=25; key.shadow.camera.bottom=-25;
 key.shadow.camera.far=60;
@@ -394,213 +385,232 @@ scene.add(key);
 scene.add(new THREE.DirectionalLight(0x4d6fb0, 0.3));
 
 const floorGeo = new THREE.PlaneGeometry(40,40);
-const floorMat = new THREE.MeshStandardMaterial({
-  color:0x1a2439, roughness:0.15, metalness:0.35,
-  transparent:true, opacity:0.35, side:THREE.DoubleSide, depthWrite:false
-});
+const floorMat = new THREE.MeshStandardMaterial({ color:0x1a2439, roughness:0.15, metalness:0.35, transparent:true, opacity:0.35, side:THREE.DoubleSide, depthWrite:false });
 const floor = new THREE.Mesh(floorGeo, floorMat);
-floor.rotation.x = -Math.PI/2;
-floor.position.y = 0;
-floor.receiveShadow = true;
-scene.add(floor);
+floor.rotation.x = -Math.PI/2; floor.receiveShadow = true; scene.add(floor);
 scene.add(new THREE.GridHelper(40,40,0x2c3a58,0x1c2740).translateY(0.001));
 
-// floor logo decal (uploaded logo.png), off to a corner so it's never covered
 const floorLogoMat = new THREE.MeshBasicMaterial({transparent:true, depthWrite:false});
 new THREE.TextureLoader().load('logo.png', tex=>{ floorLogoMat.map=tex; floorLogoMat.needsUpdate=true; });
 const floorLogo = new THREE.Mesh(new THREE.CircleGeometry(1.4,64), floorLogoMat);
-floorLogo.rotation.x = -Math.PI/2;
-floorLogo.position.set(0,0.004,0);
-floorLogo.renderOrder = 1; // draw after the grid so it isn't z-fought/hidden by it
+floorLogo.rotation.x = -Math.PI/2; floorLogo.position.set(0,0.004,0); floorLogo.renderOrder = 1;
 scene.add(floorLogo);
 
-// axis reference so the angle convention is visible in the scene
 function axisLine(color, dx, dz){
   const mat = new THREE.LineBasicMaterial({color});
-  const geo = new THREE.BufferGeometry().setFromPoints([
-    new THREE.Vector3(0,0.01,0), new THREE.Vector3(dx,0.01,dz)
-  ]);
+  const geo = new THREE.BufferGeometry().setFromPoints([ new THREE.Vector3(0,0.01,0), new THREE.Vector3(dx,0.01,dz) ]);
   return new THREE.Line(geo, mat);
 }
-scene.add(axisLine(0xe2543b, 3, 0));   // +x reference (0°)
-scene.add(axisLine(0x3b8ee2, 0, -3));  // 90° reference (counterclockwise from +x)
+scene.add(axisLine(0xe2543b, 3, 0));
+scene.add(axisLine(0x3b8ee2, 0, -3));
 
 function makeTextSprite(text, color){
-  const c = document.createElement('canvas');
-  c.width=128; c.height=64;
-  const ctx = c.getContext('2d');
-  ctx.font='bold 34px Tahoma, Arial';
-  ctx.fillStyle=color;
-  ctx.textAlign='center'; ctx.textBaseline='middle';
-  ctx.fillText(text, 64, 32);
-  const tex = new THREE.CanvasTexture(c);
-  const mat = new THREE.SpriteMaterial({map:tex, transparent:true, depthWrite:false});
-  const sprite = new THREE.Sprite(mat);
-  sprite.scale.set(1.4,0.7,1);
-  return sprite;
+  const c = document.createElement('canvas'); c.width=128; c.height=64;
+  const ctx = c.getContext('2d'); ctx.font='bold 34px Tahoma, Arial';
+  ctx.fillStyle=color; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(text, 64, 32);
+  const tex = new THREE.CanvasTexture(c); const mat = new THREE.SpriteMaterial({map:tex, transparent:true, depthWrite:false});
+  const sprite = new THREE.Sprite(mat); sprite.scale.set(1.4,0.7,1); return sprite;
 }
 const label0 = makeTextSprite('0°', '#e2543b'); label0.position.set(3.5,0.3,0); scene.add(label0);
 const label90 = makeTextSprite('90°', '#3b8ee2'); label90.position.set(0,0.3,-3.5); scene.add(label90);
 
-// size scales with mass assuming constant density: volume ∝ mass, so radius ∝ ∛mass.
-// The same formula is used for the body and every fragment, so equal masses
-// always render as equal-sized spheres.
 function radiusFromMass(m){ return 0.28*Math.cbrt(m); }
-
-// pre-explosion body: its radius reflects its own mass M
 const bodyMat = new THREE.MeshStandardMaterial({color:0xff7043, roughness:0.35, metalness:0.25, emissive:0x552200, emissiveIntensity:0.35});
 let body = new THREE.Mesh(new THREE.SphereGeometry(radiusFromMass(2),32,32), bodyMat);
 let bodyRadius = radiusFromMass(2);
-body.castShadow = true;
-scene.add(body);
+body.castShadow = true; scene.add(body);
 function rebuildBody(mass){
   bodyRadius = radiusFromMass(mass);
-  scene.remove(body);
-  body.geometry.dispose();
+  scene.remove(body); body.geometry.dispose();
   body = new THREE.Mesh(new THREE.SphereGeometry(bodyRadius,32,32), bodyMat);
-  body.castShadow = true;
-  scene.add(body);
+  body.castShadow = true; scene.add(body);
 }
 
-// fragments (rebuilt whenever the count/masses change)
 const FRAG_COLORS = [0xe2543b,0x3b8ee2,0x4caf6b,0xf2a541,0xa463c9,0x3bc4c0];
-let fragMeshes = [];
-let fragTrails = [];
+function fragColorHex(i){ return '#'+FRAG_COLORS[i % FRAG_COLORS.length].toString(16).padStart(6,'0'); }
+let fragMeshes = []; let fragTrails = [];
+
+function disposeFragMesh(m){
+  if (!m) return; scene.remove(m);
+  if (m.geometry) m.geometry.dispose(); if (m.material) m.material.dispose();
+}
+function disposeFragTrail(t){
+  if (!t) return; scene.remove(t);
+  if (t.geometry) t.geometry.dispose(); if (t.material) t.material.dispose();
+}
 function rebuildFragmentMeshes(fragments){
-  fragMeshes.forEach(m=>scene.remove(m));
-  fragTrails.forEach(t=>scene.remove(t));
+  fragMeshes.forEach(disposeFragMesh); fragTrails.forEach(disposeFragTrail);
   fragMeshes = []; fragTrails = [];
   fragments.forEach((f,i)=>{
     const color = FRAG_COLORS[i % FRAG_COLORS.length];
-    const mesh = new THREE.Mesh(new THREE.SphereGeometry(radiusFromMass(f.mass),24,24), new THREE.MeshStandardMaterial({color, roughness:0.35, metalness:0.15}));
-    mesh.castShadow = true;
-    mesh.visible = false;
-    scene.add(mesh);
-    fragMeshes.push(mesh);
+    const radius = radiusFromMass(f.mass);
+    const mesh = new THREE.Mesh(new THREE.SphereGeometry(radius,24,24), new THREE.MeshStandardMaterial({color, roughness:0.35, metalness:0.15}));
+    mesh.castShadow = true; mesh.visible = false; scene.add(mesh); fragMeshes.push(mesh);
     const trailGeo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(), new THREE.Vector3()]);
     const trail = new THREE.Line(trailGeo, new THREE.LineBasicMaterial({color, transparent:true, opacity:0.55}));
-    trail.visible = false;
-    scene.add(trail);
-    fragTrails.push(trail);
+    trail.visible = false; scene.add(trail); fragTrails.push(trail);
   });
 }
 
-// explosion flash effect
 let flashMesh = null, flashLife = 0;
+const FLASH_DURATION = 0.4;
 function triggerFlash(){
-  if (flashMesh) scene.remove(flashMesh);
+  if (flashMesh){
+    scene.remove(flashMesh);
+    if (flashMesh.geometry) flashMesh.geometry.dispose(); if (flashMesh.material) flashMesh.material.dispose();
+  }
   flashMesh = new THREE.Mesh(new THREE.SphereGeometry(0.3,24,24), new THREE.MeshBasicMaterial({color:0xffe08a, transparent:true, opacity:0.9}));
-  flashMesh.position.set(0,0.3,0);
-  scene.add(flashMesh);
-  flashLife = 0.4;
+  flashMesh.position.set(0,0.3,0); scene.add(flashMesh); flashLife = FLASH_DURATION;
 }
 function updateFlash(dt){
-  if (!flashMesh) return;
-  flashLife -= dt;
-  if (flashLife <= 0){ scene.remove(flashMesh); flashMesh=null; return; }
-  const p = 1 - flashLife/0.4;
+  if (!flashMesh) return; flashLife -= dt;
+  if (flashLife <= 0){
+    scene.remove(flashMesh);
+    if (flashMesh.geometry) flashMesh.geometry.dispose(); if (flashMesh.material) flashMesh.material.dispose();
+    flashMesh = null; return;
+  }
+  const p = 1 - flashLife/FLASH_DURATION;
   const scale = 0.3 + p*3.5;
-  flashMesh.scale.set(scale,scale,scale);
-  flashMesh.material.opacity = 0.9*(1-p);
+  flashMesh.scale.set(scale,scale,scale); flashMesh.material.opacity = 0.9*(1-p);
 }
 
-window.addEventListener('resize', ()=>{
-  camera.aspect = window.innerWidth/window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-});
+// تتبّع حجم حاوية المشهد (لا حجم النافذة) ليتسع المشهد بين اللوحتين
+function fitRenderer(){const w=container.clientWidth,h=container.clientHeight;if(!w||!h)return;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h,false);}
+window.addEventListener('resize', fitRenderer);
+if(window.ResizeObserver)new ResizeObserver(fitRenderer).observe(container);
 
 /* ================= UI WIRING ================= */
 const els = {
-  mass: document.getElementById('mass'),
-  speed0: document.getElementById('speed0'),
-  theta0: document.getElementById('theta0'),
-  fragCount: document.getElementById('fragCount'),
-  playSpeed: document.getElementById('playSpeed'),
+  mass: document.getElementById('mass'), speed0: document.getElementById('speed0'), theta0: document.getElementById('theta0'),
+  fragCount: document.getElementById('fragCount'), playSpeed: document.getElementById('playSpeed'),
 };
 const valEls = {
-  mass: document.getElementById('valM'),
-  speed0: document.getElementById('valV'),
-  theta0: document.getElementById('valTheta'),
-  fragCount: document.getElementById('valN'),
-  playSpeed: document.getElementById('valSpeedMul'),
+  mass: document.getElementById('valM'), speed0: document.getElementById('valV'), theta0: document.getElementById('valTheta'),
+  fragCount: document.getElementById('valN'), playSpeed: document.getElementById('valSpeedMul'),
 };
 const startBtn = document.getElementById('startBtn');
 const pauseBtn = document.getElementById('pauseBtn');
 const resetBtn = document.getElementById('resetBtn');
+const defaultsBtn = document.getElementById('defaultsBtn');
+const autoMomentumBtn = document.getElementById('autoMomentumBtn');
+const muteBtn = document.getElementById('muteBtn');
 const statusText = document.getElementById('statusText');
+const panelStatusText = document.getElementById('panelStatusText');
 const resultsPanel = document.getElementById('results');
 const fragmentsList = document.getElementById('fragmentsList');
+const warningBar = document.getElementById('warningBar');
+const consistencyPill = document.getElementById('consistencyPill');
+const massSumHint = document.getElementById('massSumHint');
 
-document.getElementById('homeBtn').addEventListener('click', ()=>{ window.location.href='../../index.html'; });
-document.getElementById('explosionsBtn').addEventListener('click', ()=>{ window.location.href='momentum.html'; });
 
-let fragmentDefs = []; // {mass,speed,angle}
+muteBtn.addEventListener('click', ()=>{
+  audioMuted = !audioMuted;
+  muteBtn.textContent = audioMuted ? '🔇 مكتوم' : '🔊 الصوت';
+  muteBtn.classList.toggle('muted', audioMuted);
+});
+document.getElementById('viewResetBtn').addEventListener('click', ()=>{
+  camAzimuth = 0.8; camPolar = 1.0; camRadius = 16; updateCamera();
+});
+document.querySelectorAll('.tabBtn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tabBtn').forEach(b=>b.classList.toggle('active', b===btn));
+    document.querySelectorAll('.tabBody').forEach(t=>{ t.classList.toggle('active', t.dataset.tab === btn.dataset.tab); });
+  });
+});
 
-function buildFragmentControls(n, keepValues){
-  const prev = keepValues ? fragmentDefs.slice() : [];
-  fragmentDefs = [];
-  fragmentsList.innerHTML = '';
+/* ===== STATE ===== */
+let fragmentDefs = [];
+const DEFAULT_FRAG = { speed:5 };
+
+function setStatus(msg){ statusText.textContent = msg; panelStatusText.textContent = msg; }
+
+function buildFragmentControls(n){
+  fragmentDefs = []; fragmentsList.innerHTML = '';
   const totalMass = parseFloat(els.mass.value) || 2;
+  const maxMassPerFrag = Math.max(0.1, totalMass);
   for (let i=0;i<n;i++){
-    const def = prev[i] || {
+    const def = {
       mass: +(totalMass/n).toFixed(2),
-      speed: 5,
+      speed: DEFAULT_FRAG.speed,
       angle: Math.round(i*360/n)
     };
     fragmentDefs.push(def);
-
-    const color = '#'+FRAG_COLORS[i % FRAG_COLORS.length].toString(16).padStart(6,'0');
-    const card = document.createElement('div');
-    card.className = 'fragCard';
-    card.style.borderRightColor = color;
-    card.innerHTML = `
-      <div class="fragHeader"><span class="fragDot" style="background:${color}"></span>الجزء رقم ${i+1}</div>
-      <div class="field">
-        <label>الكتلة m${i+1} <span class="val" data-role="mass">${def.mass.toFixed(1)} kg</span></label>
-        <input type="range" data-role="mass" data-i="${i}" min="0.1" max="20" step="0.1" value="${def.mass}">
-      </div>
-      <div class="field">
-        <label>السرعة v${i+1} <span class="val" data-role="speed">${def.speed.toFixed(1)} m/s</span></label>
-        <input type="range" data-role="speed" data-i="${i}" min="0" max="100" step="0.1" value="${def.speed}">
-      </div>
-      <div class="field">
-        <label>الزاوية θ${i+1} <span class="val" data-role="angle">${def.angle}°</span></label>
-        <input type="range" data-role="angle" data-i="${i}" min="0" max="359" step="1" value="${def.angle}">
-      </div>
-    `;
-    fragmentsList.appendChild(card);
+    appendFragCard(def, i, maxMassPerFrag);
   }
+  updateMassSumHint();
+}
+
+function appendFragCard(def, i, maxMass){
+  const color = fragColorHex(i);
+  const card = document.createElement('div');
+  card.className = 'fragCard';
+  card.style.borderRightColor = color;
+  card.dataset.i = i;
+  card.innerHTML = `
+    <div class="fragHeader">
+      <span class="fragBadge" style="background:${color}">${i+1}</span>
+      <span>الجزء ${i+1}</span>
+      <button class="fragResetBtn" data-action="reset" data-i="${i}" title="إعادة تعيين هذا الجزء">↺</button>
+    </div>
+    <div class="miniRow">
+      <span class="mk">كتلة</span>
+      <input type="range" data-role="mass" data-i="${i}" min="0.1" max="${maxMass}" step="0.1" value="${def.mass}">
+      <span class="mv" data-role="mass">${def.mass.toFixed(1)} kg</span>
+    </div>
+    <div class="miniRow">
+      <span class="mk">سرعة</span>
+      <input type="range" data-role="speed" data-i="${i}" min="0" max="200" step="0.1" value="${def.speed}">
+      <span class="mv" data-role="speed">${def.speed.toFixed(1)} m/s</span>
+    </div>
+    <div class="miniRow">
+      <span class="mk">زاوية</span>
+      <input type="range" data-role="angle" data-i="${i}" min="0" max="359" step="1" value="${def.angle}">
+      <span class="mv" data-role="angle">${def.angle}°</span>
+    </div>
+  `;
+  fragmentsList.appendChild(card);
+}
+
+function rebuildFragmentControlsFromDefs(){
+  fragmentsList.innerHTML = '';
+  const maxMass = Math.max(0.1, parseFloat(els.mass.value) || 2);
+  fragmentDefs.forEach((def, i)=> appendFragCard(def, i, maxMass));
+  updateMassSumHint();
 }
 
 fragmentsList.addEventListener('input', (e)=>{
-  const t = e.target;
-  if (t.tagName !== 'INPUT') return;
-  const i = parseInt(t.dataset.i,10);
-  const role = t.dataset.role;
-  const val = parseFloat(t.value);
+  const t = e.target; if (t.tagName !== 'INPUT') return;
+  const i = parseInt(t.dataset.i,10); const role = t.dataset.role; const val = parseFloat(t.value);
   fragmentDefs[i][role] = val;
-  const label = t.parentElement.querySelector('span[data-role="'+role+'"]');
+  const card = t.closest('.fragCard'); const label = card.querySelector(`span.mv[data-role="${role}"]`);
   if (role==='angle') label.textContent = val+'°';
   else label.textContent = val.toFixed(1)+(role==='mass'?' kg':' m/s');
-  if (previewOnly) setStaticPreview();
+  updateMassSumHint();
+  if (previewOnly) { setStaticPreview(); updateResultsPreview(); }
+  updateConsistencyPill();
 });
-
+fragmentsList.addEventListener('click', (e)=>{
+  const btn = e.target.closest('button[data-action="reset"]'); if (!btn) return;
+  const i = parseInt(btn.dataset.i, 10);
+  const totalMass = parseFloat(els.mass.value) || 2; const n = fragmentDefs.length;
+  fragmentDefs[i].mass = +(totalMass/n).toFixed(2); fragmentDefs[i].speed = DEFAULT_FRAG.speed; fragmentDefs[i].angle = Math.round(i*360/n);
+  rebuildFragmentControlsFromDefs();
+  if (previewOnly) { setStaticPreview(); updateResultsPreview(); }
+  updateConsistencyPill();
+});
 els.fragCount.addEventListener('input', ()=>{
   valEls.fragCount.textContent = els.fragCount.value;
-  buildFragmentControls(parseInt(els.fragCount.value,10), false);
-  if (previewOnly) setStaticPreview();
+  buildFragmentControls(parseInt(els.fragCount.value,10));
+  if (previewOnly) { setStaticPreview(); updateResultsPreview(); }
+  updateConsistencyPill();
 });
 
 function currentParams(){
   return {
-    M: parseFloat(els.mass.value),
-    V: parseFloat(els.speed0.value),
-    theta0deg: parseFloat(els.theta0.value),
+    M: parseFloat(els.mass.value), V: parseFloat(els.speed0.value), theta0deg: parseFloat(els.theta0.value),
     fragments: fragmentDefs.map(f=>({mass:f.mass, speed:f.speed, angle:f.angle}))
   };
 }
-
 function refreshLabels(){
   valEls.mass.textContent = parseFloat(els.mass.value).toFixed(1)+' kg';
   valEls.speed0.textContent = parseFloat(els.speed0.value).toFixed(1)+' m/s';
@@ -608,26 +618,54 @@ function refreshLabels(){
   valEls.fragCount.textContent = els.fragCount.value;
   valEls.playSpeed.textContent = parseFloat(els.playSpeed.value).toFixed(2)+'×';
 }
+function updateMassSumHint(){
+  const sum = fragmentDefs.reduce((a,f)=>a+f.mass, 0); const M = parseFloat(els.mass.value) || 0;
+  const ok = Math.abs(sum - M) <= 0.02; const icon = ok ? '✓' : '⚠';
+  massSumHint.textContent = `مجموع كتل الأجزاء: ${sum.toFixed(2)} kg  (M = ${M.toFixed(2)} kg)  ${icon}`;
+  massSumHint.style.color = ok ? 'var(--ok)' : 'var(--warn)';
+}
+function updateConsistencyPill(){
+  const p = currentParams(); const dir = dirVec(p.theta0deg);
+  const ev = computeEventStats(p.M, p.V, dir, p.fragments);
+  const ok = ev.pDiff <= 0.02 && Math.abs(ev.massBefore-ev.massAfter) <= 0.02 && ev.energyReleased >= -0.5;
+  consistencyPill.className = 'statusPill ' + (ok ? 'ok' : 'warn');
+  consistencyPill.textContent = ok ? '✓ متسق' : '⚠ غير متسق';
+}
 
-let sim = null;
-let running = false, paused = false, previewOnly = true;
+let sim = null; let running = false, paused = false, previewOnly = true;
 
 function setStaticPreview(){
   const p = currentParams();
-  rebuildFragmentMeshes(p.fragments);
-  rebuildBody(p.M);
-  fragMeshes.forEach(m=>m.visible=false);
-  fragTrails.forEach(t=>t.visible=false);
+  rebuildFragmentMeshes(p.fragments); rebuildBody(p.M);
+  fragMeshes.forEach(m=>m.visible=false); fragTrails.forEach(t=>t.visible=false);
   body.visible = true;
   const dir = dirVec(p.theta0deg);
   const pos = p.V>0.02 ? {x:-dir.x*D_BEHIND, z:-dir.z*D_BEHIND} : {x:0,z:0};
   body.position.set(pos.x, bodyRadius, pos.z);
-  if (flashMesh){ scene.remove(flashMesh); flashMesh=null; }
+  if (flashMesh){
+    scene.remove(flashMesh);
+    if (flashMesh.geometry) flashMesh.geometry.dispose(); if (flashMesh.material) flashMesh.material.dispose();
+    flashMesh = null;
+  }
 }
-
 function fmt(n){ return (Math.abs(n)<0.005?0:n).toFixed(2); }
 
-function updateResults(ev){
+/* ================= RESULTS ================= */
+const MOMENTUM_TOL = 0.02; const MASS_TOL = 0.02; const ENERGY_TOL = 0.5;
+
+function setBadge(id, ok, textOk, textBad){
+  const el = document.getElementById(id); el.className = 'badge ' + (ok ? 'ok' : 'warn'); el.textContent = ok ? textOk : textBad;
+}
+function setValueClass(id, ok){
+  const el = document.getElementById(id); el.classList.remove('good','bad'); el.classList.add(ok ? 'good' : 'bad');
+}
+function updateResultsPreview(){
+  const p = currentParams(); const dir = dirVec(p.theta0deg);
+  const ev = computeEventStats(p.M, p.V, dir, p.fragments); renderResults(ev, true);
+}
+function updateResults(ev){ renderResults(ev, false); }
+
+function renderResults(ev, isPreview){
   resultsPanel.classList.remove('empty');
   document.getElementById('rPBefore').textContent = fmt(ev.pBefore)+' kg·m/s';
   document.getElementById('rPAfter').textContent = fmt(ev.pAfter)+' kg·m/s';
@@ -635,105 +673,162 @@ function updateResults(ev){
   document.getElementById('rMassCheck').textContent = fmt(ev.massBefore)+' / '+fmt(ev.massAfter)+' kg';
   document.getElementById('rKE').textContent = fmt(ev.keBefore)+' / '+fmt(ev.keAfter)+' J';
   document.getElementById('rEnergyReleased').textContent = fmt(ev.energyReleased)+' J';
+  const momentumOk = ev.pDiff <= MOMENTUM_TOL; const massOk = Math.abs(ev.massBefore - ev.massAfter) <= MASS_TOL; const energyOk = ev.energyReleased >= -ENERGY_TOL;
+  setBadge('bMomentum', momentumOk, 'محفوظ', 'غير محفوظ'); setBadge('bMass', massOk, 'متطابقة', 'غير متطابقة'); setBadge('bEnergy', energyOk, 'موجبة', 'سالبة');
+  setValueClass('rPDiff', momentumOk); setValueClass('rMassCheck', massOk); setValueClass('rEnergyReleased', energyOk);
+  const warnings = [];
+  if (!momentumOk) warnings.push('⚠ الزخم غير محفوظ: اضغط "ضبط تلقائي للزخم".');
+  if (!massOk) warnings.push('⚠ الكتلة غير محفوظة: مجموع كتل الأجزاء ≠ كتلة الجسم.');
+  if (!energyOk) warnings.push('⚠ الطاقة المُحرَّرة سالبة: راجع مدخلات الأجزاء.');
+  if (isPreview && warnings.length === 0) warnings.push('✓ المدخلات متسقة فيزيائيًا (الزخم والكتلة محفوظان، والطاقة موجبة).');
+  if (warnings.length){
+    warningBar.textContent = warnings.join(' '); warningBar.classList.add('show');
+    warningBar.classList.toggle('ok', isPreview && warnings.length===1 && warnings[0].startsWith('✓'));
+  } else {
+    warningBar.classList.remove('show','ok'); warningBar.textContent = '';
+  }
 }
 function clearResults(){
   resultsPanel.classList.add('empty');
   ['rPBefore','rPAfter','rPDiff','rMassCheck','rKE','rEnergyReleased'].forEach(id=>{
-    document.getElementById(id).textContent = '—';
+    document.getElementById(id).textContent = '—'; document.getElementById(id).classList.remove('good','bad');
   });
+  ['bMomentum','bMass','bEnergy'].forEach(id=>{
+    const el = document.getElementById(id); el.className = 'badge neutral'; el.textContent = '—';
+  });
+  warningBar.classList.remove('show','ok'); warningBar.textContent = '';
 }
 
+/* ================= AUTO-MOMENTUM ================= */
+autoMomentumBtn.addEventListener('click', ()=>{
+  const p = currentParams(); const n = p.fragments.length; if (n < 1) return;
+  const sumOtherMass = p.fragments.slice(0, n-1).reduce((a,f)=>a+f.mass, 0);
+  const lastMass = Math.max(0.1, p.M - sumOtherMass);
+  p.fragments[n-1].mass = +lastMass.toFixed(2);
+  const V = p.V; const dir = dirVec(p.theta0deg);
+  let px = p.M * V * dir.x; let pz = p.M * V * dir.z;
+  for (let i=0;i<n-1;i++){
+    const fd = dirVec(p.fragments[i].angle);
+    px -= p.fragments[i].mass * p.fragments[i].speed * fd.x;
+    pz -= p.fragments[i].mass * p.fragments[i].speed * fd.z;
+  }
+  const lastM = p.fragments[n-1].mass;
+  if (lastM > 0.001){
+    const vx = px / lastM; const vz = pz / lastM;
+    // إزالة أي سقف للسرعة، لضمان الحساب الرياضي الدقيق 100%
+    const speed = Math.hypot(vx, vz); 
+    let angle = Math.atan2(-vz, vx) * 180 / Math.PI;
+    if (angle < 0) angle += 360;
+    p.fragments[n-1].speed = +speed.toFixed(1); p.fragments[n-1].angle = Math.round(angle) % 360;
+  }
+  fragmentDefs = p.fragments.map(f=>({mass:f.mass, speed:f.speed, angle:f.angle}));
+  rebuildFragmentControlsFromDefs();
+  if (previewOnly) { setStaticPreview(); updateResultsPreview(); }
+  updateConsistencyPill();
+  setStatus('تم ضبط الجزء الأخير لحفظ الزخم والكتلة');
+});
+
+/* ================= START / PAUSE / RESET / DEFAULTS ================= */
 startBtn.addEventListener('click', ()=>{
-  ensureAudio();
-  const p = currentParams();
+  ensureAudio(); const p = currentParams();
   sim = buildScenario(p);
-  rebuildFragmentMeshes(p.fragments);
-  rebuildBody(p.M);
-  fragMeshes.forEach(m=>m.visible=false);
-  fragTrails.forEach(t=>t.visible=false);
-  body.visible = true;
-  const pos = bodyPos(sim);
+  rebuildFragmentMeshes(p.fragments); rebuildBody(p.M);
+  fragMeshes.forEach(m=>m.visible=false); fragTrails.forEach(t=>t.visible=false);
+  body.visible = true; const pos = bodyPos(sim);
   body.position.set(pos.x, bodyRadius, pos.z);
-  clearResults();
+  renderResults(sim.event, true);
   running = true; paused = false; previewOnly = false;
-  startBtn.disabled = true;
-  pauseBtn.disabled = false;
-  pauseBtn.textContent = 'إيقاف مؤقت';
-  statusText.textContent = 'الجسم يتحرك نحو نقطة الانفجار…';
+  startBtn.disabled = true; pauseBtn.disabled = false; pauseBtn.textContent = 'إيقاف مؤقت';
+  setStatus('الجسم يتحرك نحو نقطة الانفجار…');
 });
 
 pauseBtn.addEventListener('click', ()=>{
-  if(!running) return;
-  paused = !paused;
+  if(!running) return; paused = !paused;
   pauseBtn.textContent = paused ? 'استئناف' : 'إيقاف مؤقت';
-  statusText.textContent = paused ? 'متوقف مؤقتًا' : (sim.exploded ? 'الأجزاء تتفرق…' : 'الجسم يتحرك نحو نقطة الانفجار…');
+  setStatus(paused ? 'متوقف مؤقتًا' : (sim.exploded ? 'الأجزاء تتفرق…' : 'الجسم يتحرك نحو نقطة الانفجار…'));
 });
 
 resetBtn.addEventListener('click', ()=>{
   running=false; paused=false; previewOnly=true; sim=null;
   startBtn.disabled=false; pauseBtn.disabled=true; pauseBtn.textContent='إيقاف مؤقت';
-  statusText.textContent = 'جاهز للإعداد';
-  clearResults();
-  setStaticPreview();
+  setStatus('جاهز للإعداد'); clearResults(); setStaticPreview(); updateConsistencyPill();
+});
+
+defaultsBtn.addEventListener('click', ()=>{
+  els.mass.value = 2; els.speed0.value = 4; els.theta0.value = 0; els.fragCount.value = 2; els.playSpeed.value = 1;
+  refreshLabels(); buildFragmentControls(2);
+  running=false; paused=false; previewOnly=true; sim=null;
+  startBtn.disabled=false; pauseBtn.disabled=true; pauseBtn.textContent='إيقاف مؤقت';
+  setStatus('تمت استعادة الإعدادات الافتراضية'); clearResults(); setStaticPreview(); updateResultsPreview(); updateConsistencyPill();
 });
 
 function onExplode(s){
-  triggerFlash();
-  playExplosionSound();
-  body.visible = false;
-  fragMeshes.forEach(m=>m.visible=true);
-  fragTrails.forEach(t=>t.visible=true);
-  updateResults(s.event);
-  statusText.textContent = 'انفجر الجسم — الأجزاء تتفرق الآن';
+  triggerFlash(); playExplosionSound();
+  body.visible = false; fragMeshes.forEach(m=>m.visible=true); fragTrails.forEach(t=>t.visible=true);
+  updateResults(s.event); setStatus('انفجر الجسم — الأجزاء تتفرق الآن');
 }
 
 Object.values(els).forEach(el=>{
   el.addEventListener('input', ()=>{
     refreshLabels();
-    if (previewOnly) setStaticPreview();
+    if (el === els.mass){
+      const maxMass = Math.max(0.1, parseFloat(els.mass.value));
+      fragmentsList.querySelectorAll('input[data-role="mass"]').forEach(inp=>{
+        inp.max = maxMass;
+        if (parseFloat(inp.value) > maxMass){
+          inp.value = maxMass; const i = parseInt(inp.dataset.i,10);
+          fragmentDefs[i].mass = +maxMass.toFixed(2);
+          const label = inp.parentElement.querySelector('span.mv[data-role="mass"]');
+          label.textContent = maxMass.toFixed(1)+' kg';
+        }
+      });
+      updateMassSumHint();
+    }
+    if (previewOnly) { setStaticPreview(); updateResultsPreview(); }
+    updateConsistencyPill();
   });
 });
 
-buildFragmentControls(parseInt(els.fragCount.value,10), false);
-refreshLabels();
-setStaticPreview();
+/* ================= INIT ================= */
+buildFragmentControls(parseInt(els.fragCount.value,10));
+refreshLabels(); setStaticPreview(); updateResultsPreview(); updateConsistencyPill();
 
 /* ================= ANIMATION LOOP ================= */
 const FIXED_DT = 1/240;
 let lastTime = performance.now();
 function animate(now){
   requestAnimationFrame(animate);
-  let wallDt = Math.min((now-lastTime)/1000, 0.05);
-  lastTime = now;
-
+  let wallDt = Math.min((now-lastTime)/1000, 0.05); lastTime = now;
+  const speedMult = parseFloat(els.playSpeed.value);
   if (running && !paused && sim){
-    const speedMult = parseFloat(els.playSpeed.value);
     let remaining = wallDt*speedMult;
     while (remaining > 0){
-      const dt = Math.min(FIXED_DT, remaining);
-      remaining -= dt;
-      stepScenario(sim, dt, onExplode);
+      const dt = Math.min(FIXED_DT, remaining); remaining -= dt; stepScenario(sim, dt, onExplode);
     }
     if (!sim.exploded){
-      const pos = bodyPos(sim);
-      body.position.set(pos.x, bodyRadius, pos.z);
+      const pos = bodyPos(sim); body.position.set(pos.x, bodyRadius, pos.z);
     } else {
       sim.frags.forEach((f,i)=>{
-        fragMeshes[i].position.set(f.x, radiusFromMass(f.mass), f.z);
-        fragTrails[i].geometry.setFromPoints([
-          new THREE.Vector3(0,0.02,0),
-          new THREE.Vector3(f.x,0.02,f.z)
-        ]);
+        const radius = radiusFromMass(f.mass);
+        fragMeshes[i].position.set(f.x, radius, f.z);
+        fragTrails[i].geometry.setFromPoints([ new THREE.Vector3(0,0.02,0), new THREE.Vector3(f.x,0.02,f.z) ]);
       });
     }
-    updateFlash(wallDt*parseFloat(els.playSpeed.value));
+    updateFlash(wallDt*speedMult);
   } else {
-    updateFlash(0);
+    updateFlash(wallDt);
   }
-
   renderer.render(scene, camera);
 }
 requestAnimationFrame(animate);
+</script>
+<script>
+// نظام الواجهة: الوضع الليلي افتراضي، والتفضيل يُحفظ كما في بقية صفحات الموقع
+(function(){const tt=document.getElementById('themeToggle'),bt=document.getElementById('backToTop');let sv=null;try{sv=localStorage.getItem('theme');}catch(e){}
+ if(sv==='light'){document.body.classList.add('light-mode');tt.textContent='☀️';}
+ tt.addEventListener('click',()=>{document.body.classList.toggle('light-mode');const l=document.body.classList.contains('light-mode');tt.textContent=l?'☀️':'🌙';try{localStorage.setItem('theme',l?'light':'dark');}catch(e){}});
+ addEventListener('scroll',()=>bt.classList.toggle('visible',scrollY>400),{passive:true});
+ bt.addEventListener('click',()=>scrollTo({top:0,behavior:'smooth'}));})();
 </script>
 </body>
 </html>
