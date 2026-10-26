@@ -37,7 +37,7 @@ footer.page-footer strong{color:var(--accent-blue)}
 .back-to-top.visible{opacity:1;pointer-events:auto;transform:translateY(0)}
 
 /* ===== محاكاة الانفجار ===== */
-.wrap{display:grid;grid-template-columns:350px minmax(0,1fr) 310px;gap:14px;margin:0 0 24px;align-items:stretch;position:relative;z-index:1}
+.wrap{display:grid;grid-template-columns:320px minmax(0,1fr) 260px;gap:14px;margin:0 0 24px;align-items:stretch;position:relative;z-index:1}
 .card{background:var(--main-card-bg);border:1px solid var(--border-soft);border-radius:var(--radius-lg);box-shadow:var(--shadow-soft);padding:14px;min-width:0}
 #panel{grid-column:1;display:flex;flex-direction:column;padding:0;overflow:hidden}
 .scenecard{grid-column:2;display:flex;flex-direction:column;padding:10px}
@@ -65,21 +65,25 @@ input[type=range]{width:100%;accent-color:var(--accent-green);height:6px;cursor:
 .fragBadge{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#0b1220;font-weight:800;font-size:.75rem;flex:none}
 .fragResetBtn{margin-right:auto;padding:0;width:22px;height:22px;flex:none;border-radius:6px;border:1px solid var(--border-soft);background:var(--main-card-bg);color:var(--text-muted);cursor:pointer;font-size:.9rem;line-height:1}
 .fragResetBtn:hover{color:var(--accent-green);border-color:var(--accent-green)}
-.miniRow{display:grid;grid-template-columns:52px 1fr 78px;align-items:center;gap:6px;margin:4px 0}
+.miniRow{display:grid;grid-template-columns:72px 1fr 74px;align-items:center;gap:6px;margin:4px 0}
+.miniRow .mv{display:none}
+.numIn{width:74px;padding:3px 6px;border-radius:6px;border:1px solid var(--border-soft);background:var(--bg-secondary);color:var(--text-color);font:inherit;font-weight:700;font-size:.85rem;direction:ltr;text-align:center}
+.numIn:focus{outline:2px solid var(--accent-green);outline-offset:0}.numIn.bad{border-color:var(--accent-red);color:var(--accent-red)}
+.numWrap{display:inline-flex;align-items:center;gap:4px;color:var(--text-muted)}
 .miniRow .mk{font-size:.8rem;color:var(--text-muted)}
 .miniRow .mv{font-size:.8rem;font-weight:700;color:var(--accent-gold);text-align:left;font-variant-numeric:tabular-nums;direction:ltr}
 .miniRow input[type=range]{margin:0}
 .panelFooter{flex:none;border-top:1px solid var(--border-soft);padding:8px 12px 10px;display:flex;flex-direction:column;gap:6px}
 .panelStatus{font-size:.82rem;color:var(--text-muted);text-align:center}.panelStatus b{color:var(--accent-gold)}
 .btn-row{display:flex;gap:8px}
-.btn-row button,#muteBtn{padding:8px;border-radius:var(--radius-sm);border:1px solid var(--border-soft);background:var(--sub-card-bg);color:var(--text-color);font:inherit;font-size:.88rem;font-weight:600;cursor:pointer;transition:all var(--transition-fast)}
+.btn-row button,#muteBtn,#resToggle{padding:8px;border-radius:var(--radius-sm);border:1px solid var(--border-soft);background:var(--sub-card-bg);color:var(--text-color);font:inherit;font-size:.88rem;font-weight:600;cursor:pointer;transition:all var(--transition-fast)}
 .btn-row button{flex:1}
-.btn-row button:hover,#muteBtn:hover{background:var(--sub-card-hover);border-color:var(--accent-green)}
+.btn-row button:hover,#muteBtn:hover,#resToggle:hover{background:var(--sub-card-hover);border-color:var(--accent-green)}
 .btn-row button#startBtn{background:var(--accent-green);color:#000;border-color:var(--accent-green);font-weight:700}
 .btn-row button#startBtn:hover{box-shadow:var(--shadow-hover)}
 .btn-row button:disabled{opacity:.4;cursor:not-allowed}
 .btn-row button.small{font-size:.8rem;padding:6px}
-#muteBtn{padding:4px 10px;font-size:.8rem}#muteBtn.muted{border-color:var(--accent-red);color:var(--accent-red)}
+#muteBtn,#resToggle{padding:4px 10px;font-size:.8rem}.scBtns{display:flex;gap:6px}#muteBtn.muted{border-color:var(--accent-red);color:var(--accent-red)}
 .scenebar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px;font-size:.9rem;color:var(--text-muted)}
 .scenebar b{color:var(--accent-gold)}
 #scene-container{position:relative;flex:1 1 auto;min-height:340px;border-radius:var(--radius-md);overflow:hidden;background:#0b1220;border:1px solid var(--border-soft)}
@@ -102,6 +106,7 @@ input[type=range]{width:100%;accent-color:var(--accent-green);height:6px;cursor:
  .wrap{grid-template-columns:1fr}.scenecard,#panel,#results{grid-column:1}.scenecard{order:1}#panel{order:2}#results{order:3}
  #scene-container{min-height:60vh}.tabBody{max-height:60vh}
 }
+.wrap.hideRes #results{display:none}
 .fitonly{display:none}
 /* وضع بلا تمرير على الشاشات الكبيرة */
 @media (min-width:1100px) and (min-height:620px){
@@ -114,7 +119,8 @@ input[type=range]{width:100%;accent-color:var(--accent-green);height:6px;cursor:
  header.page-header h1{font-size:1.35rem;margin:0}header.page-header p{display:none}header.page-header .tag{margin:0;padding:2px 12px}
  .section-title{display:none}
  main{flex:1;min-height:0;display:flex;flex-direction:column}
- .wrap{flex:1;min-height:0;margin:0;grid-template-columns:350px minmax(0,1fr) 300px;grid-template-rows:minmax(0,1fr)}
+ .wrap{flex:1;min-height:0;margin:0;grid-template-columns:320px minmax(0,1fr) 250px;grid-template-rows:minmax(0,1fr)}
+ .wrap.hideRes{grid-template-columns:320px minmax(0,1fr)}
  #scene-container{min-height:0}
  .main-logo,.logo-placeholder{width:120px}.logo-placeholder{font-size:3rem}.logo-box{padding:8px 0 0}
  footer.page-footer{padding:4px;margin:0;display:flex;justify-content:center;gap:18px;font-size:.75rem}footer.page-footer p{margin:0}
@@ -146,7 +152,7 @@ input[type=range]{width:100%;accent-color:var(--accent-green);height:6px;cursor:
  </header>
  <main>
  <h2 class="section-title">⚡ المحاكاة التفاعلية</h2>
- <div class="wrap">
+ <div class="wrap hideRes">
   <section class="card" id="panel">
    <div class="logo-box"><img src="../../logo.png" alt="شعار الأستاذ ماجد شلالدة" class="main-logo" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="logo-placeholder">⚛️</div></div>
   <p class="panelHead">إعدادات المحاكاة <span class="statusPill ok" id="consistencyPill">✓ متسق</span></p>
@@ -212,7 +218,7 @@ input[type=range]{width:100%;accent-color:var(--accent-green);height:6px;cursor:
   </div>
   </section>
   <section class="card scenecard">
-   <div class="scenebar"><span>الحالة: <b id="statusText">جاهز للإعداد</b></span><button id="muteBtn">🔊 الصوت</button></div>
+   <div class="scenebar"><span>الحالة: <b id="statusText">جاهز للإعداد</b></span><span class="scBtns"><button id="resToggle" type="button">📊 إظهار النتائج</button><button id="muteBtn">🔊 الصوت</button></span></div>
    <div id="scene-container"></div>
   </section>
   <section class="card empty" id="results">
@@ -553,17 +559,17 @@ function appendFragCard(def, i, maxMass){
       <button class="fragResetBtn" data-action="reset" data-i="${i}" title="إعادة تعيين هذا الجزء">↺</button>
     </div>
     <div class="miniRow">
-      <span class="mk">كتلة</span>
+      <span class="mk">كتلة kg</span>
       <input type="range" data-role="mass" data-i="${i}" min="0.1" max="${maxMass}" step="0.1" value="${def.mass}">
       <span class="mv" data-role="mass">${def.mass.toFixed(1)} kg</span>
     </div>
     <div class="miniRow">
-      <span class="mk">سرعة</span>
+      <span class="mk">سرعة m/s</span>
       <input type="range" data-role="speed" data-i="${i}" min="0" max="200" step="0.1" value="${def.speed}">
       <span class="mv" data-role="speed">${def.speed.toFixed(1)} m/s</span>
     </div>
     <div class="miniRow">
-      <span class="mk">زاوية</span>
+      <span class="mk">زاوية °</span>
       <input type="range" data-role="angle" data-i="${i}" min="0" max="359" step="1" value="${def.angle}">
       <span class="mv" data-role="angle">${def.angle}°</span>
     </div>
@@ -829,6 +835,34 @@ requestAnimationFrame(animate);
  tt.addEventListener('click',()=>{document.body.classList.toggle('light-mode');const l=document.body.classList.contains('light-mode');tt.textContent=l?'☀️':'🌙';try{localStorage.setItem('theme',l?'light':'dark');}catch(e){}});
  addEventListener('scroll',()=>bt.classList.toggle('visible',scrollY>400),{passive:true});
  bt.addEventListener('click',()=>scrollTo({top:0,behavior:'smooth'}));})();
+</script>
+<script>
+// إدخال القيم يدويًا بجانب الشرائح (الحقل الرقمي يحرّك الشريط ويُشغّل المعالجات الأصلية نفسها)
+(function(){
+ const $=id=>document.getElementById(id);
+ function mkNum(r){const st=r.step;if(st!=='1')r.step='any';
+  const n=document.createElement('input');n.type='number';n.className='numIn';n.lang='en';n.inputMode='decimal';
+  n.min=r.min;n.max=r.max;n.step=(st==='any'?'1':st);n.value=Math.round(parseFloat(r.value)*1000)/1000;n._range=r;
+  n.addEventListener('input',e=>{e.stopPropagation();const v=parseFloat(n.value),lo=+r.min,hi=+r.max;
+   if(!isFinite(v)){return;}const bad=v<lo||v>hi;n.classList.toggle('bad',bad);if(bad)return;
+   r.value=v;r.dispatchEvent(new Event('input',{bubbles:true}));});
+  n.addEventListener('change',e=>{e.stopPropagation();n.classList.remove('bad');n.value=Math.round(parseFloat(r.value)*1000)/1000;});
+  return n;}
+ function enhanceMain(id){const r=$(id);if(!r)return;const lb=r.parentElement.querySelector('label'),sp=lb.querySelector('.val');
+  const unit=sp?sp.textContent.replace(/[-\d.\s]/g,''):'';if(sp)sp.style.display='none';
+  const w=document.createElement('span');w.className='numWrap';w.appendChild(mkNum(r));
+  if(unit){const u=document.createElement('span');u.textContent=unit;w.appendChild(u);}lb.appendChild(w);}
+ ['mass','speed0','theta0','fragCount','playSpeed'].forEach(enhanceMain);
+ function enhanceCard(c){c.querySelectorAll('input[type=range]').forEach(r=>{if(r._done)return;r._done=1;r.insertAdjacentElement('afterend',mkNum(r));});}
+ const fl=$('fragmentsList');fl.querySelectorAll('.fragCard').forEach(enhanceCard);
+ new MutationObserver(ms=>ms.forEach(m=>m.addedNodes.forEach(x=>{if(x.nodeType===1&&x.classList.contains('fragCard'))enhanceCard(x);}))).observe(fl,{childList:true});
+ function sync(){document.querySelectorAll('input.numIn').forEach(n=>{const r=n._range;if(!r||document.activeElement===n)return;n.min=r.min;n.max=r.max;n.value=Math.round(parseFloat(r.value)*1000)/1000;});}
+ document.addEventListener('input',()=>setTimeout(sync,0),true);
+ document.addEventListener('click',()=>setTimeout(sync,0),true);
+ // إخفاء/إظهار النتائج لتوسيع المشهد
+ const wrap=document.querySelector('.wrap'),tb=$('resToggle');
+ tb.addEventListener('click',()=>{const h=wrap.classList.toggle('hideRes');tb.textContent=h?'📊 إظهار النتائج':'📊 إخفاء النتائج';});
+})();
 </script>
 </body>
 </html>
