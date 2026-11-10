@@ -118,7 +118,7 @@
 
   /* ============ الحاوية ============ */
   .container{
-    max-width:1400px;margin:0 auto;padding:20px;
+    max-width:1500px;margin:0 auto;padding:20px;
     position:relative;z-index:1;
   }
 
@@ -137,32 +137,41 @@
   .breadcrumb .current{color:var(--text-color);font-weight:bold;}
 
   /* ============================================
-     الهيدر + الشعار الدائري
+     الهيدر
      ============================================ */
   header.page-header{
     text-align:center;
-    padding:30px 20px 40px;
+    padding:18px 20px 12px;
   }
 
   header.page-header h1{
-    font-size:2.4rem;
+    font-size:2.2rem;
     color:var(--accent-orange);
-    margin:0 0 10px 0;
+    margin:0 0 8px 0;
     line-height:1.3;
   }
 
   header.page-header .subtitle{
     color:var(--text-muted);
-    font-size:1.05rem;
-    margin:0 auto 28px;
+    font-size:1.02rem;
+    margin:0 auto 4px;
     max-width:680px;
   }
 
-  /* ---- الشعار الدائري ---- */
+  /* ---- الشعار الدائري (داخل عمود التحكم يميناً) ---- */
+  .logo-panel{
+    background:var(--main-card-bg);
+    border:1px solid var(--border-soft);
+    border-radius:var(--radius-lg);
+    padding:20px 14px 16px;
+    text-align:center;
+    box-shadow:var(--shadow-soft);
+  }
+
   .logo-circle{
-    width:130px;
-    height:130px;
-    margin:0 auto 18px;
+    width:110px;
+    height:110px;
+    margin:0 auto 14px;
     border-radius:50%;
     padding:4px;
     background:linear-gradient(135deg, var(--accent-orange), var(--accent-cyan));
@@ -175,7 +184,6 @@
     z-index:1;
   }
 
-  /* حلقة متوهجة تدور ببطء */
   .logo-circle::before{
     content:'';
     position:absolute;
@@ -217,31 +225,30 @@
       0 15px 40px rgba(0,0,0,0.5);
   }
 
-  /* ---- معلومات الأستاذ أسفل الشعار ---- */
   .teacher-info{
     display:flex;
     flex-direction:column;
     align-items:center;
-    gap:8px;
-    margin-top:16px;
+    gap:6px;
+    margin-top:2px;
   }
 
   .teacher-name{
     color:var(--accent-gold);
     font-weight:700;
-    font-size:1.15rem;
+    font-size:1rem;
     letter-spacing:0.2px;
   }
 
   .teacher-phone{
     color:var(--text-muted);
-    font-size:0.95rem;
+    font-size:0.88rem;
     font-family:'Courier New', monospace;
     direction:ltr;
     display:inline-flex;
     align-items:center;
     gap:6px;
-    padding:5px 16px;
+    padding:4px 14px;
     border-radius:20px;
     background:var(--sub-card-bg);
     border:1px solid var(--border-soft);
@@ -312,27 +319,28 @@
     box-shadow:0 4px 14px rgba(255,209,102,0.45);
   }
 
-  /* ============ المسرح (الكانفس) ============ */
+  /* ============================================
+     المسرح
+     ============================================ */
   .stage{
     background:var(--main-card-bg);
     border:1px solid var(--border-soft);
     border-radius:var(--radius-lg);
     overflow:hidden;
-    height:clamp(340px,55vh,520px);
+    height:clamp(300px, 42vh, 420px);
     box-shadow:var(--shadow-soft);
   }
   canvas{display:block;width:100%;height:100%;}
 
   /* ============ لوحة الزمن ============ */
   .time-panel{
-    margin-top:14px;
     background:var(--main-card-bg);
     border:1px solid var(--border-soft);
     border-radius:var(--radius-lg);
-    padding:16px 18px;
+    padding:14px 16px;
     display:grid;
     grid-template-columns:auto 1fr auto;
-    gap:16px;align-items:center;
+    gap:12px;align-items:center;
     box-shadow:var(--shadow-soft);
     transition:box-shadow .3s,border-color .3s;
   }
@@ -342,13 +350,13 @@
                0 0 34px rgba(255,209,102,0.1) inset;
   }
   .time-display{
-    display:flex;align-items:baseline;gap:7px;
+    display:flex;align-items:baseline;gap:6px;
     font-variant-numeric:tabular-nums;
   }
   .time-display .lbl{font-size:12px;color:var(--text-muted);font-weight:600;}
   .time-display .val{
-    font-size:30px;font-weight:800;color:var(--accent-cyan);
-    min-width:86px;text-align:center;letter-spacing:-1px;
+    font-size:26px;font-weight:800;color:var(--accent-cyan);
+    min-width:76px;text-align:center;letter-spacing:-1px;
     transition:color .25s,text-shadow .25s;
   }
   .time-display.frozen .val{
@@ -391,10 +399,32 @@
     width:3px;height:16px;border-radius:2px;
     box-shadow:0 0 8px currentColor;
   }
-  .time-buttons{display:flex;gap:6px;flex-wrap:wrap;}
+
+  /* ---- سرعة العرض (بجانب شريط الزمن) ---- */
+  .speed-ctrl{
+    display:flex;flex-direction:column;gap:5px;
+    min-width:118px;
+    padding-inline-start:12px;
+    border-inline-start:1px solid var(--border-soft);
+  }
+  .speed-ctrl label{
+    display:flex;justify-content:space-between;align-items:baseline;
+    gap:6px;
+    font-size:11px;color:var(--text-muted);font-weight:600;
+  }
+  .speed-ctrl output{
+    color:var(--text-color);font-weight:700;font-size:12.5px;
+    direction:ltr;
+  }
+  .speed-ctrl .unit{
+    font-size:10.5px;color:var(--text-muted);
+    font-family:'Courier New',monospace;direction:ltr;
+  }
+
+  .time-buttons{display:flex;gap:6px;flex-wrap:wrap;grid-column:1/-1;justify-content:center;}
   .time-buttons button{
     font:inherit;font-weight:700;font-size:12px;
-    padding:8px 13px;border-radius:9px;
+    padding:7px 12px;border-radius:9px;
     border:1px solid var(--border-soft);
     background:var(--sub-card-bg);
     color:var(--text-color);cursor:pointer;
@@ -414,40 +444,64 @@
     box-shadow:0 0 16px rgba(255,209,102,0.4);
   }
 
-  /* ============ شبكة التحكم ============ */
+  /* ============================================
+     التخطيط الرئيسي: [التحكم (يمين)] [المسرح (وسط)] [القراءات (يسار)]
+     ============================================ */
+  .main-layout{
+    display:grid;
+    grid-template-columns:340px minmax(0,1fr) 340px;
+    gap:14px;
+    margin-top:14px;
+    align-items:start;
+  }
+
+  .controls-column,
+  .readouts-column,
+  .stage-column{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    min-width:0;
+  }
+
+  /* ---- شبكة التحكم ---- */
   .controls{
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
-    gap:12px;margin-top:14px;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-top:0;
   }
+
   .ctrl{
     background:var(--main-card-bg);
     border:1px solid var(--border-soft);
     border-radius:var(--radius-md);
-    padding:12px 14px 16px;
+    padding:11px 12px 14px;
     transition:border-color .25s,background .25s;
     box-shadow:var(--shadow-soft);
   }
   .ctrl label{
     display:flex;justify-content:space-between;align-items:baseline;
-    font-size:13px;color:var(--text-muted);
-    margin-bottom:8px;gap:8px;
+    font-size:12px;color:var(--text-muted);
+    margin-bottom:7px;gap:6px;
+    flex-wrap:wrap;
   }
   .ctrl output{
-    color:var(--text-color);font-weight:700;font-size:14px;
+    color:var(--text-color);font-weight:700;font-size:13.5px;
     direction:ltr;display:inline-block;
   }
   .ctrl .unit{
-    font-size:11.5px;color:var(--text-muted);
+    font-size:11px;color:var(--text-muted);
     direction:ltr;display:inline-block;
     font-family:'Courier New',monospace;
   }
   .ctrl.highlight{
     border-color:var(--accent-gold);
     box-shadow:0 0 22px rgba(255,209,102,0.08) inset;
+    grid-column:1/-1;
   }
   .ctrl.highlight label{color:var(--accent-gold);}
-  .ctrl.highlight output{color:var(--accent-gold);font-size:15px;}
+  .ctrl.highlight output{color:var(--accent-gold);font-size:14px;}
   .ctrl.highlight input[type=range]::-webkit-slider-thumb{
     background:var(--accent-gold);
     box-shadow:0 0 0 1px var(--accent-gold),0 0 12px var(--accent-gold);
@@ -474,14 +528,14 @@
     cursor:pointer;
   }
 
-  .buttons{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
+  .buttons{display:flex;gap:10px;flex-wrap:wrap;}
   .buttons button{
-    font:inherit;font-weight:700;font-size:0.95rem;
-    padding:12px 26px;border-radius:var(--radius-md);
+    font:inherit;font-weight:700;font-size:0.92rem;
+    padding:11px 20px;border-radius:var(--radius-md);
     border:1px solid var(--border-soft);
     background:var(--sub-card-bg);
     color:var(--text-color);cursor:pointer;
-    transition:.15s;
+    transition:.15s;flex:1;min-width:0;
   }
   .buttons button:hover{
     background:var(--accent-orange);color:#000;
@@ -493,17 +547,18 @@
   }
   .buttons button.primary:hover{filter:brightness(1.1);}
 
-  /* ============ البطاقات ============ */
+  /* ---- بطاقات القراءات ---- */
   .cards{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-    gap:12px;margin-top:16px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
   }
+
   .card{
     background:var(--main-card-bg);
     border:1px solid var(--border-soft);
     border-radius:var(--radius-lg);
-    padding:14px 16px;
+    padding:13px 15px;
     border-top:3px solid var(--c);
     position:relative;overflow:hidden;
     box-shadow:var(--shadow-soft);
@@ -520,21 +575,22 @@
   }
   .card .grid{
     display:grid;grid-template-columns:1fr 1fr;
-    gap:8px 12px;position:relative;z-index:1;
+    gap:7px 10px;position:relative;z-index:1;
   }
   .kv{
     display:flex;flex-direction:column;gap:2px;
-    font-size:12px;color:var(--text-muted);
-    padding:6px 8px;border-radius:9px;
+    font-size:11.5px;color:var(--text-muted);
+    padding:5px 7px;border-radius:9px;
     transition:background .25s,box-shadow .25s;
   }
   .kv b{
-    font-size:14px;color:var(--text-color);
+    font-size:13.5px;color:var(--text-color);
     font-variant-numeric:tabular-nums;
     direction:ltr;text-align:left;
   }
   .kv .k{
     display:flex;justify-content:space-between;align-items:center;
+    flex-wrap:wrap;gap:3px;
   }
   .kv.hl{
     background:rgba(255,209,102,0.1);
@@ -542,13 +598,13 @@
   }
   .kv.hl b{color:var(--accent-gold);font-weight:800;}
   .kv.hl .badge{
-    display:inline-block;font-size:9.5px;font-weight:800;
+    display:inline-block;font-size:9px;font-weight:800;
     background:var(--accent-gold);color:#000;
-    padding:1px 6px;border-radius:99px;
-    margin-inline-start:5px;vertical-align:middle;
+    padding:1px 5px;border-radius:99px;
+    margin-inline-start:4px;vertical-align:middle;
   }
   .kv.fixed b{color:var(--accent-gold);}
-  .bar-row{margin-top:11px;position:relative;z-index:1;}
+  .bar-row{margin-top:10px;position:relative;z-index:1;}
   .bar-lbl{
     font-size:11px;color:var(--text-muted);margin-bottom:4px;
     display:flex;justify-content:space-between;
@@ -566,7 +622,7 @@
     transition:width .22s;
   }
 
-  /* ============ جدول الملخص ============ */
+  /* ---- جدول الملخص ---- */
   .summary{
     margin-top:16px;
     background:var(--main-card-bg);
@@ -638,18 +694,40 @@
   }
   footer.page-footer strong{color:var(--accent-orange);}
 
-  /* ============ التجاوب ============ */
-  @media (max-width:960px){
-    .time-panel{grid-template-columns:1fr;gap:12px;}
-    .time-buttons{justify-content:center;}
-    .time-display{justify-content:center;}
+  /* ============================================
+     التجاوب
+     ============================================ */
+  @media (max-width:1150px){
+    .main-layout{
+      grid-template-columns:1fr;
+    }
+    .logo-panel{display:none;}
+    .controls{grid-template-columns:repeat(3,1fr);}
+    .controls .ctrl.highlight{grid-column:1/-1;}
+    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));}
   }
+
+  @media (max-width:900px){
+    .controls{grid-template-columns:repeat(2,1fr);}
+    .controls .ctrl.highlight{grid-column:1/-1;}
+    .time-panel{grid-template-columns:1fr;gap:10px;}
+    .time-display{justify-content:center;}
+    .speed-ctrl{
+      width:100%;
+      max-width:320px;
+      margin:0 auto;
+      padding-inline-start:0;
+      border-inline-start:none;
+      border-top:1px solid var(--border-soft);
+      padding-top:10px;
+    }
+    .time-buttons{justify-content:center;}
+  }
+
   @media (max-width:768px){
-    header.page-header{padding:20px 15px 30px;}
+    header.page-header{padding:14px 15px 10px;}
     header.page-header h1{font-size:1.7rem;}
     header.page-header .subtitle{font-size:0.95rem;}
-    .logo-circle{width:105px;height:105px;}
-    .teacher-name{font-size:1rem;}
     .navbar{padding:10px 15px;flex-wrap:wrap;gap:10px;}
     .nav-links{order:3;width:100%;justify-content:center;}
     .nav-links a{padding:6px 10px;font-size:0.82rem;}
@@ -657,12 +735,14 @@
     .mode-toggle{width:100%;justify-content:center;}
     .mode-toggle button{padding:8px 14px;font-size:0.82rem;}
   }
+
   @media (max-width:480px){
     .nav-brand span{display:none;}
     header.page-header h1{font-size:1.4rem;}
-    .logo-circle{width:90px;height:90px;}
+    .controls{grid-template-columns:1fr;}
     .summary th,.summary td{padding:8px 6px;font-size:11px;}
     .summary td:first-child,.summary th:first-child{padding-right:10px;}
+    .buttons button{padding:10px 16px;font-size:0.85rem;}
   }
 </style>
 </head>
@@ -696,20 +776,10 @@
     <span class="current">📊 محاكاة الزخم الخطي</span>
   </div>
 
-  <!-- ===== الهيدر + الشعار الدائري ===== -->
+  <!-- ===== الهيدر ===== -->
   <header class="page-header">
     <h1>📊 محاكاة الزخم الخطي</h1>
     <p class="subtitle">ممانعة الجسم المتحرك للإيقاف — قارن بين عربتين بزخمين مختلفين</p>
-
-    <div class="logo-circle">
-      <img src="../../logo.png" alt="شعار الأستاذ ماجد شلالدة"
-           onerror="this.parentElement.style.display='none'">
-    </div>
-
-    <div class="teacher-info">
-      <span class="teacher-name">إعداد الأستاذ: ماجد شلالدة</span>
-      <span class="teacher-phone">📱 0599870176</span>
-    </div>
   </header>
 
   <!-- مفتاح الوضع -->
@@ -724,66 +794,94 @@
     <span class="eq" id="bannerEq"></span>
   </div>
 
-  <!-- المسرح -->
-  <div class="stage"><canvas id="cv"></canvas></div>
+  <!-- ============================================================
+       التخطيط الرئيسي: [اليمين: الشعار+التحكم] [الوسط: المسرح+الزمن] [اليسار: القراءات]
+       ============================================================ -->
+  <div class="main-layout">
 
-  <!-- لوحة الزمن -->
-  <div class="time-panel" id="timePanel">
-    <div class="time-display" id="tDisplay">
-      <span class="lbl">الزمن</span>
-      <span class="val" id="tVal">0.00</span>
-      <span class="unit">s</span>
-    </div>
-    <div class="time-slider" id="tSliderWrap">
-      <input type="range" id="sTime" min="0" max="10" step="0.01" value="0">
-      <div class="time-markers" id="tMarkers"></div>
-    </div>
-    <div class="time-buttons">
-      <button id="btnStepBack" title="خطوة للخلف (←)">◀ −0.1</button>
-      <button id="btnFreeze" title="تثبيت الزمن (F)">❄ تثبيت الزمن</button>
-      <button id="btnStepFwd" title="خطوة للأمام (→)">+0.1 ▶</button>
-    </div>
-  </div>
+    <!-- ===== العمود الأيمن: الشعار + لوحة التحكم ===== -->
+    <aside class="controls-column">
 
-  <!-- شبكة التحكم -->
-  <div class="controls">
-    <div class="ctrl highlight" id="ctrlFixed">
-      <label>
-        <span id="lblFixed">قوة الإيقاف F</span>
-        <span><output id="oFixed">6</output> <span class="unit" id="unitFixed">N</span></span>
-      </label>
-      <input type="range" id="sFixed">
-    </div>
-    <div class="ctrl" style="--c:var(--car-a)">
-      <label>كتلة العربة A <span><output id="oAm">2</output> <span class="unit">kg</span></span></label>
-      <input type="range" id="sAm" min="1" max="6" step="0.5" value="2">
-    </div>
-    <div class="ctrl" style="--c:var(--car-a)">
-      <label>سرعة العربة A <span><output id="oAv">4</output> <span class="unit">m/s</span></span></label>
-      <input type="range" id="sAv" min="1" max="6" step="0.5" value="4">
-    </div>
-    <div class="ctrl" style="--c:var(--car-b)">
-      <label>كتلة العربة B <span><output id="oBm">4</output> <span class="unit">kg</span></span></label>
-      <input type="range" id="sBm" min="1" max="6" step="0.5" value="4">
-    </div>
-    <div class="ctrl" style="--c:var(--car-b)">
-      <label>سرعة العربة B <span><output id="oBv">4</output> <span class="unit">m/s</span></span></label>
-      <input type="range" id="sBv" min="1" max="6" step="0.5" value="4">
-    </div>
-    <div class="ctrl" style="--c:var(--accent-purple)">
-      <label>سرعة العرض <span><output id="oTs">1</output> <span class="unit">×</span></span></label>
-      <input type="range" id="sTs" min="0.25" max="4" step="0.25" value="1">
-    </div>
-  </div>
+      <div class="logo-panel">
+        <div class="logo-circle">
+          <img src="../../logo.png" alt="شعار الأستاذ ماجد شلالدة"
+               onerror="this.parentElement.style.display='none'">
+        </div>
+        <div class="teacher-info">
+          <span class="teacher-name">إعداد الأستاذ: ماجد شلالدة</span>
+          <span class="teacher-phone">📱 0599870176</span>
+        </div>
+      </div>
 
-  <div class="buttons">
-    <button id="btnPlay" class="primary">▶ تشغيل</button>
-    <button id="btnReset">↺ إعادة</button>
-  </div>
+      <div class="controls">
+        <div class="ctrl highlight" id="ctrlFixed">
+          <label>
+            <span id="lblFixed">قوة الإيقاف F</span>
+            <span><output id="oFixed">6</output> <span class="unit" id="unitFixed">N</span></span>
+          </label>
+          <input type="range" id="sFixed">
+        </div>
+        <div class="ctrl" style="--c:var(--car-a)">
+          <label>كتلة A <span><output id="oAm">2</output> <span class="unit">kg</span></span></label>
+          <input type="range" id="sAm" min="1" max="6" step="0.5" value="2">
+        </div>
+        <div class="ctrl" style="--c:var(--car-a)">
+          <label>سرعة A <span><output id="oAv">4</output> <span class="unit">m/s</span></span></label>
+          <input type="range" id="sAv" min="1" max="6" step="0.5" value="4">
+        </div>
+        <div class="ctrl" style="--c:var(--car-b)">
+          <label>كتلة B <span><output id="oBm">4</output> <span class="unit">kg</span></span></label>
+          <input type="range" id="sBm" min="1" max="6" step="0.5" value="4">
+        </div>
+        <div class="ctrl" style="--c:var(--car-b)">
+          <label>سرعة B <span><output id="oBv">4</output> <span class="unit">m/s</span></span></label>
+          <input type="range" id="sBv" min="1" max="6" step="0.5" value="4">
+        </div>
+      </div>
 
-  <div class="cards" id="cards"></div>
+      <div class="buttons">
+        <button id="btnPlay" class="primary">▶ تشغيل</button>
+        <button id="btnReset">↺ إعادة</button>
+      </div>
+    </aside>
+
+    <!-- ===== العمود الأوسط: المسرح + لوحة الزمن (مع سرعة العرض) ===== -->
+    <div class="stage-column">
+      <div class="stage"><canvas id="cv"></canvas></div>
+
+      <div class="time-panel" id="timePanel">
+        <div class="time-display" id="tDisplay">
+          <span class="lbl">الزمن</span>
+          <span class="val" id="tVal">0.00</span>
+          <span class="unit">s</span>
+        </div>
+        <div class="time-slider" id="tSliderWrap">
+          <input type="range" id="sTime" min="0" max="10" step="0.01" value="0">
+          <div class="time-markers" id="tMarkers"></div>
+        </div>
+        <div class="speed-ctrl" style="--c:var(--accent-purple)">
+          <label>سرعة العرض <span><output id="oTs">1</output> <span class="unit">×</span></span></label>
+          <input type="range" id="sTs" min="0.25" max="4" step="0.25" value="1">
+        </div>
+        <div class="time-buttons">
+          <button id="btnStepBack" title="خطوة للخلف (←)">◀ −0.1</button>
+          <button id="btnFreeze" title="تثبيت الزمن (F)">❄ تثبيت الزمن</button>
+          <button id="btnStepFwd" title="خطوة للأمام (→)">+0.1 ▶</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== العمود الأيسر: القراءات ===== -->
+    <section class="readouts-column">
+      <div class="cards" id="cards"></div>
+    </section>
+
+  </div><!-- /.main-layout -->
+
+  <!-- ===== جدول الملخص ===== -->
   <div class="summary" id="summary"></div>
 
+  <!-- ===== الصيغ ===== -->
   <div class="formulas">
     <span><b>p = m·v</b> <code>kg·m/s</code></span>
     <span><b>F·T = Δp</b> <code>N·s = kg·m/s</code></span>
@@ -955,13 +1053,14 @@ function draw(){
   const plotW = Math.max(60, W - padL - padR);
 
   const dMax  = Math.max(...cars.map(getDStop), 0.3);
-  const worldW = dMax * 1.16;
+  const worldW = dMax * 1.25;
   const pxPerM = plotW / worldW;
 
   const trackTop = padT;
   const trackBot = H - padB;
   const laneH = (trackBot - trackTop) / 2;
 
+  /* خط البداية */
   ctx.save();
   ctx.setLineDash([6, 6]);
   ctx.strokeStyle = C.gridLine;
@@ -972,21 +1071,18 @@ function draw(){
   ctx.stroke();
   ctx.restore();
 
-  ctx.fillStyle = C.trackLabel;
-  ctx.font = '11px system-ui, sans-serif';
-  ctx.textAlign = 'center';
-  ctx.fillText('خط البداية', padL, trackTop - 20);
-
   const fMax = Math.max(...cars.map(getFNeed), 1);
 
   cars.forEach((c, i) => {
     const cy = trackTop + laneH * (i + 0.5);
     const st = stateAtTime(c, state.t);
 
+    /* خلفية المسار */
     ctx.fillStyle = C.gridBg;
     rr(padL, cy - 17, plotW + 6, 34, 17);
     ctx.fill();
 
+    /* مسار الحركة */
     const carX = padL + Math.min(st.x, worldW) * pxPerM;
     ctx.strokeStyle = c.color + '55';
     ctx.lineWidth = 5;
@@ -996,6 +1092,7 @@ function draw(){
     ctx.lineTo(Math.max(padL + 2, carX), cy + 13);
     ctx.stroke();
 
+    /* خط التوقف المتوقع */
     const fx = padL + getDStop(c) * pxPerM;
     ctx.save();
     ctx.setLineDash([4, 5]);
@@ -1015,31 +1112,42 @@ function draw(){
     ctx.closePath();
     ctx.fill();
 
+    /* العربة */
     drawCar(carX, cy, c.color, 'Car ' + c.name, st.stopped, C);
 
-    const arrowLen = 26 + 60 * (st.F / fMax);
-    drawArrow(carX, cy + 30, -arrowLen, c.color + 'cc', 3);
+    /* سهم قوة الكبح أسفل العربة */
+    if (!st.stopped){
+      const rawLen = 26 + 60 * (st.F / fMax);
+      const arrowLen = Math.min(rawLen, Math.max(20, carX - padL + 12));
+      drawArrow(carX, cy + 30, -arrowLen, c.color + 'cc', 3);
+    }
 
+    /* ---- نصوص منفصلة وواضحة ---- */
+
+    /* 1) القوة: أعلى العربة */
     ctx.fillStyle = c.color;
     ctx.font = '700 12px system-ui, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('F = ' + fmt(st.F, 2) + ' N', carX, cy - 34);
+    ctx.fillText('F = ' + fmt(st.F, 2) + ' N', carX, cy - 38);
 
+    /* 2) الموضع: أسفل العربة (بعد شارة "توقفت") */
     ctx.fillStyle = C.textDim;
-    ctx.font = '600 12px system-ui, sans-serif';
-    ctx.fillText('x = ' + fmt(st.x) + ' m', carX, cy + 52);
-
-    ctx.fillStyle = c.color;
-    ctx.font = '700 12px system-ui, sans-serif';
-    ctx.textAlign = 'right';
-    ctx.fillText('p = ' + fmt(c.m * st.v) + ' kg·m/s', W - 8, cy + 4);
-
-    ctx.fillStyle = c.color + 'cc';
     ctx.font = '600 11px system-ui, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('t = ' + fmt(st.tStop, 2) + ' s', carX, cy - 20);
+    ctx.fillText('x = ' + fmt(st.x) + ' m', carX, cy + 56);
+
+    /* 3) الزخم وزمن التوقف: على يمين المسار */
+    if (W > 600){
+      ctx.textAlign = 'right';
+      ctx.fillStyle = c.color;
+      ctx.font = '700 12px system-ui, sans-serif';
+      ctx.fillText('p = ' + fmt(c.m * st.v) + ' kg·m/s', W - 10, cy - 6);
+      ctx.fillStyle = c.color + 'cc';
+      ctx.font = '600 11.5px system-ui, sans-serif';
+      ctx.fillText('t = ' + fmt(st.tStop, 2) + ' s', W - 10, cy + 12);
+    }
   });
 
+  /* المسطرة */
   const rulerY = H - 34;
   ctx.strokeStyle = C.gridLine;
   ctx.lineWidth = 1;
@@ -1063,19 +1171,21 @@ function draw(){
     ctx.fillText((stp < 1 ? d.toFixed(1) : d.toFixed(0)) + ' m', x, rulerY + 20);
   }
 
+  /* شريط الوضع أعلى المنتصف */
   const isForceMode = state.mode === 'force';
   ctx.fillStyle = isForceMode ? '#0ea5e9' : '#d97706';
-  ctx.font = '700 13px system-ui, sans-serif';
-  ctx.textAlign = 'left';
+  ctx.font = '700 12.5px system-ui, sans-serif';
+  ctx.textAlign = 'center';
   const modeTxt = isForceMode
     ? `🎯 F = ${fmt(state.F,1)} N ثابتة ← نقارن الزمن`
     : `⏱ T = ${fmt(state.T,2)} s ثابت ← نقارن القوة`;
-  ctx.fillText(modeTxt, padL, padT - 22);
+  ctx.fillText(modeTxt, W / 2, 18);
 
-  if (state.frozen){
+  if (state.frozen && W > 640){
     ctx.fillStyle = '#d97706';
     ctx.textAlign = 'right';
-    ctx.fillText('❄ الزمن مثبّت', W - padR, padT - 22);
+    ctx.font = '700 12px system-ui, sans-serif';
+    ctx.fillText('❄ الزمن مثبّت', W - 10, 18);
   }
 }
 
@@ -1103,15 +1213,29 @@ function drawCar(x, y, color, label, stopped, C){
     ctx.fill();
   });
 
+  /* اسم العربة فوقها */
   ctx.fillStyle = C.textBright;
   ctx.font = '700 13px system-ui, sans-serif';
   ctx.textAlign = 'center';
   ctx.fillText(label, 0, -h/2 - 9);
 
+  /* شارة "توقفت": أسفل العربة بمسافة واضحة كي لا تلامسها */
   if (stopped){
+    const txt = 'توقفت';
+    ctx.font = '700 10.5px system-ui, sans-serif';
+    const tw  = ctx.measureText(txt).width;
+    const padX = 8, bh = 16;
+    const bw  = tw + padX * 2;
+    const top = h/2 + 14;          /* فراغ 14px بين أسفل العربة وأعلى الشارة */
+    ctx.fillStyle = 'rgba(16,185,129,0.16)';
+    rr(-bw/2, top, bw, bh, 8);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(16,185,129,0.55)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
     ctx.fillStyle = '#10b981';
-    ctx.font = '700 11px system-ui, sans-serif';
-    ctx.fillText('توقفت', 0, h/2 + 4);
+    ctx.textAlign = 'center';
+    ctx.fillText(txt, 0, top + 11.5);
   }
   ctx.restore();
 }
@@ -1137,7 +1261,7 @@ function buildCards(){
       <div class="grid">
         <div class="kv"><span class="k">الكتلة m</span><b data-f="m"></b></div>
         <div class="kv"><span class="k">السرعة v₀</span><b data-f="v0"></b></div>
-        <div class="kv"><span class="k">الزخم p = m·v₀</span><b data-f="p"></b></div>
+        <div class="kv"><span class="k">الزخم p</span><b data-f="p"></b></div>
         <div class="kv"><span class="k">المسافة d</span><b data-f="d"></b></div>
         <div class="kv" data-f="rowT"><span class="k" data-f="lblT">زمن الإيقاف t</span><b data-f="t"></b></div>
         <div class="kv" data-f="rowF"><span class="k" data-f="lblF">القوة اللازمة F</span><b data-f="F"></b></div>
