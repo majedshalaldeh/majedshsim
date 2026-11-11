@@ -158,7 +158,7 @@
     max-width:680px;
   }
 
-  /* ---- الشعار الدائري (داخل عمود التحكم يميناً) ---- */
+  /* ---- الشعار الدائري ---- */
   .logo-panel{
     background:var(--main-card-bg);
     border:1px solid var(--border-soft);
@@ -320,14 +320,14 @@
   }
 
   /* ============================================
-     المسرح
+     المسرح (تم توسيعه ليتسع للشارة على الآيباد)
      ============================================ */
   .stage{
     background:var(--main-card-bg);
     border:1px solid var(--border-soft);
     border-radius:var(--radius-lg);
     overflow:hidden;
-    height:clamp(300px, 42vh, 420px);
+    height:clamp(300px, 50vh, 480px);
     box-shadow:var(--shadow-soft);
   }
   canvas{display:block;width:100%;height:100%;}
@@ -400,7 +400,7 @@
     box-shadow:0 0 8px currentColor;
   }
 
-  /* ---- سرعة العرض (بجانب شريط الزمن) ---- */
+  /* ---- سرعة العرض ---- */
   .speed-ctrl{
     display:flex;flex-direction:column;gap:5px;
     min-width:118px;
@@ -696,8 +696,16 @@
 
   /* ============================================
      التجاوب
+     - الآيباد الأفقي (1024px) يُبقي 3 أعمدة بعرض أضيق
+     - الآيباد الرأسي (<1000px) يعود لعمود واحد
      ============================================ */
   @media (max-width:1150px){
+    .main-layout{
+      grid-template-columns:280px minmax(0,1fr) 280px;
+    }
+  }
+
+  @media (max-width:1000px){
     .main-layout{
       grid-template-columns:1fr;
     }
@@ -795,7 +803,7 @@
   </div>
 
   <!-- ============================================================
-       التخطيط الرئيسي: [اليمين: الشعار+التحكم] [الوسط: المسرح+الزمن] [اليسار: القراءات]
+       التخطيط الرئيسي
        ============================================================ -->
   <div class="main-layout">
 
@@ -845,7 +853,7 @@
       </div>
     </aside>
 
-    <!-- ===== العمود الأوسط: المسرح + لوحة الزمن (مع سرعة العرض) ===== -->
+    <!-- ===== العمود الأوسط: المسرح + لوحة الزمن ===== -->
     <div class="stage-column">
       <div class="stage"><canvas id="cv"></canvas></div>
 
@@ -1060,7 +1068,6 @@ function draw(){
   const trackBot = H - padB;
   const laneH = (trackBot - trackTop) / 2;
 
-  /* خط البداية */
   ctx.save();
   ctx.setLineDash([6, 6]);
   ctx.strokeStyle = C.gridLine;
@@ -1077,12 +1084,10 @@ function draw(){
     const cy = trackTop + laneH * (i + 0.5);
     const st = stateAtTime(c, state.t);
 
-    /* خلفية المسار */
     ctx.fillStyle = C.gridBg;
     rr(padL, cy - 17, plotW + 6, 34, 17);
     ctx.fill();
 
-    /* مسار الحركة */
     const carX = padL + Math.min(st.x, worldW) * pxPerM;
     ctx.strokeStyle = c.color + '55';
     ctx.lineWidth = 5;
@@ -1092,7 +1097,6 @@ function draw(){
     ctx.lineTo(Math.max(padL + 2, carX), cy + 13);
     ctx.stroke();
 
-    /* خط التوقف المتوقع */
     const fx = padL + getDStop(c) * pxPerM;
     ctx.save();
     ctx.setLineDash([4, 5]);
@@ -1112,42 +1116,34 @@ function draw(){
     ctx.closePath();
     ctx.fill();
 
-    /* العربة */
     drawCar(carX, cy, c.color, 'Car ' + c.name, st.stopped, C);
 
-    /* سهم قوة الكبح أسفل العربة */
     if (!st.stopped){
       const rawLen = 26 + 60 * (st.F / fMax);
       const arrowLen = Math.min(rawLen, Math.max(20, carX - padL + 12));
       drawArrow(carX, cy + 30, -arrowLen, c.color + 'cc', 3);
     }
 
-    /* ---- نصوص منفصلة وواضحة ---- */
-
-    /* 1) القوة: أعلى العربة */
     ctx.fillStyle = c.color;
-    ctx.font = '700 12px system-ui, sans-serif';
+    ctx.font = '700 12px system-ui, -apple-system, sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText('F = ' + fmt(st.F, 2) + ' N', carX, cy - 38);
 
-    /* 2) الموضع: أسفل العربة (بعد شارة "توقفت") */
     ctx.fillStyle = C.textDim;
-    ctx.font = '600 11px system-ui, sans-serif';
+    ctx.font = '600 11px system-ui, -apple-system, sans-serif';
     ctx.fillText('x = ' + fmt(st.x) + ' m', carX, cy + 56);
 
-    /* 3) الزخم وزمن التوقف: على يمين المسار */
     if (W > 600){
       ctx.textAlign = 'right';
       ctx.fillStyle = c.color;
-      ctx.font = '700 12px system-ui, sans-serif';
+      ctx.font = '700 12px system-ui, -apple-system, sans-serif';
       ctx.fillText('p = ' + fmt(c.m * st.v) + ' kg·m/s', W - 10, cy - 6);
       ctx.fillStyle = c.color + 'cc';
-      ctx.font = '600 11.5px system-ui, sans-serif';
+      ctx.font = '600 11.5px system-ui, -apple-system, sans-serif';
       ctx.fillText('t = ' + fmt(st.tStop, 2) + ' s', W - 10, cy + 12);
     }
   });
 
-  /* المسطرة */
   const rulerY = H - 34;
   ctx.strokeStyle = C.gridLine;
   ctx.lineWidth = 1;
@@ -1167,14 +1163,13 @@ function draw(){
     ctx.lineTo(x, rulerY + 6);
     ctx.stroke();
     ctx.fillStyle = C.trackLabel;
-    ctx.font = '11px system-ui, sans-serif';
+    ctx.font = '11px system-ui, -apple-system, sans-serif';
     ctx.fillText((stp < 1 ? d.toFixed(1) : d.toFixed(0)) + ' m', x, rulerY + 20);
   }
 
-  /* شريط الوضع أعلى المنتصف */
   const isForceMode = state.mode === 'force';
   ctx.fillStyle = isForceMode ? '#0ea5e9' : '#d97706';
-  ctx.font = '700 12.5px system-ui, sans-serif';
+  ctx.font = '700 12.5px system-ui, -apple-system, sans-serif';
   ctx.textAlign = 'center';
   const modeTxt = isForceMode
     ? `🎯 F = ${fmt(state.F,1)} N ثابتة ← نقارن الزمن`
@@ -1184,7 +1179,7 @@ function draw(){
   if (state.frozen && W > 640){
     ctx.fillStyle = '#d97706';
     ctx.textAlign = 'right';
-    ctx.font = '700 12px system-ui, sans-serif';
+    ctx.font = '700 12px system-ui, -apple-system, sans-serif';
     ctx.fillText('❄ الزمن مثبّت', W - 10, 18);
   }
 }
@@ -1213,30 +1208,34 @@ function drawCar(x, y, color, label, stopped, C){
     ctx.fill();
   });
 
-  /* اسم العربة فوقها */
   ctx.fillStyle = C.textBright;
-  ctx.font = '700 13px system-ui, sans-serif';
+  ctx.font = '700 13px system-ui, -apple-system, sans-serif';
   ctx.textAlign = 'center';
   ctx.fillText(label, 0, -h/2 - 9);
 
-  /* شارة "توقفت": أسفل العربة بمسافة واضحة كي لا تلامسها */
+  /* ---- شارة "توقفت": خلفية صلبة، عرض ثابت، اتجاه وخط أساس صريحان لدعم iOS ---- */
   if (stopped){
-    const txt = 'توقفت';
-    ctx.font = '700 10.5px system-ui, sans-serif';
-    const tw  = ctx.measureText(txt).width;
-    const padX = 8, bh = 16;
-    const bw  = tw + padX * 2;
-    const top = h/2 + 14;          /* فراغ 14px بين أسفل العربة وأعلى الشارة */
-    ctx.fillStyle = 'rgba(16,185,129,0.16)';
-    rr(-bw/2, top, bw, bh, 8);
-    ctx.fill();
-    ctx.strokeStyle = 'rgba(16,185,129,0.55)';
-    ctx.lineWidth = 1;
-    ctx.stroke();
+    ctx.save();
+    ctx.textBaseline = 'middle';
+    ctx.textAlign    = 'center';
+    ctx.direction    = 'rtl';
+
+    const bw = 66, bh = 18;
+    const top = h/2 + 14;
+
+    /* خلفية صلبة خضراء واضحة على جميع الأجهزة */
     ctx.fillStyle = '#10b981';
-    ctx.textAlign = 'center';
-    ctx.fillText(txt, 0, top + 11.5);
+    rr(-bw/2, top, bw, bh, 9);
+    ctx.fill();
+
+    /* نص داكن فوق الأخضر */
+    ctx.fillStyle = '#062e22';
+    ctx.font = '700 11.5px -apple-system, BlinkMacSystemFont, Tahoma, system-ui, sans-serif';
+    ctx.fillText('توقفت', 0, top + bh/2 + 0.5);
+
+    ctx.restore();
   }
+
   ctx.restore();
 }
 
