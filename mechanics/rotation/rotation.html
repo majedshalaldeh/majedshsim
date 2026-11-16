@@ -346,8 +346,12 @@
            ============================================ */
         .momentum-menu-card { z-index: 2; }
         .circular-menu-card { z-index: 1000; }
+        /* إبقاء بطاقة عزم الدوران فوق البطاقات المجاورة عند فتح قائمتها */
+        .torque-menu-card { z-index: 1000; }
         .circular-menu-card .dropdown-wrap,
-        .circular-menu-card .dropdown-menu { z-index: 1100; }
+        .circular-menu-card .dropdown-menu,
+        .torque-menu-card .dropdown-wrap,
+        .torque-menu-card .dropdown-menu { z-index: 1100; }
 
         /* ============================================
            القوائم المنسدلة (Dropdown)
@@ -677,13 +681,40 @@
                 <span class="tag">θ ↔ ω ↔ α</span>
             </div>
 
-            <!-- 2. عزم الدوران -->
-            <a href="torque.html" class="topic-card clickable">
+            <!-- 2. عزم الدوران (قائمة منسدلة) -->
+            <div class="topic-card momentum-menu-card torque-menu-card">
                 <div class="icon">🔧</div>
                 <h2>عزم الدوران (Torque)</h2>
-                <p>تحليل مقدرة القوة على إحداث دوران للجسم حول محور، ودراسة ذراع القوة والزوايا.</p>
+                <p>اختر المحاكاة التي تريد استكشافها: عزم الدوران أو رفع ساق على طاولة.</p>
+
+                <div class="dropdown-wrap">
+                    <button class="dropdown-btn" type="button"
+                            data-dropdown="torqueDropdown"
+                            aria-label="فتح قائمة عزم الدوران">
+                        اختر المحاكاة
+                        <span class="arrow">▼</span>
+                    </button>
+
+                    <div id="torqueDropdown" class="dropdown-menu">
+                        <a href="torque.html">
+                            <span>🔧</span>
+                            <span>
+                                <strong>عزم الدوران</strong>
+                                <small>تحليل مقدرة القوة على إحداث دوران للجسم حول محور، ودراسة ذراع القوة والزوايا</small>
+                            </span>
+                        </a>
+                        <a href="rod_lift.html">
+                            <span>🦵</span>
+                            <span>
+                                <strong>رفع ساق على طاولة</strong>
+                                <small>استكشاف عزم القوة أثناء رفع الساق حول مفصل الركبة</small>
+                            </span>
+                        </a>
+                    </div>
+                </div>
+
                 <span class="tag">τ = r · F · sinθ</span>
-            </a>
+            </div>
 
             <!-- 3. القصور الدوراني (قائمة منسدلة) -->
             <div class="topic-card momentum-menu-card inertia-menu-card">
