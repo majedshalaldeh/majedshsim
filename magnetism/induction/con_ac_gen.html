@@ -293,11 +293,11 @@
     <label><input type="checkbox" id="showMagnets" checked>
       <i style="background:#d93a3a;color:#d93a3a"></i>قطبا المغناطيس (N / S)</label>
     <label><input type="checkbox" id="showCoil" checked>
-      <i style="background:#ff6b6b;color:#ff6b6b"></i>الملف الدوار (الوشيعة)</label>
+      <i style="background:#d08c3a;color:#d08c3a"></i>الملف الدوار (الوشيعة)</label>
     <label><input type="checkbox" id="showLabels" checked>
       <i style="background:#a8e6cf;color:#a8e6cf"></i>تسميات a·b·c·d و x·y</label>
     <label><input type="checkbox" id="showParticles" checked>
-      <i style="background:#ff6b6b;color:#ff6b6b"></i>حبيبات التيار (ملوّنة حسب الملف)</label>
+      <i style="background:#ffdd22;color:#ffdd22"></i>أسهم التيار (صفراء داخل الأسلاك)</label>
     <label><input type="checkbox" id="showArea" checked>
       <i style="background:#ff66cc;color:#ff66cc"></i>متجه المساحة A (للملف الأول)</label>
     <label><input type="checkbox" id="showField" checked>
@@ -348,8 +348,14 @@ const LAMP_POS = new THREE.Vector3(0, -3.5, 2.35);
 
 const UP_VEC = new THREE.Vector3(0, 1, 0);
 
-const PARTICLE_R = 0.05;
 const PARTICLE_SPEED_FACTOR = 0.85;
+
+/* ---- أسهم التيار (صغيرة لتناسب داخل الأسلاك) ---- */
+const ARROW_LEN       = 0.16;                 
+const ARROW_HEAD_LEN  = 0.07;                
+const ARROW_SHAFT_LEN = ARROW_LEN - ARROW_HEAD_LEN;
+const ARROW_SHAFT_R   = 0.010;               
+const ARROW_HEAD_R    = 0.024;
 
 const AREA_LEN      = 1.15;
 const AREA_HEAD_L   = 0.22;
@@ -357,6 +363,22 @@ const AREA_HEAD_R   = 0.075;
 const AREA_LINE_R   = 0.016;
 const AREA_RING_R   = 0.20;
 const AREA_RING_TUB = 0.013;
+
+const arrowShaftGeo = new THREE.CylinderGeometry(ARROW_SHAFT_R, ARROW_SHAFT_R, ARROW_SHAFT_LEN, 8);
+const arrowHeadGeo = new THREE.ConeGeometry(ARROW_HEAD_R, ARROW_HEAD_LEN, 12);
+
+function makeArrowMesh(mat) {
+  const g = new THREE.Group();
+  const shaft = new THREE.Mesh(arrowShaftGeo, mat);
+  shaft.position.y = -ARROW_LEN / 2 + ARROW_SHAFT_LEN / 2;
+  shaft.renderOrder = 19;
+  g.add(shaft);
+  const head = new THREE.Mesh(arrowHeadGeo, mat);
+  head.position.y = ARROW_LEN / 2 - ARROW_HEAD_LEN / 2;
+  head.renderOrder = 19;
+  g.add(head);
+  return g;
+}
 
 /* ================= ألوان الملفات ================= */
 const COIL_COLORS_HEX = [
@@ -478,6 +500,8 @@ function makePoleTexture(letter, baseHex) {
   ctx.shadowBlur = 14;
   ctx.shadowOffsetY = 6;
   ctx.fillText(letter, S / 2, S / 2 + 8);
+  ctx.shadowBlur = 0;
+  ctx.shadowOffsetY = 0;
 
   const tex = new THREE.CanvasTexture(c);
   tex.colorSpace = THREE.SRGBColorSpace;
@@ -561,7 +585,6 @@ const rotor = new THREE.Group();
 scene.add(rotor);
 
 const cornerSphereGeo = new THREE.SphereGeometry(COIL_R * 1.15, 14, 10);
-const particleGeo = new THREE.SphereGeometry(PARTICLE_R, 10, 8);
 
 /* ================= أدوات مساعدة ================= */
 function makeBar(p1, p2, radius, mat) {
@@ -622,7 +645,7 @@ function makeLetter(text, color) {
 
   const tex = new THREE.CanvasTexture(c);
   tex.anisotropy = 4;
-  const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false, depthWrite: false }));
+  const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: true, depthWrite: false }));
   sp.renderOrder = 20;
   const sc = 0.0016;
   sp.scale.set(S * sc, S * sc, 1);
@@ -657,7 +680,7 @@ function makeLabel(text, color, size = 1) {
 
   const tex = new THREE.CanvasTexture(c);
   tex.anisotropy = 4;
-  const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false, depthWrite: false }));
+  const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: true, depthWrite: false }));
   sp.renderOrder = 20;
   const sc = 0.0065 * size;
   sp.scale.set(c.width * sc, c.height * sc, 1);
@@ -671,9 +694,11 @@ let labelLetters = [];
 let areaVectorGroup = null;
 let coilGroup = null;
 
+/* ★ الحلقتان المنزلقتان شفافتان لكي تظهر الأسهم بداخلهما */
 const ringMat = new THREE.MeshStandardMaterial({
   color: 0xffd700, metalness: 0.95, roughness: 0.18,
-  emissive: 0x332200, emissiveIntensity: 0.35
+  emissive: 0x332200, emissiveIntensity: 0.35,
+  transparent: true, opacity: 0.6, depthWrite: false
 });
 
 function clearRotor() {
@@ -681,7 +706,7 @@ function clearRotor() {
     const c = rotor.children[i];
     rotor.remove(c);
     c.traverse(o => {
-      if (o.geometry && o.geometry !== particleGeo && o.geometry !== cornerSphereGeo) {
+      if (o.geometry && o.geometry !== cornerSphereGeo) {
         o.geometry.dispose();
       }
     });
@@ -704,13 +729,16 @@ function buildArmature() {
     const colorHex = COIL_COLORS_HEX[k % COIL_COLORS_HEX.length];
     const color = new THREE.Color(colorHex);
 
+    /* ★ جعل الملف شفافاً لكي تظهر الأسهم بداخله */
     const coilMat = new THREE.MeshStandardMaterial({
       color: colorHex, metalness: 0.88, roughness: 0.28,
-      emissive: color.clone().multiplyScalar(0.18), emissiveIntensity: 0.55
+      emissive: color.clone().multiplyScalar(0.18), emissiveIntensity: 0.55,
+      transparent: true, opacity: 0.6, depthWrite: false
     });
 
+    /* ★ أسهم صفراء داخل الأسلاك */
     const pMat = new THREE.MeshBasicMaterial({
-      color: colorHex, transparent: true, opacity: 1.0, depthTest: false
+      color: 0xffdd22, transparent: true, opacity: 1.0, depthTest: true, depthWrite: false
     });
 
     const phi = Math.PI * k / n;
@@ -733,11 +761,7 @@ function buildArmature() {
       coilGroup.add(s);
     });
 
-    /* ============================================================
-       ★★★ التصحيح: التوصيل عند نفس الزاوية الشعاعية للطرف ★★★
-       - زاوية B في XY = φ − π/2 ،  زاوية C في XY = φ + π/2
-       - بذلك يصبح كل سلك شعاعياً تماماً (لا يتقاطع مع ملف آخر)
-       ============================================================ */
+    /* التوصيل عند نفس الزاوية الشعاعية للطرف */
     const angB = phi - Math.PI / 2;
     const angC = phi + Math.PI / 2;
 
@@ -748,7 +772,6 @@ function buildArmature() {
       RING2_R * Math.cos(angC), RING2_R * Math.sin(angC), RING2_Z
     );
 
-    /* سلكان مستقيمان شعاعيان: B → ring1 ، C → ring2 */
     coilGroup.add(makeBar(B, target1, WIRE_R * 0.85, coilMat));
     coilGroup.add(makeBar(C, target2, WIRE_R * 0.85, coilMat));
 
@@ -757,8 +780,7 @@ function buildArmature() {
     const particles = [];
     const count = 10;
     for (let i = 0; i < count; i++) {
-      const m = new THREE.Mesh(particleGeo, pMat);
-      m.renderOrder = 18;
+      const m = makeArrowMesh(pMat);
       coilGroup.add(m);
       particles.push({ mesh: m, t: i / count });
     }
@@ -784,8 +806,8 @@ function buildArmature() {
   areaVectorGroup = new THREE.Group();
   rotor.add(areaVectorGroup);
 
-  const areaMatLine = new THREE.MeshBasicMaterial({ color: 0xff66cc, depthTest: false });
-  const areaMatCone = new THREE.MeshBasicMaterial({ color: 0xff66cc, depthTest: false });
+  const areaMatLine = new THREE.MeshBasicMaterial({ color: 0xff66cc, depthTest: true });
+  const areaMatCone = new THREE.MeshBasicMaterial({ color: 0xff66cc, depthTest: true });
 
   const areaLineMesh = new THREE.Mesh(
     new THREE.CylinderGeometry(AREA_LINE_R, AREA_LINE_R, AREA_LEN, 8), areaMatLine
@@ -862,17 +884,21 @@ brushGroup.add(labelX_);
 const circuitGroup = new THREE.Group();
 scene.add(circuitGroup);
 
+/* ★ أسلاك الدارة شفافة لكي تظهر الأسهم بداخلها */
 const wireMat = new THREE.MeshStandardMaterial({
   color: 0xaa3333, metalness: 0.4, roughness: 0.5,
-  emissive: 0x220000, emissiveIntensity: 0.25
+  emissive: 0x220000, emissiveIntensity: 0.25,
+  transparent: true, opacity: 0.6, depthWrite: false
 });
 
+/* استخدام centripetal لتجنب الحلقات */
 const wire1Curve = new THREE.CatmullRomCurve3([
   new THREE.Vector3(0, -RING1_R - RING_TUB - 0.32, RING1_Z),
   new THREE.Vector3(0, -2.1, RING1_Z),
   new THREE.Vector3(0, -3.2, RING1_Z - 0.05),
   new THREE.Vector3(0, LAMP_POS.y, LAMP_POS.z - 0.18)
-]);
+], false, 'centripetal');
+
 circuitGroup.add(new THREE.Mesh(
   new THREE.TubeGeometry(wire1Curve, 60, WIRE_R * 1.05, 10, false), wireMat
 ));
@@ -882,14 +908,15 @@ const wire2Curve = new THREE.CatmullRomCurve3([
   new THREE.Vector3(0, -2.1, RING2_Z),
   new THREE.Vector3(0, -3.2, RING2_Z + 0.05),
   new THREE.Vector3(0, LAMP_POS.y, LAMP_POS.z + 0.18)
-]);
+], false, 'centripetal');
+
 circuitGroup.add(new THREE.Mesh(
   new THREE.TubeGeometry(wire2Curve, 60, WIRE_R * 1.05, 10, false), wireMat
 ));
 
 const bulbGlassMat = new THREE.MeshPhysicalMaterial({
   color: 0xfff5d5, metalness: 0.0, roughness: 0.08,
-  transmission: 0.85, transparent: true, opacity: 0.75,
+  transmission: 0.85, transparent: true, opacity: 0.75, depthWrite: false,
   emissive: 0x000000, emissiveIntensity: 0
 });
 const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.22, 24, 18), bulbGlassMat);
@@ -927,9 +954,9 @@ glow.scale.set(1.6, 1.6, 1);
 glow.position.copy(LAMP_POS);
 scene.add(glow);
 
-/* ================= حبيبات الدارة الخارجية ================= */
+/* ================= أسهم الدارة الخارجية ================= */
 const circuitParticleMat = new THREE.MeshBasicMaterial({
-  color: 0xffb347, transparent: true, opacity: 1.0, depthTest: false
+  color: 0xffdd22, transparent: true, opacity: 1.0, depthTest: true, depthWrite: false
 });
 
 const circuitParts = [];
@@ -937,7 +964,7 @@ const circuitParts = [];
 function addCircuitParticles(curve, count, reverse) {
   const particles = [];
   for (let i = 0; i < count; i++) {
-    const m = new THREE.Mesh(particleGeo, circuitParticleMat);
+    const m = makeArrowMesh(circuitParticleMat);
     m.renderOrder = 18;
     scene.add(m);
     particles.push({ mesh: m, t: i / count });
@@ -1216,8 +1243,11 @@ function drawScope() {
   }
 }
 
-/* ================= تحديث الحبيبات ================= */
+/* ================= تحديث الأسهم ================= */
 const _pv = new THREE.Vector3();
+const _tv = new THREE.Vector3();
+const _p1 = new THREE.Vector3();
+const _p2 = new THREE.Vector3();
 
 function updateParticles(dt) {
   const showP = cbParticles.checked;
@@ -1232,25 +1262,47 @@ function updateParticles(dt) {
     const dir = s >= 0 ? 1 : -1;
     const f = Math.min(1, Math.abs(s) * 3);
     const step = PARTICLE_SPEED_FACTOR * Math.abs(state.omegaActual) * mag * f * dt;
+    
     cp.particles.forEach(p => {
       p.mesh.visible = visible;
       if (!visible) return;
       p.t = ((p.t + dir * step) % 1 + 1) % 1;
       cp.curve.getPoint(p.t, _pv);
+
+      const eps = 0.005;
+      const t1 = p.t - eps;
+      const t2 = p.t + eps;
+      cp.curve.getPoint(t1, _p1);
+      cp.curve.getPoint(t2, _p2);
+      _tv.subVectors(_p2, _p1).normalize();
+      if (dir < 0) _tv.negate();
+
       p.mesh.position.copy(_pv);
+      p.mesh.quaternion.setFromUnitVectors(UP_VEC, _tv);
     });
   });
 
   circuitParticleMat.opacity = Math.min(1, 0.3 + mag * 1.1);
   const extDir = state.emf >= 0 ? 1 : -1;
   circuitParts.forEach(seg => {
+    const moveDir = extDir * (seg.reverse ? -1 : 1);
     seg.particles.forEach(p => {
       p.mesh.visible = visible;
       if (!visible) return;
-      const d = extDir * (seg.reverse ? -1 : 1) * PARTICLE_SPEED_FACTOR * Math.abs(state.omegaActual) * mag * dt;
+      const d = moveDir * PARTICLE_SPEED_FACTOR * Math.abs(state.omegaActual) * mag * dt;
       p.t = ((p.t + d) % 1 + 1) % 1;
       seg.curve.getPoint(p.t, _pv);
+
+      const eps = 0.005;
+      const t1 = Math.max(0, p.t - eps);
+      const t2 = Math.min(1, p.t + eps);
+      seg.curve.getPoint(t1, _p1);
+      seg.curve.getPoint(t2, _p2);
+      _tv.subVectors(_p2, _p1).normalize();
+      if (moveDir < 0) _tv.negate();
+
       p.mesh.position.copy(_pv);
+      p.mesh.quaternion.setFromUnitVectors(UP_VEC, _tv);
     });
   });
 }

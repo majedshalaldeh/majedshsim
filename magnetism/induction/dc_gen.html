@@ -267,7 +267,7 @@
     <label><input type="checkbox" id="showLabels" checked>
       <i style="background:#a8e6cf;color:#a8e6cf"></i>تسميات a·b·c·d و x·y</label>
     <label><input type="checkbox" id="showParticles" checked>
-      <i style="background:#ff2222;color:#ff2222"></i>حبيبات التيار (حمراء)</label>
+      <i style="background:#ffdd22;color:#ffdd22"></i>أسهم التيار (صفراء داخل الأسلاك)</label>
     <label><input type="checkbox" id="showArea" checked>
       <i style="background:#ff66cc;color:#ff66cc"></i>متجه المساحة A</label>
     <label><input type="checkbox" id="showField" checked>
@@ -321,7 +321,13 @@ const BULB_R   = 0.22;
 
 const UP_VEC = new THREE.Vector3(0, 1, 0);
 
-const PARTICLE_R = 0.052;
+/* ---- أسهم التيار (صغيرة لتناسب داخل الأسلاك) ---- */
+const ARROW_LEN       = 0.16;                 
+const ARROW_HEAD_LEN  = 0.07;                
+const ARROW_SHAFT_LEN = ARROW_LEN - ARROW_HEAD_LEN;
+const ARROW_SHAFT_R   = 0.010;               
+const ARROW_HEAD_R    = 0.024;                
+
 const PARTICLE_SPEED_FACTOR = 0.85;
 
 const AREA_LEN      = 1.15;
@@ -523,7 +529,7 @@ function makeLabel(text, color, size = 1) {
   const tex = new THREE.CanvasTexture(c);
   tex.anisotropy = 4;
   const sp = new THREE.Sprite(new THREE.SpriteMaterial({
-    map: tex, transparent: true, depthTest: false, depthWrite: false
+    map: tex, transparent: true, depthTest: true, depthWrite: false
   }));
   sp.renderOrder = 20;
   const sc = 0.0065 * size;
@@ -553,7 +559,7 @@ function makeLetter(text, color) {
   const tex = new THREE.CanvasTexture(c);
   tex.anisotropy = 4;
   const sp = new THREE.Sprite(new THREE.SpriteMaterial({
-    map: tex, transparent: true, depthTest: false, depthWrite: false
+    map: tex, transparent: true, depthTest: true, depthWrite: false
   }));
   sp.renderOrder = 20;
   const sc = 0.0016;
@@ -617,7 +623,8 @@ scene.add(rotor);
 
 const copperMat = new THREE.MeshStandardMaterial({
   color: 0xd08c3a, metalness: 0.92, roughness: 0.22,
-  emissive: 0x1a0a00, emissiveIntensity: 0.25
+  emissive: 0x1a0a00, emissiveIntensity: 0.25,
+  transparent: true, opacity: 0.6, depthWrite: false
 });
 
 const cA = new THREE.Vector3(0, -H_COIL, -L_COIL);
@@ -723,7 +730,7 @@ const lead1Pts = [
   new THREE.Vector3(0.22,  0.40,          2.20),
   new THREE.Vector3(0,     0.50,          COMM_Z)
 ];
-const lead1Curve = new THREE.CatmullRomCurve3(lead1Pts, false, 'catmullrom', 0.5);
+const lead1Curve = new THREE.CatmullRomCurve3(lead1Pts, false, 'centripetal');
 const lead1Mesh = new THREE.Mesh(
   new THREE.TubeGeometry(lead1Curve, 100, WIRE_R, 12, false), copperMat
 );
@@ -738,7 +745,7 @@ const lead2Pts = [
   new THREE.Vector3(-0.22, -0.40,        2.20),
   new THREE.Vector3(0,     -0.50,        COMM_Z)
 ];
-const lead2Curve = new THREE.CatmullRomCurve3(lead2Pts, false, 'catmullrom', 0.5);
+const lead2Curve = new THREE.CatmullRomCurve3(lead2Pts, false, 'centripetal');
 const lead2Mesh = new THREE.Mesh(
   new THREE.TubeGeometry(lead2Curve, 100, WIRE_R, 12, false), copperMat
 );
@@ -749,8 +756,8 @@ coilGroup.add(lead2Mesh);
 const areaVectorGroup = new THREE.Group();
 rotor.add(areaVectorGroup);
 
-const areaMatLine = new THREE.MeshBasicMaterial({ color: 0xff66cc, depthTest: false });
-const areaMatCone = new THREE.MeshBasicMaterial({ color: 0xff66cc, depthTest: false });
+const areaMatLine = new THREE.MeshBasicMaterial({ color: 0xff66cc, depthTest: true });
+const areaMatCone = new THREE.MeshBasicMaterial({ color: 0xff66cc, depthTest: true });
 
 const areaLineMesh = new THREE.Mesh(
   new THREE.CylinderGeometry(AREA_LINE_R, AREA_LINE_R, AREA_LEN, 8), areaMatLine
@@ -819,7 +826,8 @@ scene.add(circuitGroup);
 
 const wireMat = new THREE.MeshStandardMaterial({
   color: 0xaa3333, metalness: 0.4, roughness: 0.5,
-  emissive: 0x220000, emissiveIntensity: 0.25
+  emissive: 0x220000, emissiveIntensity: 0.25,
+  transparent: true, opacity: 0.6, depthWrite: false
 });
 
 const BRUSH_X_OUT = COMM_R + COMM_TUB + 0.32;
@@ -833,7 +841,8 @@ const wireXCurve = new THREE.CatmullRomCurve3([
   new THREE.Vector3(BRUSH_X_OUT - 0.14,-3.50, COMM_Z * 0.42),
   new THREE.Vector3(BRUSH_X_OUT - 0.32,-3.50, 0.15),
   new THREE.Vector3(BULB_R * 0.85,      LAMP_Y, 0.00)
-]);
+], false, 'centripetal');
+
 circuitGroup.add(new THREE.Mesh(
   new THREE.TubeGeometry(wireXCurve, 120, WIRE_R * 1.05, 12, false), wireMat
 ));
@@ -845,14 +854,15 @@ const wireYCurve = new THREE.CatmullRomCurve3([
   new THREE.Vector3(BRUSH_Y_OUT + 0.14,-3.50, COMM_Z * 0.42),
   new THREE.Vector3(BRUSH_Y_OUT + 0.32,-3.50, 0.15),
   new THREE.Vector3(-BULB_R * 0.85,     LAMP_Y, 0.00)
-]);
+], false, 'centripetal');
+
 circuitGroup.add(new THREE.Mesh(
   new THREE.TubeGeometry(wireYCurve, 120, WIRE_R * 1.05, 12, false), wireMat
 ));
 
 const bulbGlassMat = new THREE.MeshPhysicalMaterial({
   color: 0xfff5d5, metalness: 0.0, roughness: 0.08,
-  transmission: 0.85, transparent: true, opacity: 0.75,
+  transmission: 0.85, transparent: true, opacity: 0.75, depthWrite: false,
   emissive: 0x000000, emissiveIntensity: 0
 });
 const bulb = new THREE.Mesh(new THREE.SphereGeometry(BULB_R, 24, 18), bulbGlassMat);
@@ -890,11 +900,46 @@ glow.scale.set(1.6, 1.6, 1);
 glow.position.copy(LAMP_POS);
 scene.add(glow);
 
-/* ================= حبيبات التيار ================= */
-const particleGeo = new THREE.SphereGeometry(PARTICLE_R, 10, 8);
+/* ================= مسارات المبدّل (لإضافة الأسهم) ================= */
+function makeArcPath(z, r, startAng, endAng, segments = 32) {
+  const pts = [];
+  for (let i = 0; i <= segments; i++) {
+    const a = startAng + (i / segments) * (endAng - startAng);
+    pts.push(new THREE.Vector3(Math.cos(a) * r, Math.sin(a) * r, z));
+  }
+  return new THREE.CatmullRomCurve3(pts, false, 'centripetal');
+}
+
+const comm1PathCurve = makeArcPath(COMM_Z, COMM_R, COMM_GAP, Math.PI - COMM_GAP);
+const comm2PathCurve = makeArcPath(COMM_Z, COMM_R, Math.PI + COMM_GAP, Math.PI * 2 - COMM_GAP);
+
+/* ================= أسهم التيار ================= */
+const arrowShaftGeo = new THREE.CylinderGeometry(
+  ARROW_SHAFT_R, ARROW_SHAFT_R, ARROW_SHAFT_LEN, 8
+);
+const arrowHeadGeo = new THREE.ConeGeometry(
+  ARROW_HEAD_R, ARROW_HEAD_LEN, 12
+);
+
 const particleMat = new THREE.MeshBasicMaterial({
-  color: 0xff2222, transparent: true, opacity: 1.0, depthTest: false
+  color: 0xffdd22, transparent: true, opacity: 1.0, depthTest: true, depthWrite: false
 });
+
+function makeArrowMesh() {
+  const g = new THREE.Group();
+
+  const shaft = new THREE.Mesh(arrowShaftGeo, particleMat);
+  shaft.position.y = -ARROW_LEN / 2 + ARROW_SHAFT_LEN / 2;
+  shaft.renderOrder = 19;
+  g.add(shaft);
+
+  const head = new THREE.Mesh(arrowHeadGeo, particleMat);
+  head.position.y = ARROW_LEN / 2 - ARROW_HEAD_LEN / 2;
+  head.renderOrder = 19;
+  g.add(head);
+
+  return g;
+}
 
 const currentSegments = [];
 
@@ -902,8 +947,7 @@ function addParticleSegment(opts) {
   const { parent, kind, count } = opts;
   const particles = [];
   for (let i = 0; i < count; i++) {
-    const m = new THREE.Mesh(particleGeo, particleMat);
-    m.renderOrder = 18;
+    const m = makeArrowMesh();
     parent.add(m);
     particles.push({ mesh: m, t: i / count });
   }
@@ -918,16 +962,20 @@ function addParticleSegment(opts) {
   });
 }
 
-/* جزيئات الملف والأسلاك الواصلة — داخل coilGroup لتختفي معها */
-addParticleSegment({ parent: coilGroup, kind: 'line', from: cB, to: cA, count: 8, directionMode: 'coil' });
+/* أسهم الملف */
+addParticleSegment({ parent: coilGroup, kind: 'line', from: cB, to: cA, count: 6, directionMode: 'coil' });
 addParticleSegment({ parent: coilGroup, kind: 'line', from: cA, to: cD, count: 5, directionMode: 'coil' });
-addParticleSegment({ parent: coilGroup, kind: 'line', from: cD, to: cC, count: 8, directionMode: 'coil' });
+addParticleSegment({ parent: coilGroup, kind: 'line', from: cD, to: cC, count: 6, directionMode: 'coil' });
 addParticleSegment({ parent: coilGroup, kind: 'curve', curve: lead2Curve, count: 5, reverse: false, directionMode: 'coil' });
 addParticleSegment({ parent: coilGroup, kind: 'curve', curve: lead1Curve, count: 5, reverse: true,  directionMode: 'coil' });
 
-/* الدارة الخارجية (اتجاه ثابت) */
-addParticleSegment({ parent: scene, kind: 'curve', curve: wireYCurve, count: 9, reverse: false, directionMode: 'const' });
-addParticleSegment({ parent: scene, kind: 'curve', curve: wireXCurve, count: 9, reverse: true,  directionMode: 'const' });
+/* أسهم المبدّل */
+addParticleSegment({ parent: rotor, kind: 'curve', curve: comm1PathCurve, count: 4, reverse: false, directionMode: 'coil' });
+addParticleSegment({ parent: rotor, kind: 'curve', curve: comm2PathCurve, count: 4, reverse: true,  directionMode: 'coil' });
+
+/* أسهم الدارة الخارجية */
+addParticleSegment({ parent: scene, kind: 'curve', curve: wireYCurve, count: 8, reverse: false, directionMode: 'const' });
+addParticleSegment({ parent: scene, kind: 'curve', curve: wireXCurve, count: 8, reverse: true,  directionMode: 'const' });
 
 addParticleSegment({
   parent: scene, kind: 'line',
@@ -1039,7 +1087,6 @@ resetBtn.addEventListener('click', () => {
   updateReadouts();
 });
 
-/* ★★★ إخفاء/إظهار قطبي المغناطيس ★★★ */
 cbMagnets.addEventListener('change', () => {
   magnetGroup.visible = cbMagnets.checked;
 });
@@ -1063,7 +1110,6 @@ cbComm.addEventListener('change', () => {
   commSeg2.visible = cbComm.checked;
   markSeg1.visible = cbComm.checked;
   markSeg2.visible = cbComm.checked;
-  /* الأسلاك الرابطة انتقلت إلى coilGroup */
 });
 cbBrushes.addEventListener('change', () => { brushGroup.visible = cbBrushes.checked; });
 cbCircuit.addEventListener('change', () => {
@@ -1138,15 +1184,18 @@ function drawScope() {
   scopeCtx.stroke();
 }
 
-/* ================= تحديث حبيبات التيار ================= */
+/* ================= تحديث أسهم التيار ================= */
 const _pv = new THREE.Vector3();
+const _tv = new THREE.Vector3();
+const _p1 = new THREE.Vector3();
+const _p2 = new THREE.Vector3();
 
 function updateParticles(dt, emfExt, refMax) {
   const mag = Math.min(1, Math.abs(emfExt) / refMax);
   const moving = Math.abs(state.omegaActual) > 0.02;
   const visible = cbParticles.checked && mag > 0.02 && moving;
 
-  particleMat.opacity = Math.min(1.0, mag * 3.2);
+  particleMat.opacity = Math.min(1.0, 0.3 + mag * 0.7);
 
   const sinT = Math.sin(state.theta);
   const signInternal = sinT >= 0 ? 1 : -1;
@@ -1156,20 +1205,32 @@ function updateParticles(dt, emfExt, refMax) {
   currentSegments.forEach(seg => {
     const tSpeed = baseSpeed / seg.length;
     const dirForSeg = (seg.directionMode === 'const') ? 1 : signInternal;
+    const moveDir = dirForSeg * (seg.reverse ? -1 : 1);
 
     seg.particles.forEach(p => {
       p.mesh.visible = visible;
       if (!visible) return;
 
-      p.t += tSpeed * dt * dirForSeg * (seg.reverse ? -1 : 1);
+      p.t += tSpeed * dt * moveDir;
       p.t = ((p.t % 1) + 1) % 1;
 
       if (seg.kind === 'line') {
         _pv.copy(seg.from).lerp(seg.to, p.t);
+        _tv.subVectors(seg.to, seg.from).normalize();
       } else {
         _pv.copy(seg.curve.getPointAt(p.t));
+        
+        const eps = 0.005;
+        const t1 = Math.max(0, p.t - eps);
+        const t2 = Math.min(1, p.t + eps);
+        _p1.copy(seg.curve.getPointAt(t1));
+        _p2.copy(seg.curve.getPointAt(t2));
+        _tv.subVectors(_p2, _p1).normalize();
       }
+      if (moveDir < 0) _tv.negate();
+
       p.mesh.position.copy(_pv);
+      p.mesh.quaternion.setFromUnitVectors(UP_VEC, _tv);
     });
   });
 }
@@ -1185,7 +1246,6 @@ function animate(now) {
 
   const thetaBefore = state.theta;
 
-  /* --- تقدّم الزاوية --- */
   if (!state.manualMode && state.running) {
     state.theta += state.omega * dt;
     if (state.theta > Math.PI * 2) state.theta -= Math.PI * 2;
@@ -1195,7 +1255,6 @@ function animate(now) {
     angleManVal.textContent = degNow.toFixed(1) + '°';
   }
 
-  /* --- حساب السرعة الزاوية الفعلية --- */
   let dTheta = state.theta - thetaBefore;
   if (dTheta >  Math.PI) dTheta -= Math.PI * 2;
   if (dTheta < -Math.PI) dTheta += Math.PI * 2;
@@ -1212,7 +1271,6 @@ function animate(now) {
     state.omegaActual = 0;
   }
 
-  /* --- EMF (بعد المبدّل) --- */
   const emfInternal = state.B * COIL_AREA * state.omegaActual * Math.sin(state.theta);
   const emfExt = Math.abs(emfInternal);
   state.lastEmf = emfExt;
@@ -1227,7 +1285,6 @@ function animate(now) {
     if (state.emfHistory.length > 220) state.emfHistory.shift();
   }
 
-  /* --- سطوع المصباح --- */
   const target = Math.min(1, emfExt / refMax);
   state.brightness += (target - state.brightness) * (1 - Math.exp(-dt * 16));
 
