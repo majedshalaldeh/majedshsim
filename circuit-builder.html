@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>منشئ الدارات الكهربائية | الأستاذ ماجد شلالدة</title>
+<style>
+:root{--radius-sm:8px;--radius-md:12px;--radius-lg:16px;--radius-pill:50px;--transition-fast:.2s ease;--transition-normal:.3s ease}
+body{text-align:right;--bg-color:#0b1329;--bg-secondary:#0f1a35;--main-card-bg:#1c2541;--sub-card-bg:#3a506b;--sub-card-hover:#465f7e;--text-color:#fff;--text-muted:#c0c8d8;--accent-cyan:#00b4d8;--accent-blue:#4cc9f0;--accent-green:#06d6a0;--accent-gold:#ffd166;--accent-red:#ef476f;--border-soft:rgba(255,255,255,.08);--shadow-soft:0 10px 30px rgba(0,0,0,.3);--shadow-hover:0 12px 30px rgba(6,214,160,.2);
+--card:var(--main-card-bg);--tx:var(--text-color);--mut:var(--text-muted);--ln:var(--sub-card-bg);--gbg:var(--bg-secondary);--wire:#4cc9f0;--res:#ef476f;--ok:#06d6a0;--acc:#00b4d8;--bad:#ff9f1c;
+font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg-color);color:var(--text-color);margin:0;min-height:100vh;line-height:1.6;transition:background var(--transition-normal),color var(--transition-normal)}
+body.light-mode{--bg-color:#f0f4f8;--bg-secondary:#e2e8f0;--main-card-bg:#fff;--sub-card-bg:#e8eef5;--sub-card-hover:#d8e2ec;--text-color:#1a202c;--text-muted:#4a5568;--border-soft:rgba(0,0,0,.08);--shadow-soft:0 10px 30px rgba(0,0,0,.08);--wire:#1d4ed8;--res:#dc2626;--ok:#059669;--acc:#0284c7;--bad:#c2410c}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+::-webkit-scrollbar{width:10px}::-webkit-scrollbar-track{background:var(--bg-color)}::-webkit-scrollbar-thumb{background:var(--sub-card-bg);border-radius:5px}::-webkit-scrollbar-thumb:hover{background:var(--accent-green)}
+.watermark-overlay{position:fixed;inset:0;background-image:url('../logo.png');background-size:180px;background-repeat:repeat;opacity:.03;pointer-events:none;z-index:0}
+.navbar{position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:12px 24px;background:rgba(28,37,65,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border-soft)}
+body.light-mode .navbar{background:rgba(255,255,255,.92)}
+.nav-brand{font-size:1.1rem;font-weight:700;color:var(--accent-green);display:flex;align-items:center;gap:8px}
+.nav-links{display:flex;gap:6px;flex-wrap:wrap}
+.nav-links a{color:var(--text-color);text-decoration:none;padding:8px 14px;border-radius:var(--radius-sm);font-size:.9rem;transition:background var(--transition-fast),color var(--transition-fast)}
+.nav-links a:hover{background:var(--accent-green);color:#000}
+.theme-toggle{background:transparent;border:1px solid var(--border-soft);color:var(--text-color);font-size:1.2rem;width:40px;height:40px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform var(--transition-fast),background var(--transition-fast)}
+.theme-toggle:hover{transform:rotate(20deg);background:var(--sub-card-bg)}
+.container{max-width:1750px;margin:0 auto;padding:20px;position:relative;z-index:1}
+.breadcrumb{display:flex;align-items:center;gap:8px;padding:12px 0;font-size:.9rem;color:var(--text-muted);flex-wrap:wrap}
+.breadcrumb a{color:var(--accent-green);text-decoration:none;transition:color var(--transition-fast)}.breadcrumb a:hover{color:var(--accent-cyan)}
+.breadcrumb .separator{opacity:.5}.breadcrumb .current{color:var(--text-color);font-weight:700}
+header.page-header{text-align:center;padding:20px 20px 30px}
+header.page-header h1{font-size:2.4rem;color:var(--accent-green);margin:0 0 12px;line-height:1.3}
+header.page-header p{color:var(--text-muted);font-size:1.05rem;margin:0 auto;max-width:700px}
+.tag{display:inline-block;background:rgba(6,214,160,.12);color:var(--accent-gold);padding:5px 14px;border-radius:var(--radius-pill);font-size:.85rem;margin-top:14px;font-weight:700;font-family:'Courier New',monospace;direction:ltr;border:1px solid rgba(6,214,160,.25)}
+.section-title{color:var(--accent-green);font-size:1.6rem;margin:0 0 22px;padding-bottom:10px;border-bottom:3px solid var(--accent-green);display:inline-block}
+footer.page-footer{text-align:center;padding:30px 20px;color:var(--text-muted);font-size:.88rem;border-top:1px solid var(--border-soft);margin-top:20px}
+footer.page-footer strong{color:var(--accent-green)}
+.back-to-top{position:fixed;bottom:25px;left:25px;width:46px;height:46px;border-radius:50%;background:var(--accent-green);color:#000;border:none;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(6,214,160,.4);opacity:0;pointer-events:none;transform:translateY(20px);transition:opacity var(--transition-normal),transform var(--transition-normal);z-index:99}
+.back-to-top.visible{opacity:1;pointer-events:auto;transform:translateY(0)}
+
+/* ===== صفحة منشئ الدوائر ===== */
+.main-container{display:flex;flex-wrap:wrap;justify-content:center;gap:22px;width:100%;margin:0 0 22px;align-items:flex-start;position:relative;z-index:1}
+.canvas-area{background:var(--main-card-bg);border:1px solid var(--border-soft);border-radius:var(--radius-lg);padding:15px;box-shadow:var(--shadow-soft);flex:1 1 auto;min-width:320px;overflow-x:auto}
+canvas{background:#0b1220;display:block;border-radius:var(--radius-md);cursor:pointer;width:100%;height:auto;border:1px solid var(--border-soft)}
+.control-panel{width:300px;flex:0 0 300px;background:var(--main-card-bg);border:1px solid var(--border-soft);border-radius:var(--radius-lg);padding:18px;box-shadow:var(--shadow-soft);text-align:right}
+.control-panel h3{margin:0 0 12px;color:var(--accent-cyan);text-align:center}
+.tool-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.tool-btn{background:var(--sub-card-bg);border:2px solid transparent;color:var(--text-color);padding:9px 6px;border-radius:var(--radius-sm);cursor:pointer;font:inherit;font-size:.8rem;transition:all var(--transition-fast)}
+.tool-btn:hover{background:var(--sub-card-hover)}
+.tool-btn.active{border-color:var(--accent-green);background:rgba(6,214,160,.18);font-weight:700}
+.power-btn{width:100%;padding:12px;border:none;border-radius:var(--radius-md);font:inherit;font-weight:700;font-size:1rem;cursor:pointer;margin-bottom:12px}
+.power-on{background:var(--accent-green);color:#000}.power-off{background:var(--accent-red);color:#fff}
+.props-box{background:var(--sub-card-bg);padding:12px;border-radius:var(--radius-sm);margin-bottom:12px;min-height:40px}
+.props-box label{display:block;font-size:.85rem;color:var(--text-muted);margin-bottom:5px}
+.props-box input[type=number]{width:100%;padding:6px;border-radius:6px;border:1px solid var(--border-soft);background:var(--bg-secondary);color:var(--text-color);font-family:monospace}
+.props-box .row-btns{display:flex;gap:6px;margin-top:8px}
+.props-box button{flex:1;padding:6px;border:none;border-radius:6px;cursor:pointer;font:inherit;font-size:.78rem}
+.btn-flip{background:var(--accent-gold);color:#000}.btn-toggle{background:var(--accent-cyan);color:#000}.btn-delete{background:var(--accent-red);color:#fff}
+.clear-btn{width:100%;background:var(--sub-card-bg);color:var(--text-color);border:1px solid var(--border-soft);padding:9px;border-radius:var(--radius-sm);cursor:pointer;margin-top:4px;font:inherit}
+.clear-btn:hover{background:var(--sub-card-hover);border-color:var(--accent-red)}
+.export-btn{width:100%;background:var(--accent-green);color:#000;border:none;padding:9px;border-radius:var(--radius-sm);cursor:pointer;margin-top:8px;font:inherit;font-weight:700}
+.export-btn:hover{box-shadow:var(--shadow-hover)}
+.export-btn.academic{background:var(--accent-cyan);color:#000}
+.legend{font-size:.76rem;color:var(--text-muted);text-align:right;line-height:1.85;margin-top:10px}
+.legend span.dot{display:inline-block;width:10px;height:10px;border-radius:2px;margin-inline-start:5px;vertical-align:middle}
+.logo-area{text-align:center;margin-bottom:14px}
+.logo-area img{width:320px;max-width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;border-radius:50%;box-shadow:0 4px 25px rgba(0,180,216,.25);border:3px solid rgba(0,180,216,.3)}
+.results-box{background:var(--main-card-bg);border:1px solid var(--border-soft);border-radius:var(--radius-lg);box-shadow:var(--shadow-soft);padding:18px;width:100%;margin:0 0 20px;text-align:right;position:relative;z-index:1}
+.results-box h3{color:var(--accent-green);margin-top:0}
+#resultsList{font-family:'Courier New',monospace;font-size:.85rem;direction:ltr;text-align:left;line-height:1.8;white-space:pre-wrap;background:var(--bg-secondary);color:var(--text-color);padding:12px;border-radius:var(--radius-sm);border:1px solid var(--border-soft)}
+.warn{color:var(--accent-red);font-weight:700}
+@media(max-width:900px){.control-panel{width:100%;flex:1 1 100%}}
+@media(min-width:901px){.control-panel{order:-1}}
+.fitonly{display:none}
+@media (min-width:1100px) and (min-height:620px){
+ .fitonly{display:inline-block}
+ html,body{height:100%;overflow:hidden}
+ body{display:flex;flex-direction:column}
+ .navbar{padding:6px 24px}.nav-links a{padding:5px 12px}.theme-toggle{width:34px;height:34px;font-size:1rem}
+ .container{flex:1;min-height:0;display:flex;flex-direction:column;padding:4px 16px 0;width:100%}
+ .breadcrumb{padding:2px 0;font-size:.8rem}
+ header.page-header{padding:0 0 6px;display:flex;align-items:center;justify-content:center;gap:16px}
+ header.page-header h1{font-size:1.35rem;margin:0}header.page-header p{display:none}header.page-header .tag{margin:0;padding:2px 12px}
+ .section-title{display:none}
+ main{flex:1;min-height:0;display:flex;flex-direction:column}
+ .main-container{flex:1;min-height:0;margin:0;flex-wrap:nowrap;align-items:stretch;gap:12px}
+ .canvas-area{display:flex;align-items:center;justify-content:center;padding:8px;min-height:0;overflow:hidden}
+ canvas{width:min(100%,calc((100vh - 200px)*1.7704));height:auto;flex:none}
+ .control-panel{overflow-y:auto;padding:12px;min-height:0}
+ .control-panel h3{margin-bottom:8px;font-size:1rem}
+ .logo-area{margin-bottom:8px}.logo-area img{width:144px;height:auto;border-width:2px}
+ .power-btn{padding:8px;margin-bottom:8px}.tool-grid{gap:6px;margin-bottom:8px}.tool-btn{padding:6px 4px}
+ .props-box{padding:8px;margin-bottom:8px}.legend{margin-top:6px;line-height:1.55;font-size:.72rem}
+ footer.page-footer{padding:4px;margin:0;display:flex;justify-content:center;gap:18px;font-size:.75rem}footer.page-footer p{margin:0}
+ .results-box{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(720px,92vw);max-height:80vh;overflow:auto;margin:0;z-index:200;box-shadow:0 0 0 100vmax rgba(0,0,0,.55)}
+ .results-box.open{display:block}
+ .x{float:left;background:var(--sub-card-bg);color:var(--text-color);border:1px solid var(--border-soft);border-radius:var(--radius-sm);padding:4px 10px;cursor:pointer}
+}
+</style>
+</head>
+<body>
+<div class="watermark-overlay"></div>
+<nav class="navbar">
+ <div class="nav-brand">⚛️ <span>فيزياء ماجد شلالدة</span></div>
+ <div class="nav-links">
+  <a href="../index.html#mechanics">⚙️ الميكانيكا</a>
+  <a href="../index.html#electricity">⚡ الكهرباء</a>
+  <a href="../index.html#magnetism">🧲 المغناطيسية</a>
+  <a href="../index.html#modern">🔬 الحديثة</a>
+ </div>
+ <button class="theme-toggle" id="themeToggle" aria-label="تبديل الوضع">🌙</button>
+</nav>
+<div class="container">
+ <div class="breadcrumb">
+  <a href="../index.html">🏠 الرئيسية</a><span class="separator">›</span>
+  <a href="../index.html#electricity">⚡ الكهرباء المتحركة</a><span class="separator">›</span>
+  <a href="dc-circuits.html#electricity">🔋 دارات التيار المستمر</a><span class="separator">›</span>
+  <span class="current">🔌 منشئ الدارات الكهربائية</span>
+ </div>
+ <header class="page-header">
+  <h1>🔌 منشئ الدارات الكهربائية التفاعلي</h1>
+  <p>إعداد الأستاذ ماجد شلالدة — اختر عنصرًا من اللوحة، ثم انقر على أي خط (أفقي أو عمودي أو قطري) بين نقطتين متجاورتين على الشبكة لوضعه هناك.</p>
+  <span class="tag">V = I · R | ΣI = 0</span>
+ </header>
+ <main>
+ <h2 class="section-title">⚡ المحاكاة التفاعلية</h2>
+
+<div class="main-container">
+    <div class="canvas-area">
+        <canvas id="c" width="1195" height="675"></canvas>
+    </div>
+
+    <div class="control-panel">
+        <div class="logo-area">
+            <img src="../logo.png" alt="شعار الاستاذ ماجد شلالده">
+        </div>
+        <button class="power-btn power-on" id="powerBtn">⚡ الدائرة: تعمل</button>
+
+        <h3>🧰 لوحة العناصر</h3>
+        <div class="tool-grid">
+            <button class="tool-btn active" data-tool="wire">➖ سلك</button>
+            <button class="tool-btn" data-tool="resistor">🟧 مقاومة</button>
+            <button class="tool-btn" data-tool="battery">🔋 بطارية</button>
+            <button class="tool-btn" data-tool="switch">🔀 مفتاح</button>
+            <button class="tool-btn" data-tool="lamp">💡 مصباح</button>
+            <button class="tool-btn" data-tool="ammeter">Ⓐ أميتر</button>
+            <button class="tool-btn" data-tool="voltmeter">Ⓥ فولتميتر</button>
+            <button class="tool-btn" data-tool="select">🖱️ تحديد/حذف</button>
+            <!-- أزرار أسهم التيار -->
+            <button class="tool-btn" data-tool="arrowRight" style="background:#1e3a8a;color:#fff;">➡️ سهم تيار (يمين)</button>
+            <button class="tool-btn" data-tool="arrowLeft" style="background:#1e3a8a;color:#fff;">⬅️ سهم تيار (يسار)</button>
+        </div>
+
+        <div class="props-box" id="propsBox">
+            <label>انقر على عنصر على الشبكة لتعديله، أو اختر أداة لوضع عنصر جديد.</label>
+        </div>
+
+        <button class="clear-btn" id="clearBtn">🗑️ مسح الدائرة بالكامل</button>
+        <button class="export-btn academic" id="exportSchematicBtn">📐 تصدير رسم تخطيطي (أكاديمي)</button>
+        <button class="clear-btn fitonly" id="resBtn">📊 نتائج الحل (تحليل العقد)</button>
+
+        <div class="legend">
+            <div><span class="dot" style="background:#64748b"></span> سلك (مقاومة = صفر)</div>
+            <div><span class="dot" style="background:#ff0000"></span> مقاومة</div>
+            <div><span class="dot" style="background:#1e00ff"></span> بطارية</div>
+            <div><span class="dot" style="background:#a78bfa"></span> مفتاح</div>
+            <div><span class="dot" style="background:#FFD700"></span> مصباح</div>
+            <div><span class="dot" style="background:#34d399"></span> أميتر / فولتميتر</div>
+            <div><span class="dot" style="background:#10b981"></span> نقطة التأريض</div>
+        </div>
+    </div>
+</div>
+
+<div class="results-box">
+    <button class="x fitonly" id="resX">✕</button><h3>📊 نتائج الحل (تحليل العقد)</h3>
+    <div id="resultsList">ضَع عناصر على الشبكة لبدء الحساب...</div>
+</div>
+
+ </main>
+ <footer class="page-footer">
+  <p>© 2025 المنصة التفاعلية للمحاكاة الفيزيائية — إعداد <strong>الأستاذ ماجد شلالدة</strong></p>
+  <p>📱 0599870176</p>
+ </footer>
+</div>
+<button class="back-to-top" id="backToTop" aria-label="العودة للأعلى">↑</button>
+
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const propsBox = document.getElementById('propsBox');
+const resultsList = document.getElementById('resultsList');
+const powerBtn = document.getElementById('powerBtn');
+
+const COLS = 18, ROWS = 10, SPACING = 65, MARGIN = 45;
+const totalNodes = COLS * ROWS;
+const GROUND_ID = 0;
+
+function nodePos(id) {
+    const row = Math.floor(id / COLS), col = id % COLS;
+    return { x: MARGIN + col * SPACING, y: MARGIN + row * SPACING };
+}
+
+const validEdges = [];
+for (let row = 0; row < ROWS; row++) {
+    for (let col = 0; col < COLS; col++) {
+        const id = row * COLS + col;
+        if (col < COLS - 1) validEdges.push({ a: id, b: id + 1 });
+        if (row < ROWS - 1) validEdges.push({ a: id, b: id + COLS });
+        if (row < ROWS - 1 && col < COLS - 1) {
+            validEdges.push({ a: id, b: id + COLS + 1 });
+            validEdges.push({ a: id + 1, b: id + COLS });
+        }
+    }
+}
+function edgeKey(a, b) { return a < b ? `${a}_${b}` : `${b}_${a}`; }
+
+let edgeComponents = {};
+let arrowComponents = {}; 
+let idCounter = 1;
+let currentTool = 'wire';
+let selectedKey = null;
+let solveResult = null;
+let circuitOn = true;
+
+const typeNames = { wire: 'سلك', resistor: 'مقاومة', battery: 'بطارية', switch: 'مفتاح', lamp: 'مصباح', ammeter: 'أميتر', voltmeter: 'فولتميتر', arrowRight: 'سهم تيار (يمين)', arrowLeft: 'سهم تيار (يسار)' };
+
+function distToSegment(px, py, x1, y1, x2, y2) {
+    const dx = x2 - x1, dy = y2 - y1;
+    const len2 = dx * dx + dy * dy;
+    let t = len2 === 0 ? 0 : ((px - x1) * dx + (py - y1) * dy) / len2;
+    t = Math.max(0, Math.min(1, t));
+    const cx = x1 + t * dx, cy = y1 + t * dy;
+    return Math.hypot(px - cx, py - cy);
+}
+
+function findNearestEdge(mx, my) {
+    let best = null, bestDist = 14;
+    for (const e of validEdges) {
+        const p1 = nodePos(e.a), p2 = nodePos(e.b);
+        const d = distToSegment(mx, my, p1.x, p1.y, p2.x, p2.y);
+        if (d < bestDist) { bestDist = d; best = e; }
+    }
+    return best;
+}
+
+powerBtn.addEventListener('click', () => {
+    circuitOn = !circuitOn;
+    powerBtn.textContent = circuitOn ? '⚡ الدائرة: تعمل' : '⛔ الدائرة: متوقفة';
+    powerBtn.className = 'power-btn ' + (circuitOn ? 'power-on' : 'power-off');
+    recomputeAndDraw();
+});
+
+document.querySelectorAll('.tool-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentTool = btn.dataset.tool;
+        if (currentTool !== 'select') { selectedKey = null; renderProps(); }
+    });
+});
+
+document.getElementById('clearBtn').addEventListener('click', () => {
+    edgeComponents = {};
+    arrowComponents = {};
+    selectedKey = null;
+    renderProps();
+    recomputeAndDraw();
+});
+
+canvas.addEventListener('click', (ev) => {
+    const rect = canvas.getBoundingClientRect();
+    const mx = (ev.clientX - rect.left) * (canvas.width / rect.width);
+    const my = (ev.clientY - rect.top) * (canvas.height / rect.height);
+    const edge = findNearestEdge(mx, my);
+    if (!edge) return;
+    const key = edgeKey(edge.a, edge.b);
+
+    if (currentTool === 'select') {
+        if (edgeComponents[key]) {
+            selectedKey = key;
+            if (edgeComponents[key].type === 'switch') {
+                edgeComponents[key].closed = !edgeComponents[key].closed;
+            }
+        } else if (arrowComponents[key]) {
+            selectedKey = key; 
+        } else {
+            selectedKey = null;
+        }
+        renderProps();
+        recomputeAndDraw();
+        return;
+    }
+
+    if (currentTool === 'arrowRight' || currentTool === 'arrowLeft') {
+        arrowComponents[key] = {
+            a: edge.a, b: edge.b, 
+            reversed: currentTool === 'arrowLeft',
+            show: true,
+            id: idCounter++
+        };
+        selectedKey = key; 
+        renderProps();
+        recomputeAndDraw();
+        return;
+    }
+
+    const defaults = {
+        wire: {}, resistor: { value: 10 }, battery: { value: 9, flipped: false, internalR: 0 },
+        switch: { closed: true }, lamp: { value: 15 }, ammeter: {}, voltmeter: {}
+    };
+    
+    edgeComponents[key] = {
+        a: edge.a, b: edge.b, type: currentTool,
+        value: defaults[currentTool].value,
+        flipped: defaults[currentTool].flipped || false,
+        closed: defaults[currentTool].closed !== undefined ? defaults[currentTool].closed : true,
+        internalR: defaults[currentTool].internalR || 0,
+        isUnknown: false,
+        hideValue: false,
+        name: '',
+        id: idCounter++
+    };
+    
+    selectedKey = key;
+    if (currentTool !== 'wire') {
+        currentTool = 'select';
+        document.querySelectorAll('.tool-btn').forEach(b => b.classList.toggle('active', b.dataset.tool === 'select'));
+    }
+    renderProps();
+    recomputeAndDraw();
+});
+
+function renderProps() {
+    if (!selectedKey) {
+        propsBox.innerHTML = `<label>انقر على عنصر على الشبكة لتعديله، أو اختر أداة لوضع عنصر جديد.</label>`;
+        return;
+    }
+
+    const isArrow = arrowComponents[selectedKey];
+    const c = isArrow ? arrowComponents[selectedKey] : edgeComponents[selectedKey];
+
+    if (!c) {
+         propsBox.innerHTML = `<label>انقر على عنصر على الشبكة لتعديله، أو اختر أداة لوضع عنصر جديد.</label>`;
+         return;
+    }
+
+    if (isArrow) {
+        let html = `<label>سهم تيار</label>`;
+        html += `<label style="margin-top:4px; font-size:0.8rem;">اتجاه السهم: ${c.reversed ? 'عكس الحافة' : 'مع الحافة'}</label>`;
+        html += `<label style="margin-top:8px; display:flex; align-items:center; gap:8px; cursor:pointer;"><input type="checkbox" id="showArrow" ${c.show ? 'checked' : ''}> إظهار السهم في التصدير</label>`;
+        html += `<div class="row-btns">`;
+        html += `<button class="btn-toggle" id="flipArrowBtn">⟲ عكس الاتجاه</button>`;
+        html += `<button class="btn-delete" id="delBtn">🗑️ حذف السهم</button></div>`;
+        propsBox.innerHTML = html;
+
+        document.getElementById('flipArrowBtn').onclick = () => { c.reversed = !c.reversed; renderProps(); recomputeAndDraw(); };
+        document.getElementById('showArrow').onchange = (e) => { c.show = e.target.checked; recomputeAndDraw(); };
+        document.getElementById('delBtn').onclick = () => {
+            delete arrowComponents[selectedKey];
+            selectedKey = null;
+            renderProps();
+            recomputeAndDraw();
+        };
+        return;
+    }
+
+    const typeName = typeNames[c.type] || c.type;
+    let html = `<label>${c.name ? `"${c.name}" — ` : ''}${typeName}</label>`;
+    
+    html += `<input type="text" id="nameInput" placeholder="اسم اختياري (مثال: R1)" value="${c.name || ''}" style="width:100%; padding:6px; border-radius:6px; border:none; font-family:inherit; margin-bottom:8px;">`;
+
+    if (c.type === 'resistor' || c.type === 'lamp') {
+        html += `<input type="number" id="valInput" min="0.1" step="0.5" value="${c.value}"> <span style="font-size:0.72rem;color:#94a3b8">أوم (Ω)</span>`;
+    } else if (c.type === 'battery') {
+        html += `<input type="number" id="valInput" min="0.1" step="0.5" value="${c.value}"> <span style="font-size:0.72rem;color:#94a3b8">فولت (V)</span>`;
+        html += `<label style="margin-top:8px;">المقاومة الداخلية</label>`;
+        html += `<input type="number" id="rintInput" min="0" step="0.1" value="${c.internalR || 0}"> <span style="font-size:0.72rem;color:#94a3b8">أوم (Ω)</span>`;
+    } else if (c.type === 'switch') {
+        html += `<label style="margin-top:4px; font-size:0.8rem; color:${c.closed ? '#10b981' : '#ef4444'}">الحالة: ${c.closed ? 'مغلق' : 'مفتوح'}</label>`;
+    }
+
+    if (c.type !== 'wire') {
+        html += `<label style="margin-top:8px; display:flex; align-items:center; gap:8px; cursor:pointer;"><input type="checkbox" id="isUnknown" ${c.isUnknown ? 'checked' : ''}> إظهار علامة استفهام (؟) بدلاً من القيمة</label>`;
+        html += `<label style="margin-top:8px; display:flex; align-items:center; gap:8px; cursor:pointer;"><input type="checkbox" id="hideValue" ${c.hideValue ? 'checked' : ''}> إخفاء القيمة تماماً</label>`;
+    }
+
+    html += `<div class="row-btns">`;
+    if (c.type === 'battery') html += `<button class="btn-flip" id="flipBtn">⟲ عكس القطبية</button>`;
+    if (c.type === 'switch') html += `<button class="btn-toggle" id="toggleBtn">${c.closed ? '🔓 فتح' : '🔒 غلق'}</button>`;
+    html += `<button class="btn-delete" id="delBtn">🗑️ حذف</button></div>`;
+    propsBox.innerHTML = html;
+
+    const nameInput = document.getElementById('nameInput');
+    if (nameInput) nameInput.addEventListener('input', () => { c.name = nameInput.value; draw(); });
+    const valInput = document.getElementById('valInput');
+    if (valInput) valInput.addEventListener('input', () => {
+        const v = parseFloat(valInput.value);
+        if (!isNaN(v) && v > 0) { c.value = v; recomputeAndDraw(); }
+    });
+    const flipBtn = document.getElementById('flipBtn');
+    if (flipBtn) flipBtn.addEventListener('click', () => { c.flipped = !c.flipped; recomputeAndDraw(); });
+    const rintInput = document.getElementById('rintInput');
+    if (rintInput) rintInput.addEventListener('input', () => {
+        const v = parseFloat(rintInput.value);
+        if (!isNaN(v) && v >= 0) { c.internalR = v; recomputeAndDraw(); }
+    });
+    const toggleBtn = document.getElementById('toggleBtn');
+    if (toggleBtn) toggleBtn.addEventListener('click', () => { c.closed = !c.closed; renderProps(); recomputeAndDraw(); });
+    const isUnknown = document.getElementById('isUnknown');
+    if (isUnknown) isUnknown.addEventListener('change', () => { 
+        c.isUnknown = isUnknown.checked; 
+        if (c.isUnknown) c.hideValue = false; 
+        renderProps();
+        recomputeAndDraw(); 
+    });
+    const hideValue = document.getElementById('hideValue');
+    if (hideValue) hideValue.addEventListener('change', () => { 
+        c.hideValue = hideValue.checked; 
+        if (c.hideValue) c.isUnknown = false; 
+        renderProps();
+        recomputeAndDraw(); 
+    });
+    
+    const delBtn = document.getElementById('delBtn');
+    if (delBtn) delBtn.addEventListener('click', () => {
+        delete edgeComponents[selectedKey];
+        delete arrowComponents[selectedKey];
+        selectedKey = null;
+        renderProps();
+        recomputeAndDraw();
+    });
+}
+
+// ===== محلّل جديد: أسلاك/أميتر/مفتاح مغلق مثالية (R = 0) والفولتميتر دائرة مفتوحة (R = ∞) =====
+function isIdealBranch(c) {
+    return c.type === 'wire' || c.type === 'ammeter' || (c.type === 'switch' && c.closed);
+}
+
+function getResistance(c) {
+    if (c.type === 'resistor' || c.type === 'lamp') return c.value;
+    return null; // سلك/أميتر/مفتاح: مثالي (يُعالج بدمج العقد) — فولتميتر/مفتاح مفتوح: دائرة مفتوحة
+}
+
+function gaussianSolve(M, rhs, size) {
+    const A = M.map(row => row.slice());
+    const b = rhs.slice();
+    for (let col = 0; col < size; col++) {
+        let piv = col;
+        for (let r = col + 1; r < size; r++) if (Math.abs(A[r][col]) > Math.abs(A[piv][col])) piv = r;
+        if (Math.abs(A[piv][col]) < 1e-12) continue;
+        [A[col], A[piv]] = [A[piv], A[col]];
+        [b[col], b[piv]] = [b[piv], b[col]];
+        for (let r = 0; r < size; r++) {
+            if (r === col) continue;
+            const factor = A[r][col] / A[col][col];
+            if (factor === 0) continue;
+            for (let cc = col; cc < size; cc++) A[r][cc] -= factor * A[col][cc];
+            b[r] -= factor * b[col];
+        }
+    }
+    const x = new Array(size).fill(0);
+    for (let i = 0; i < size; i++) x[i] = Math.abs(A[i][i]) > 1e-12 ? b[i] / A[i][i] : 0;
+    return x;
+}
+
+function solveCircuit() {
+    const comps = Object.values(edgeComponents);
+    if (comps.length === 0) return null;
+
+    // 1) دمج العقد المتصلة بعناصر مثالية (سلك، أميتر، مفتاح مغلق) في «عقدة عليا» واحدة
+    const parent = Array.from({ length: totalNodes }, (_, i) => i);
+    const find = (x) => { while (parent[x] !== x) { parent[x] = parent[parent[x]]; x = parent[x]; } return x; };
+    const union = (a, b) => { a = find(a); b = find(b); if (a === b) return false; parent[Math.max(a, b)] = Math.min(a, b); return true; };
+
+    // أسلاك ومفاتيح أولًا ثم الأميتر: الأميتر الموصول على التوازي مع سلك لا يمرّ به تيار (قراءته صفر)
+    const idealList = comps.filter(isIdealBranch).sort((p, q) => (p.type === 'ammeter') - (q.type === 'ammeter'));
+    const treeEdges = [];
+    idealList.forEach(c => { if (union(c.a, c.b)) treeEdges.push(c); });
+    // الجذر الأصغر يحوي العقدة 0 (الأرضي) دائمًا إن اتصلت بها
+
+    const roots = [];
+    const rootIdx = new Array(totalNodes).fill(-1);
+    for (let id = 0; id < totalNodes; id++) {
+        const r = find(id);
+        if (r === find(GROUND_ID)) continue;       // الأرضي: جهده صفر
+        if (rootIdx[r] === -1) { rootIdx[r] = roots.length; roots.push(r); }
+    }
+    const idx = (nodeId) => { const r = find(nodeId); return r === find(GROUND_ID) ? -1 : rootIdx[r]; };
+
+    const n = roots.length;
+    const batteries = comps.filter(c => c.type === 'battery');
+    const m = batteries.length;
+    const size = n + m;
+
+    // 2) فحص دائرة القصر المثالية: بطارية بلا مقاومة داخلية طرفاها في عقدة عليا واحدة
+    let shortCircuit = false;
+    if (circuitOn) {
+        batteries.forEach(c => {
+            if ((c.internalR || 0) === 0 && find(c.a) === find(c.b) && c.value !== 0) shortCircuit = true;
+        });
+    }
+
+    const M = Array.from({ length: size }, () => new Array(size).fill(0));
+    const rhs = new Array(size).fill(0);
+
+    // تثبيت بسيط للعقد العائمة فقط (gmin) حتى لا تصبح المصفوفة شاذة
+    for (let i = 0; i < n; i++) M[i][i] += 1e-9;
+
+    comps.forEach(c => {
+        if (c.type === 'battery') return;
+        const R = getResistance(c);
+        if (R === null) return;
+        const g = 1 / R;
+        const ia = idx(c.a), ib = idx(c.b);
+        if (ia === ib) return;
+        if (ia >= 0) M[ia][ia] += g;
+        if (ib >= 0) M[ib][ib] += g;
+        if (ia >= 0 && ib >= 0) { M[ia][ib] -= g; M[ib][ia] -= g; }
+    });
+
+    batteries.forEach((c, k) => {
+        const kk = n + k;
+        const p = c.flipped ? c.b : c.a;
+        const nn = c.flipped ? c.a : c.b;
+        const ip = idx(p), inn = idx(nn);
+        if (ip >= 0) { M[ip][kk] += 1; M[kk][ip] += 1; }
+        if (inn >= 0) { M[inn][kk] -= 1; M[kk][inn] -= 1; }
+        M[kk][kk] -= (c.internalR || 0);
+        rhs[kk] = circuitOn ? c.value : 0;
+    });
+
+    let x = shortCircuit ? new Array(size).fill(0) : gaussianSolve(M, rhs, size);
+
+    // فحص تعارض المصادر المثالية (مثل بطاريتين مثاليتين مختلفتين على التوازي): المعادلات لا حلّ لها
+    let conflict = false;
+    if (!shortCircuit) {
+        let resid = 0;
+        for (let i = 0; i < size; i++) {
+            let sum = -rhs[i];
+            for (let j = 0; j < size; j++) sum += M[i][j] * x[j];
+            resid = Math.max(resid, Math.abs(sum));
+        }
+        if (resid > 1e-6) { conflict = true; x = new Array(size).fill(0); }
+    }
+
+    const V = new Array(totalNodes).fill(0);
+    for (let id = 0; id < totalNodes; id++) { const i = idx(id); V[id] = i >= 0 ? x[i] : 0; }
+
+    // 3) تيارات العناصر غير المثالية
+    const byKey = {};
+    const net = new Array(totalNodes).fill(0); // صافي التيار الخارج من كل عقدة عبر عناصر غير مثالية
+    let maxCurrent = 0;
+    comps.forEach(c => {
+        const key = edgeKey(c.a, c.b);
+        if (isIdealBranch(c)) return;
+        let current, voltage;
+        if (c.type === 'battery') {
+            const Ibat = x[n + batteries.indexOf(c)];
+            current = c.flipped ? -Ibat : Ibat;
+            const p = c.flipped ? c.b : c.a, nn = c.flipped ? c.a : c.b;
+            voltage = circuitOn ? (V[p] - V[nn]) : 0;
+            if (shortCircuit && (c.internalR || 0) === 0 && find(c.a) === find(c.b)) { current = Infinity; }
+        } else {
+            const R = getResistance(c);
+            voltage = V[c.a] - V[c.b];
+            current = R === null ? 0 : voltage / R;
+        }
+        byKey[key] = { current, voltage };
+        if (Number.isFinite(current)) {
+            net[c.a] += current; net[c.b] -= current;
+            maxCurrent = Math.max(maxCurrent, Math.abs(current));
+        }
+    });
+
+    // 4) توزيع التيار على العناصر المثالية: تُحلّ على شجرة ممتدة (نزع الأوراق)
+    const adj = new Map();
+    treeEdges.forEach(c => {
+        if (!adj.has(c.a)) adj.set(c.a, []);
+        if (!adj.has(c.b)) adj.set(c.b, []);
+        adj.get(c.a).push({ c, to: c.b, sign: +1 });   // التيار موجب من a إلى b
+        adj.get(c.b).push({ c, to: c.a, sign: -1 });
+    });
+    const flow = new Map(); treeEdges.forEach(c => flow.set(c, 0));
+    const visited = new Set();
+    const supply = net.slice(); // ما يجب أن يخرج من كل عقدة عبر الأسلاك = صافي ما يصلها من العناصر الأخرى
+    treeEdges.forEach(rootEdge => {
+        const start = rootEdge.a;
+        if (visited.has(start)) return;
+        const order = [], parentEdge = new Map();
+        const stack = [start]; visited.add(start); parentEdge.set(start, null);
+        while (stack.length) {
+            const u = stack.pop(); order.push(u);
+            (adj.get(u) || []).forEach(e => {
+                if (!visited.has(e.to)) { visited.add(e.to); parentEdge.set(e.to, { from: u, e }); stack.push(e.to); }
+            });
+        }
+        for (let i = order.length - 1; i > 0; i--) {
+            const v = order[i], pe = parentEdge.get(v);
+            // العقدة v تتلقّى net[v] من العناصر الأخرى، فيجب أن تُرسل ما يساويه عبر سلك الشجرة نحو الأب
+            // (net[v] = تيار خارج من v عبر العناصر؛ يجب أن يدخل v عبر الأسلاك)
+            const needIn = supply[v];                 // تيار يدخل v عبر الشجرة من الأب
+            // التيار من الأب إلى v = needIn  (في اتجاه الأب→v)
+            const fromParent = needIn;
+            const dirSign = (pe.e.sign === +1) ? 1 : -1; // pe.e معرّف من جهة الأب: sign=+1 تعني الأب = c.a
+            flow.set(pe.e.c, fromParent * dirSign);
+            supply[pe.from] += supply[v];
+            supply[v] = 0;
+        }
+    });
+
+    comps.forEach(c => {
+        if (!isIdealBranch(c)) return;
+        const key = edgeKey(c.a, c.b);
+        const current = flow.has(c) ? flow.get(c) : 0;
+        byKey[key] = { current, voltage: 0 };
+        maxCurrent = Math.max(maxCurrent, Math.abs(current));
+    });
+
+    // 5) الفولتميتر: دائرة مفتوحة، يقرأ فرق الجهد فقط
+    comps.forEach(c => {
+        if (c.type === 'voltmeter' || (c.type === 'switch' && !c.closed)) {
+            byKey[edgeKey(c.a, c.b)] = { current: 0, voltage: V[c.a] - V[c.b] };
+        }
+    });
+
+    let warning = null;
+    if (conflict) warning = 'تعارض: مصادر مثالية (بدون مقاومة داخلية) موصولة بحيث لا يوجد حلّ — أضف مقاومة داخلية للبطاريات أو عدّل التوصيل.';
+    else if (shortCircuit) warning = 'دائرة قصر: بطارية مثالية (بدون مقاومة داخلية) موصولة بسلك مباشرةً — التيار نظريًا لا نهائي!';
+    return { V, byKey, warning };
+}
+
+function unitVec(p1, p2) {
+    const dx = p2.x - p1.x, dy = p2.y - p1.y, len = Math.hypot(dx, dy);
+    return { ux: dx / len, uy: dy / len, nx: -dy / len, ny: dx / len, len };
+}
+
+function roundRectPath(x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+}
+
+const RESISTOR_DIGIT_COLORS = ['#1a1a1a', '#8B4513', '#FF3B30', '#FF9500', '#FFD60A', '#34C759', '#0A84FF', '#AF52DE', '#8E8E93', '#FFFFFF'];
+function resistorColorBands(value) {
+    let v = Math.max(value, 0.1), exp = 0;
+    while (v >= 100) { v /= 10; exp++; }
+    while (v < 10) { v *= 10; exp--; }
+    const d1 = Math.floor(v / 10), d2 = Math.floor(v) % 10;
+    const c1 = RESISTOR_DIGIT_COLORS[d1], c2 = RESISTOR_DIGIT_COLORS[d2];
+    let c3;
+    if (exp >= 0 && exp <= 9) c3 = RESISTOR_DIGIT_COLORS[exp];
+    else if (exp === -1) c3 = '#D4AF37';
+    else c3 = '#C0C0C0';
+    return [c1, c2, c3];
+}
+
+function drawResistorBody(p1, p2, value, strokeColor) {
+    const { ux, uy, len } = unitVec(p1, p2);
+    const bodyLen = Math.min(len * 0.5, 42), bodyHalfW = 8;
+    const midX = (p1.x + p2.x) / 2, midY = (p1.y + p2.y) / 2;
+    const startX = midX - ux * bodyLen / 2, startY = midY - uy * bodyLen / 2;
+    const endX = midX + ux * bodyLen / 2, endY = midY + uy * bodyLen / 2;
+    ctx.strokeStyle = strokeColor;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(p1.x, p1.y); ctx.lineTo(startX, startY);
+    ctx.moveTo(endX, endY); ctx.lineTo(p2.x, p2.y);
+    ctx.stroke();
+    const angle = Math.atan2(p2.y - p1.y, p2.x - p1.x);
+    ctx.save();
+    ctx.translate(midX, midY);
+    ctx.rotate(angle);
+    roundRectPath(-bodyLen / 2, -bodyHalfW, bodyLen, bodyHalfW * 2, 5);
+    ctx.fillStyle = '#e3c193';
+    ctx.fill();
+    ctx.strokeStyle = '#8a6d3b';
+    ctx.lineWidth = 1.2;
+    ctx.stroke();
+    const colors = resistorColorBands(value);
+    const bandW = 4, spacing = bodyLen / 4.2;
+    colors.forEach((col, i) => {
+        ctx.fillStyle = col;
+        const bx = -bodyLen / 2 + spacing * (i + 0.9);
+        ctx.fillRect(bx, -bodyHalfW + 1, bandW, bodyHalfW * 2 - 2);
+    });
+    ctx.restore();
+}
+
+function drawBatteryOnEdge(p1, p2, flipped, internalR) {
+    const { ux, uy, nx, ny } = unitVec(p1, p2);
+    const midX = (p1.x + p2.x) / 2, midY = (p1.y + p2.y) / 2;
+    const cellGap = 9;
+    const order = flipped ? ['short', 'long', 'short', 'long'] : ['long', 'short', 'long', 'short'];
+    const offsets = [-1.5, -0.5, 0.5, 1.5].map(m => m * cellGap);
+    order.forEach((type, i) => {
+        const cx = midX + ux * offsets[i], cy = midY + uy * offsets[i];
+        const halfLen = type === 'long' ? 15 : 8;
+        ctx.lineWidth = type === 'long' ? 2.5 : 6;
+        ctx.beginPath();
+        ctx.moveTo(cx - nx * halfLen, cy - ny * halfLen);
+        ctx.lineTo(cx + nx * halfLen, cy + ny * halfLen);
+        ctx.stroke();
+    });
+    const plusSide = flipped ? 1 : -1;
+    const plusOff = plusSide === -1 ? offsets[0] - 10 : offsets[3] + 10;
+    const minusOff = plusSide === -1 ? offsets[3] + 10 : offsets[0] - 10;
+    if (internalR > 0) {
+        const zStart = plusOff + plusSide * 8, zEnd = plusOff + plusSide * 22;
+        ctx.strokeStyle = '#f59e0b';
+        ctx.lineWidth = 1.8;
+        ctx.beginPath();
+        for (let i = 0; i <= 5; i++) {
+            const frac = i / 5;
+            const off = zStart + (zEnd - zStart) * frac;
+            const perp = (i % 2 === 0) ? 0 : (i % 4 === 1 ? 4 : -4);
+            const px = midX + ux * off + nx * perp, py = midY + uy * off + ny * perp;
+            if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+        }
+        ctx.stroke();
+    }
+    ctx.font = 'bold 14px sans-serif';
+    ctx.fillStyle = '#ef4444';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('+', midX + ux * plusOff, midY + uy * plusOff);
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillText('−', midX + ux * minusOff, midY + uy * minusOff);
+    ctx.textAlign = 'start'; ctx.textBaseline = 'alphabetic';
+}
+
+function drawSwitchOnEdge(p1, p2, closed) {
+    const { ux, uy, nx, ny, len } = unitVec(p1, p2);
+    const stub1 = { x: p1.x + ux * len * 0.35, y: p1.y + uy * len * 0.35 };
+    const stub2 = { x: p1.x + ux * len * 0.65, y: p1.y + uy * len * 0.65 };
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(p1.x, p1.y); ctx.lineTo(stub1.x, stub1.y);
+    ctx.moveTo(stub2.x, stub2.y); ctx.lineTo(p2.x, p2.y);
+    ctx.stroke();
+    ctx.fillStyle = '#cbd5e1';
+    ctx.beginPath(); ctx.arc(stub1.x, stub1.y, 4, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(stub2.x, stub2.y, 4, 0, Math.PI * 2); ctx.fill();
+    if (closed) {
+        ctx.lineWidth = 3.5;
+        ctx.beginPath(); ctx.moveTo(stub1.x, stub1.y); ctx.lineTo(stub2.x, stub2.y); ctx.stroke();
+    } else {
+        ctx.save();
+        ctx.strokeStyle = 'rgba(167,139,250,0.35)';
+        ctx.lineWidth = 1;
+        ctx.setLineDash([2, 3]);
+        ctx.beginPath();
+        ctx.moveTo(stub1.x, stub1.y);
+        ctx.lineTo(stub1.x + ux * len * 0.3 + nx * 20, stub1.y + uy * len * 0.3 + ny * 20);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.restore();
+        const liftX = stub1.x + ux * len * 0.22 + nx * 16;
+        const liftY = stub1.y + uy * len * 0.22 + ny * 16;
+        ctx.lineWidth = 3.5;
+        ctx.beginPath(); ctx.moveTo(stub1.x, stub1.y); ctx.lineTo(liftX, liftY); ctx.stroke();
+        ctx.fillStyle = '#a78bfa';
+        ctx.beginPath(); ctx.arc(liftX, liftY, 4, 0, Math.PI * 2); ctx.fill();
+    }
+}
+
+function drawArrowOnEdge(p1, p2, reversed, color) {
+    const { ux, uy } = unitVec(p1, p2);
+    const midX = (p1.x + p2.x) / 2, midY = (p1.y + p2.y) / 2;
+    const angle = Math.atan2(p2.y - p1.y, p2.x - p1.x) + (reversed ? Math.PI : 0);
+    
+    ctx.save();
+    ctx.translate(midX, midY);
+    ctx.rotate(angle);
+    
+    ctx.beginPath();
+    ctx.moveTo(-6, -6);
+    ctx.lineTo(6, 0);
+    ctx.lineTo(-6, 6);
+    ctx.closePath();
+    ctx.fillStyle = color;
+    ctx.fill();
+    
+    ctx.restore();
+}
+
+function lerpColor(c1, c2, t) {
+    const p1 = parseInt(c1.slice(1), 16), p2 = parseInt(c2.slice(1), 16);
+    const r1 = (p1 >> 16) & 255, g1 = (p1 >> 8) & 255, b1 = p1 & 255;
+    const r2 = (p2 >> 16) & 255, g2 = (p2 >> 8) & 255, b2 = p2 & 255;
+    const r = Math.round(r1 + (r2 - r1) * t), g = Math.round(g1 + (g2 - g1) * t), b = Math.round(b1 + (b2 - b1) * t);
+    return `rgb(${r},${g},${b})`;
+}
+
+const REFERENCE_POWER = 10;
+
+// جهة كتابة نص القيمة بالنسبة للعنصر: تُختار عموديًا على السلك (فوق الأفقي، يمين العمودي)
+function labelSide(p1, p2) {
+    const uv = unitVec(p1, p2);
+    let sx = uv.nx, sy = uv.ny;
+    if (sy > 0.01 || (Math.abs(sy) <= 0.01 && sx < 0)) { sx = -sx; sy = -sy; }
+    return { sx, sy };
+}
+function drawSideText(text, cx, cy, sx, sy, off) {
+    ctx.save();
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = sx > 0.3 ? 'left' : (sx < -0.3 ? 'right' : 'center');
+    ctx.fillText(text, cx + sx * off, cy + sy * off);
+    ctx.restore();
+}
+
+function drawLampOnEdge(p1, p2, power) {
+    const { ux, uy, len } = unitVec(p1, p2);
+    const midX = (p1.x + p2.x) / 2, midY = (p1.y + p2.y) / 2;
+    const r = 16;
+    const brightness = Math.max(0, Math.min(1, power / REFERENCE_POWER));
+    if (brightness > 0.01) {
+        const haloR = r * (2.2 + brightness * 2.5);
+        const grad = ctx.createRadialGradient(midX, midY, r * 0.3, midX, midY, haloR);
+        grad.addColorStop(0, `rgba(254,240,138,${0.55 * brightness})`);
+        grad.addColorStop(0.5, `rgba(253,224,71,${0.25 * brightness})`);
+        grad.addColorStop(1, 'rgba(253,224,71,0)');
+        ctx.fillStyle = grad;
+        ctx.beginPath(); ctx.arc(midX, midY, haloR, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.strokeStyle = '#fde047';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(p1.x, p1.y); ctx.lineTo(midX - ux * r, midY - uy * r);
+    ctx.moveTo(midX + ux * r, midY + uy * r); ctx.lineTo(p2.x, p2.y);
+    ctx.stroke();
+    ctx.save();
+    if (brightness > 0.01) {
+        const glassColor = lerpColor('#2a2110', '#fffdf0', brightness);
+        ctx.shadowColor = '#fde047';
+        ctx.shadowBlur = 10 + brightness * 60;
+        ctx.fillStyle = glassColor;
+        ctx.beginPath(); ctx.arc(midX, midY, r, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(midX, midY, r, 0, Math.PI * 2); ctx.fill();
+    } else {
+        ctx.fillStyle = '#1e293b';
+        ctx.beginPath(); ctx.arc(midX, midY, r, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.restore();
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 1.3;
+    ctx.beginPath(); ctx.arc(midX, midY, r, 0, Math.PI * 2); ctx.stroke();
+    const filamentColor = lerpColor('#78350f', '#fff7ed', brightness);
+    ctx.save();
+    if (brightness > 0.3) {
+        ctx.shadowColor = '#fffbeb';
+        ctx.shadowBlur = brightness * 12;
+    }
+    ctx.strokeStyle = filamentColor;
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(midX - 7, midY + 5);
+    ctx.lineTo(midX - 3.5, midY - 5);
+    ctx.lineTo(midX, midY + 5);
+    ctx.lineTo(midX + 3.5, midY - 5);
+    ctx.lineTo(midX + 7, midY + 5);
+    ctx.stroke();
+    ctx.restore();
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillRect(midX - 5, midY + r - 2, 10, 4);
+    ctx.fillStyle = '#cbd5e1';
+    ctx.font = '10px sans-serif';
+    const side = labelSide(p1, p2);
+    drawSideText(`${power.toFixed(2)}W`, midX, midY, -side.sx, -side.sy, r + 9); // الجهة المقابلة لاسم/قيمة المصباح
+}
+
+function drawMeterOnEdge(p1, p2, letter, color, reading, maxScale) {
+    const { ux, uy } = unitVec(p1, p2);
+    const midX = (p1.x + p2.x) / 2, midY = (p1.y + p2.y) / 2;
+    const r = 16;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(p1.x, p1.y); ctx.lineTo(midX - ux * r, midY - uy * r);
+    ctx.moveTo(midX + ux * r, midY + uy * r); ctx.lineTo(p2.x, p2.y);
+    ctx.stroke();
+    ctx.fillStyle = '#0b1220';
+    ctx.beginPath(); ctx.arc(midX, midY, r, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = '#334155';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.arc(midX, midY, r - 3, 0, Math.PI * 2); ctx.stroke();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.arc(midX, midY, r, 0, Math.PI * 2); ctx.stroke();
+    for (let a = -120; a <= 120; a += 30) {
+        const rad = a * Math.PI / 180 - Math.PI / 2;
+        const x1 = midX + Math.cos(rad) * (r - 2), y1 = midY + Math.sin(rad) * (r - 2);
+        const x2 = midX + Math.cos(rad) * (r - 5), y2 = midY + Math.sin(rad) * (r - 5);
+        ctx.strokeStyle = '#475569';
+        ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+    }
+    const frac = Math.max(0, Math.min(1, Math.abs(reading || 0) / maxScale));
+    const needleAngle = (-120 + frac * 240) * Math.PI / 180 - Math.PI / 2;
+    ctx.strokeStyle = '#ef4444';
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.moveTo(midX, midY);
+    ctx.lineTo(midX + Math.cos(needleAngle) * (r - 7), midY + Math.sin(needleAngle) * (r - 7));
+    ctx.stroke();
+    ctx.fillStyle = '#ef4444';
+    ctx.beginPath(); ctx.arc(midX, midY, 1.8, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = color;
+    ctx.font = 'bold 10px sans-serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(letter, midX, midY + 8);
+    ctx.textAlign = 'start'; ctx.textBaseline = 'alphabetic';
+}
+
+let pulseOffset = 0;
+
+function draw(exportMode) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    ctx.strokeStyle = 'rgba(100,116,139,0.2)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 5]);
+    validEdges.forEach(e => {
+        const key = edgeKey(e.a, e.b);
+        if (edgeComponents[key] || arrowComponents[key]) return;
+        const p1 = nodePos(e.a), p2 = nodePos(e.b);
+        ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
+    });
+    ctx.setLineDash([]);
+
+    const colorOf = { wire: '#64748b', resistor: '#f59e0b', battery: '#38bdf8', switch: '#a78bfa', lamp: '#fde047', ammeter: '#34d399', voltmeter: '#34d399' };
+
+    Object.entries(edgeComponents).forEach(([key, c]) => {
+        const p1 = nodePos(c.a), p2 = nodePos(c.b);
+        const isSelected = key === selectedKey;
+        const color = colorOf[c.type];
+        ctx.strokeStyle = isSelected ? '#f8fafc' : color;
+        ctx.fillStyle = isSelected ? '#f8fafc' : color;
+        ctx.lineWidth = isSelected ? 7 : 5;
+        const r = solveResult && solveResult.byKey[key] ? solveResult.byKey[key] : null;
+
+        if (c.type === 'wire' || c.type === 'ammeter') {
+            if (c.type === 'wire') {
+                ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
+            } else {
+                drawMeterOnEdge(p1, p2, 'A', isSelected ? '#f8fafc' : color, r ? r.current : 0, 5);
+            }
+        } else if (c.type === 'voltmeter') {
+            drawMeterOnEdge(p1, p2, 'V', isSelected ? '#f8fafc' : color, r ? r.voltage : 0, 24);
+        } else if (c.type === 'resistor') {
+            drawResistorBody(p1, p2, c.value, isSelected ? '#f8fafc' : color);
+        } else if (c.type === 'battery') {
+            const { ux, uy, len } = unitVec(p1, p2);
+            ctx.beginPath();
+            ctx.moveTo(p1.x, p1.y); ctx.lineTo(p1.x + ux * len * 0.4, p1.y + uy * len * 0.4);
+            ctx.moveTo(p1.x + ux * len * 0.6, p1.y + uy * len * 0.6); ctx.lineTo(p2.x, p2.y);
+            ctx.stroke();
+            drawBatteryOnEdge(p1, p2, c.flipped || false, c.internalR || 0);
+        } else if (c.type === 'switch') {
+            drawSwitchOnEdge(p1, p2, c.closed);
+        } else if (c.type === 'lamp') {
+            const power = r ? r.current * r.current * c.value : 0;
+            drawLampOnEdge(p1, p2, circuitOn ? power : 0);
+        }
+
+        // تسميات العناصر
+        if (c.type !== 'wire') {
+            const midX = (p1.x + p2.x) / 2, midY = (p1.y + p2.y) / 2;
+            ctx.fillStyle = '#f8fafc';
+            ctx.font = 'bold 11px sans-serif';
+            const tag = c.name ? c.name + ' ' : '';
+            let label = '';
+            
+            if (!c.hideValue) {
+                if (c.isUnknown) label = `${tag}?`;
+                else if (c.type === 'resistor' || c.type === 'lamp') label = `${tag}${c.value}Ω`;
+                else if (c.type === 'battery') label = `${tag}${c.value}V${c.internalR > 0 ? ' (r=' + c.internalR + 'Ω)' : ''}`;
+                else if (c.type === 'switch') label = `${tag}${c.closed ? '(مغلق)' : '(مفتوح)'}`;
+                else if (c.type === 'ammeter') label = `${tag}${r ? Math.abs(r.current).toFixed(2) + 'A' : ''}`;
+                else if (c.type === 'voltmeter') label = `${tag}${r ? Math.abs(r.voltage).toFixed(2) + 'V' : ''}`;
+                else label = tag.trim();
+            } else {
+                label = ''; 
+            }
+            
+            if (label) {
+                // وضع القيمة قرب العنصر مباشرةً، عموديًا على السلك وبمسافة تناسب حجم العنصر
+                const halfSize = { resistor: 10, ammeter: 18, voltmeter: 18, lamp: 18, battery: 18, switch: 20 }[c.type] || 12;
+                const side = labelSide(p1, p2);
+                drawSideText(label, midX, midY, side.sx, side.sy, halfSize + 9);
+            }
+        }
+
+        // إصلاح: إظهار نقاط التيار المتحركة على الأسلاك أيضاً (أزلنا شرط c.type !== 'wire')
+        if (!exportMode && r && Math.abs(r.current) > 1e-4) {
+            const { ux, uy, len } = unitVec(p1, p2);
+            const dir = r.current > 0 ? 1 : -1;
+            const speed = Math.min(Math.abs(r.current), 5) * 0.6 + 0.3;
+            const dotSpacing = 22;
+            ctx.fillStyle = '#fef08a';
+            for (let d = 0; d < len; d += dotSpacing) {
+                let pos = (d + pulseOffset * speed * dir) % len;
+                if (pos < 0) pos += len;
+                const px = p1.x + ux * pos, py = p1.y + uy * pos;
+                ctx.beginPath(); ctx.arc(px, py, 3, 0, Math.PI * 2); ctx.fill();
+            }
+        }
+    });
+
+    Object.entries(arrowComponents).forEach(([key, c]) => {
+        if (c.show) {
+            const p1 = nodePos(c.a), p2 = nodePos(c.b);
+            const isSelected = key === selectedKey;
+            drawArrowOnEdge(p1, p2, c.reversed, isSelected ? '#f8fafc' : '#fff');
+        }
+    });
+
+    for (let id = 0; id < totalNodes; id++) {
+        const p = nodePos(id);
+        if (id === GROUND_ID) {
+            ctx.fillStyle = '#10b981';
+            ctx.fillRect(p.x - 6, p.y - 6, 12, 12);
+            ctx.font = 'bold 10px sans-serif';
+            ctx.fillText('GND', p.x - 12, p.y + 22);
+        } else {
+            ctx.fillStyle = '#475569';
+            ctx.beginPath(); ctx.arc(p.x, p.y, 4, 0, Math.PI * 2); ctx.fill();
+        }
+    }
+    pulseOffset += 1;
+}
+
+function renderResults() {
+    const comps = Object.values(edgeComponents).sort((a, b) => a.id - b.id);
+    if (comps.length === 0) { resultsList.innerHTML = 'ضَع عناصر على الشبكة لبدء الحساب...'; return; }
+    if (!solveResult) { resultsList.innerHTML = 'تعذّر الحل.'; return; }
+    let text = circuitOn ? '' : '⛔ الدائرة متوقفة حاليًا (كل التيارات صفر)\n\n';
+    comps.forEach(c => {
+        const key = edgeKey(c.a, c.b);
+        const r = solveResult.byKey[key];
+        const typeName = typeNames[c.type];
+        const dir = r.current >= 0 ? '(الأول→الثاني)' : '(الثاني→الأول)';
+        let extra = '';
+        if (c.type === 'switch') extra = c.closed ? ' [مغلق]' : ' [مفتوح]';
+        if (c.type === 'battery' && c.internalR > 0) extra = ` [r=${c.internalR}Ω]`;
+        const tag = c.name ? `"${c.name}" ` : '';
+        const iTxt = Number.isFinite(r.current) ? Math.abs(r.current).toFixed(3) : '∞';
+        text += `${tag}${typeName}${extra} | I=${iTxt}A ${dir} | V=${Math.abs(r.voltage).toFixed(2)}V\n`;
+    });
+    if (solveResult.warning) text += `\n<span class="warn">⚠️ ${solveResult.warning}</span>`;
+    resultsList.innerHTML = text;
+}
+
+function recomputeAndDraw() {
+    solveResult = solveCircuit();
+    draw();
+    renderResults();
+}
+
+function animLoop() {
+    draw();
+    requestAnimationFrame(animLoop);
+}
+
+recomputeAndDraw();
+animLoop();
+</script>
+
+<script>
+// ========== التصدير الأكاديمي ==========
+const SVG_SYMBOLS = {
+    resistor: `data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 40" width="100" height="40"><polyline points="0,20 15,20 20,10 27,30 34,10 41,30 48,10 55,30 62,10 69,30 76,10 80,20 85,20 100,20" fill="none" stroke="%23ff0000" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/></svg>`,
+    battery: `data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 40" width="100" height="40"><line x1="0" y1="20" x2="40" y2="20" stroke="%231e00ff" stroke-width="4"/><line x1="60" y1="20" x2="100" y2="20" stroke="%231e00ff" stroke-width="4"/><line x1="40" y1="3" x2="40" y2="42" stroke="%231e00ff" stroke-width="4"/><line x1="60" y1="8" x2="60" y2="32" stroke="%231e00ff" stroke-width="5"/></svg>`,
+    switchClosed: `data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 40" width="100" height="40"><line x1="0" y1="20" x2="30" y2="20" stroke="%23000" stroke-width="4"/><line x1="70" y1="20" x2="100" y2="20" stroke="%23000" stroke-width="4"/><line x1="30" y1="20" x2="70" y2="20" stroke="%23000" stroke-width="4"/><circle cx="30" cy="20" r="4" fill="%23000"/><circle cx="70" cy="20" r="4" fill="%23000"/></svg>`,
+    switchOpen: `data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 40" width="100" height="40"><line x1="0" y1="20" x2="30" y2="20" stroke="%23000" stroke-width="4"/><line x1="70" y1="20" x2="100" y2="20" stroke="%23000" stroke-width="4"/><line x1="30" y1="20" x2="65" y2="5" stroke="%23000" stroke-width="4"/><circle cx="30" cy="20" r="4" fill="%23000"/><circle cx="70" cy="20" r="4" fill="%23000"/></svg>`,
+    lamp: `data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 40" width="100" height="40"><line x1="0" y1="20" x2="30" y2="20" stroke="%23000" stroke-width="4"/><line x1="70" y1="20" x2="100" y2="20" stroke="%23000" stroke-width="4"/><circle cx="50" cy="20" r="18" fill="%23FFD700" stroke="%23000" stroke-width="4"/><line x1="37" y1="7" x2="63" y2="33" stroke="%23000" stroke-width="4"/><line x1="63" y1="7" x2="37" y2="33" stroke="%23000" stroke-width="4"/></svg>`,
+    ammeter: `data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 40" width="100" height="40"><line x1="0" y1="20" x2="30" y2="20" stroke="%23000" stroke-width="4"/><line x1="70" y1="20" x2="100" y2="20" stroke="%23000" stroke-width="4"/><circle cx="50" cy="20" r="18" fill="%23fff" stroke="%23000" stroke-width="4"/></svg>`,
+    voltmeter: `data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 40" width="100" height="40"><line x1="0" y1="20" x2="30" y2="20" stroke="%23000" stroke-width="4"/><line x1="70" y1="20" x2="100" y2="20" stroke="%23000" stroke-width="4"/><circle cx="50" cy="20" r="18" fill="%23fff" stroke="%23000" stroke-width="4"/></svg>`
+};
+
+function loadImage(src) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => resolve(img);
+        img.onerror = () => reject(new Error('فشل تحميل الصورة'));
+        img.src = src;
+    });
+}
+
+async function exportSchematic() {
+    const btn = document.getElementById('exportSchematicBtn');
+    const originalText = btn.textContent;
+    btn.textContent = '⏳ جاري التصدير...';
+    btn.disabled = true;
+
+    try {
+        const imgs = {};
+        for (const [key, src] of Object.entries(SVG_SYMBOLS)) {
+            try { imgs[key] = await loadImage(src); }
+            catch(e) { console.warn('فشل تحميل', key, e); imgs[key] = null; }
+        }
+
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = canvas.width;
+        tempCanvas.height = canvas.height;
+        const tCtx = tempCanvas.getContext('2d');
+
+        tCtx.fillStyle = '#ffffff';
+        tCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+        tCtx.strokeStyle = '#000';
+        tCtx.fillStyle = '#000';
+        tCtx.lineWidth = 2.5;
+        tCtx.font = 'bold 15px Arial, sans-serif';
+        tCtx.textAlign = 'center';
+        tCtx.textBaseline = 'middle';
+        tCtx.lineCap = 'round';
+        tCtx.lineJoin = 'round';
+
+        const SYMBOL_LEN = 60;
+        const EXPORT_LABEL_OFF = 22; // بُعد النص عن مركز الرمز (نصف ارتفاع الرمز ≈ 12 + فاصل)
+
+        Object.values(edgeComponents).forEach(c => {
+            const p1 = nodePos(c.a), p2 = nodePos(c.b);
+            const midX = (p1.x + p2.x) / 2, midY = (p1.y + p2.y) / 2;
+            const angle = Math.atan2(p2.y - p1.y, p2.x - p1.x);
+            const dx = p2.x - p1.x, dy = p2.y - p1.y;
+            const len = Math.hypot(dx, dy);
+            const ux = dx / len, uy = dy / len;
+            const nx = -uy, ny = ux;
+            // جهة القيمة: أسفل العنصر الأفقي، ويمين العنصر العمودي؛ واسم العنصر على الجهة المقابلة فلا يتداخلان
+            let vx = nx, vy = ny;
+            if (!(vy > 0.01 || (Math.abs(vy) <= 0.01 && vx > 0))) { vx = -vx; vy = -vy; }
+            const sideText = (text, font, sx, sy, off) => {
+                tCtx.save();
+                tCtx.font = font;
+                tCtx.fillStyle = '#000';
+                tCtx.textBaseline = 'middle';
+                tCtx.textAlign = sx > 0.3 ? 'left' : (sx < -0.3 ? 'right' : 'center');
+                tCtx.fillText(text, midX + sx * off, midY + sy * off);
+                tCtx.restore();
+            };
+
+            let symKey = c.type;
+            if (c.type === 'switch') symKey = c.closed ? 'switchClosed' : 'switchOpen';
+
+            if (c.type === 'wire' || !imgs[symKey]) {
+                tCtx.strokeStyle = '#000';
+                tCtx.lineWidth = 2.5;
+                tCtx.beginPath();
+                tCtx.moveTo(p1.x, p1.y);
+                tCtx.lineTo(p2.x, p2.y);
+                tCtx.stroke();
+                return;
+            }
+
+            tCtx.strokeStyle = '#000';
+            tCtx.lineWidth = 2.5;
+            tCtx.beginPath();
+            tCtx.moveTo(p1.x, p1.y);
+            tCtx.lineTo(midX - ux * SYMBOL_LEN / 2, midY - uy * SYMBOL_LEN / 2);
+            tCtx.moveTo(midX + ux * SYMBOL_LEN / 2, midY + uy * SYMBOL_LEN / 2);
+            tCtx.lineTo(p2.x, p2.y);
+            tCtx.stroke();
+
+            const img = imgs[symKey];
+            const aspect = img.height / img.width || 0.4;
+            const symbolH = SYMBOL_LEN * aspect;
+
+            tCtx.save();
+            tCtx.translate(midX, midY);
+            
+            tCtx.rotate(angle);
+            tCtx.drawImage(img, -SYMBOL_LEN / 2, -symbolH / 2, SYMBOL_LEN, symbolH);
+            
+            if (c.type === 'ammeter' || c.type === 'voltmeter') {
+                tCtx.rotate(-angle); 
+                tCtx.font = 'bold 18px Arial, sans-serif';
+                tCtx.textAlign = 'center';
+                tCtx.textBaseline = 'middle';
+                tCtx.fillStyle = '#000';
+                tCtx.fillText(c.type === 'ammeter' ? 'A' : 'V', 0, 2);
+            }
+            tCtx.restore();
+
+            tCtx.fillStyle = '#000';
+            tCtx.font = 'bold 13px Arial, sans-serif';
+            let label = '';
+            
+            if (!c.hideValue) {
+                if (c.isUnknown) {
+                     sideText('?', 'bold 18px Arial, sans-serif', vx, vy, EXPORT_LABEL_OFF);
+                } else {
+                    if (c.type === 'resistor' || c.type === 'lamp') label = `${c.value}Ω`;
+                    else if (c.type === 'battery') label = `${c.value}V`;
+                    else if (c.type === 'ammeter') {
+                        const r = solveResult && solveResult.byKey[edgeKey(c.a, c.b)];
+                        label = r ? `${Math.abs(r.current).toFixed(2)}A` : '';
+                    }
+                    else if (c.type === 'voltmeter') {
+                        const r = solveResult && solveResult.byKey[edgeKey(c.a, c.b)];
+                        label = r ? `${Math.abs(r.voltage).toFixed(2)}V` : '';
+                    }
+                    
+                    if (label) sideText(label, 'bold 13px Arial, sans-serif', vx, vy, EXPORT_LABEL_OFF);
+                }
+            }
+
+            if (c.name) sideText(c.name, 'bold 14px Arial, sans-serif', -vx, -vy, EXPORT_LABEL_OFF);
+        });
+
+        Object.values(arrowComponents).forEach(c => {
+            if (c.show) {
+                const p1 = nodePos(c.a), p2 = nodePos(c.b);
+                const midX = (p1.x + p2.x) / 2, midY = (p1.y + p2.y) / 2;
+                const angle = Math.atan2(p2.y - p1.y, p2.x - p1.x) + (c.reversed ? Math.PI : 0);
+                
+                tCtx.save();
+                tCtx.translate(midX, midY);
+                tCtx.rotate(angle);
+                tCtx.beginPath();
+                tCtx.moveTo(-6, -6);
+                tCtx.lineTo(6, 0);
+                tCtx.lineTo(-6, 6);
+                tCtx.closePath();
+                tCtx.fillStyle = '#000';
+                tCtx.fill();
+                tCtx.restore();
+            }
+        });
+
+        for (let id = 0; id < totalNodes; id++) {
+            const p = nodePos(id);
+            let hasConnection = false;
+            for (const k in edgeComponents) {
+                if (edgeComponents[k].a === id || edgeComponents[k].b === id) { hasConnection = true; break; }
+            }
+            if (id === GROUND_ID && hasConnection) {
+                tCtx.beginPath();
+                tCtx.lineWidth = 2.5;
+                tCtx.moveTo(p.x - 12, p.y + 12); tCtx.lineTo(p.x + 12, p.y + 12);
+                tCtx.moveTo(p.x - 8, p.y + 18); tCtx.lineTo(p.x + 8, p.y + 18);
+                tCtx.moveTo(p.x - 4, p.y + 24); tCtx.lineTo(p.x + 4, p.y + 24);
+                tCtx.stroke();
+            }
+        }
+
+        const link = document.createElement('a');
+        link.download = 'schematic_circuit.png';
+        link.href = tempCanvas.toDataURL('image/png');
+        link.click();
+    } catch(e) {
+        alert('تعذّر التصدير: ' + e.message);
+    } finally {
+        btn.textContent = originalText;
+        btn.disabled = false;
+    }
+}
+
+document.getElementById('exportSchematicBtn').addEventListener('click', exportSchematic);
+
+// ========== نظام الواجهة ==========
+(function(){
+    const tt = document.getElementById('themeToggle'), bt = document.getElementById('backToTop');
+    let sv = null;
+    try { sv = localStorage.getItem('theme'); } catch(e) {}
+    if (sv === 'light') { document.body.classList.add('light-mode'); tt.textContent = '☀️'; }
+    tt.addEventListener('click', () => {
+        document.body.classList.toggle('light-mode');
+        const l = document.body.classList.contains('light-mode');
+        tt.textContent = l ? '☀️' : '🌙';
+        try { localStorage.setItem('theme', l ? 'light' : 'dark'); } catch(e) {}
+    });
+    addEventListener('scroll', () => bt.classList.toggle('visible', scrollY > 400), { passive: true });
+    bt.addEventListener('click', () => scrollTo({ top: 0, behavior: 'smooth' }));
+})();
+document.getElementById('resBtn').onclick = () => document.querySelector('.results-box').classList.toggle('open');
+document.getElementById('resX').onclick = () => document.querySelector('.results-box').classList.remove('open');
+</script>
+</body>
+</html>
