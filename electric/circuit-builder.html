@@ -157,7 +157,7 @@ canvas{background:#0b1220;display:block;border-radius:var(--radius-md);cursor:po
         <button class="clear-btn fitonly" id="resBtn">📊 نتائج الحل (تحليل العقد)</button>
 
         <div class="legend">
-            <div><span class="dot" style="background:#64748b"></span> سلك (مقاومة ≈ صفر)</div>
+            <div><span class="dot" style="background:#64748b"></span> سلك (مقاومة = صفر)</div>
             <div><span class="dot" style="background:#ff0000"></span> مقاومة</div>
             <div><span class="dot" style="background:#1e00ff"></span> بطارية</div>
             <div><span class="dot" style="background:#a78bfa"></span> مفتاح</div>
@@ -428,12 +428,14 @@ function renderProps() {
     });
 }
 
+// ===== محلّل جديد: أسلاك/أميتر/مفتاح مغلق مثالية (R = 0) والفولتميتر دائرة مفتوحة (R = ∞) =====
+function isIdealBranch(c) {
+    return c.type === 'wire' || c.type === 'ammeter' || (c.type === 'switch' && c.closed);
+}
+
 function getResistance(c) {
-    if (c.type === 'wire' || c.type === 'ammeter') return 1e-4;
     if (c.type === 'resistor' || c.type === 'lamp') return c.value;
-    if (c.type === 'voltmeter') return 1e7;
-    if (c.type === 'switch') return c.closed ? 1e-4 : null;
-    return null;
+    return null; // سلك/أميتر/مفتاح: مثالي (يُعالج بدمج العقد) — فولتميتر/مفتاح مفتوح: دائرة مفتوحة
 }
 
 function gaussianSolve(M, rhs, size) {
@@ -462,15 +464,44 @@ function solveCircuit() {
     const comps = Object.values(edgeComponents);
     if (comps.length === 0) return null;
 
-    const idx = (nodeId) => nodeId === GROUND_ID ? -1 : nodeId - 1;
-    const n = totalNodes - 1;
+    // 1) دمج العقد المتصلة بعناصر مثالية (سلك، أميتر، مفتاح مغلق) في «عقدة عليا» واحدة
+    const parent = Array.from({ length: totalNodes }, (_, i) => i);
+    const find = (x) => { while (parent[x] !== x) { parent[x] = parent[parent[x]]; x = parent[x]; } return x; };
+    const union = (a, b) => { a = find(a); b = find(b); if (a === b) return false; parent[Math.max(a, b)] = Math.min(a, b); return true; };
+
+    // أسلاك ومفاتيح أولًا ثم الأميتر: الأميتر الموصول على التوازي مع سلك لا يمرّ به تيار (قراءته صفر)
+    const idealList = comps.filter(isIdealBranch).sort((p, q) => (p.type === 'ammeter') - (q.type === 'ammeter'));
+    const treeEdges = [];
+    idealList.forEach(c => { if (union(c.a, c.b)) treeEdges.push(c); });
+    // الجذر الأصغر يحوي العقدة 0 (الأرضي) دائمًا إن اتصلت بها
+
+    const roots = [];
+    const rootIdx = new Array(totalNodes).fill(-1);
+    for (let id = 0; id < totalNodes; id++) {
+        const r = find(id);
+        if (r === find(GROUND_ID)) continue;       // الأرضي: جهده صفر
+        if (rootIdx[r] === -1) { rootIdx[r] = roots.length; roots.push(r); }
+    }
+    const idx = (nodeId) => { const r = find(nodeId); return r === find(GROUND_ID) ? -1 : rootIdx[r]; };
+
+    const n = roots.length;
     const batteries = comps.filter(c => c.type === 'battery');
     const m = batteries.length;
     const size = n + m;
+
+    // 2) فحص دائرة القصر المثالية: بطارية بلا مقاومة داخلية طرفاها في عقدة عليا واحدة
+    let shortCircuit = false;
+    if (circuitOn) {
+        batteries.forEach(c => {
+            if ((c.internalR || 0) === 0 && find(c.a) === find(c.b) && c.value !== 0) shortCircuit = true;
+        });
+    }
+
     const M = Array.from({ length: size }, () => new Array(size).fill(0));
     const rhs = new Array(size).fill(0);
 
-    for (let id = 1; id < totalNodes; id++) M[idx(id)][idx(id)] += 1e-9;
+    // تثبيت بسيط للعقد العائمة فقط (gmin) حتى لا تصبح المصفوفة شاذة
+    for (let i = 0; i < n; i++) M[i][i] += 1e-9;
 
     comps.forEach(c => {
         if (c.type === 'battery') return;
@@ -478,6 +509,7 @@ function solveCircuit() {
         if (R === null) return;
         const g = 1 / R;
         const ia = idx(c.a), ib = idx(c.b);
+        if (ia === ib) return;
         if (ia >= 0) M[ia][ia] += g;
         if (ib >= 0) M[ib][ib] += g;
         if (ia >= 0 && ib >= 0) { M[ia][ib] -= g; M[ib][ia] -= g; }
@@ -494,32 +526,103 @@ function solveCircuit() {
         rhs[kk] = circuitOn ? c.value : 0;
     });
 
-    const x = gaussianSolve(M, rhs, size);
+    let x = shortCircuit ? new Array(size).fill(0) : gaussianSolve(M, rhs, size);
+
+    // فحص تعارض المصادر المثالية (مثل بطاريتين مثاليتين مختلفتين على التوازي): المعادلات لا حلّ لها
+    let conflict = false;
+    if (!shortCircuit) {
+        let resid = 0;
+        for (let i = 0; i < size; i++) {
+            let sum = -rhs[i];
+            for (let j = 0; j < size; j++) sum += M[i][j] * x[j];
+            resid = Math.max(resid, Math.abs(sum));
+        }
+        if (resid > 1e-6) { conflict = true; x = new Array(size).fill(0); }
+    }
 
     const V = new Array(totalNodes).fill(0);
-    for (let id = 1; id < totalNodes; id++) V[id] = x[idx(id)];
+    for (let id = 0; id < totalNodes; id++) { const i = idx(id); V[id] = i >= 0 ? x[i] : 0; }
 
-    let maxCurrent = 0;
+    // 3) تيارات العناصر غير المثالية
     const byKey = {};
+    const net = new Array(totalNodes).fill(0); // صافي التيار الخارج من كل عقدة عبر عناصر غير مثالية
+    let maxCurrent = 0;
     comps.forEach(c => {
         const key = edgeKey(c.a, c.b);
+        if (isIdealBranch(c)) return;
         let current, voltage;
         if (c.type === 'battery') {
-            const kIdx = batteries.indexOf(c);
-            const Ibat = x[n + kIdx];
+            const Ibat = x[n + batteries.indexOf(c)];
             current = c.flipped ? -Ibat : Ibat;
             const p = c.flipped ? c.b : c.a, nn = c.flipped ? c.a : c.b;
             voltage = circuitOn ? (V[p] - V[nn]) : 0;
+            if (shortCircuit && (c.internalR || 0) === 0 && find(c.a) === find(c.b)) { current = Infinity; }
         } else {
             const R = getResistance(c);
             voltage = V[c.a] - V[c.b];
             current = R === null ? 0 : voltage / R;
         }
         byKey[key] = { current, voltage };
+        if (Number.isFinite(current)) {
+            net[c.a] += current; net[c.b] -= current;
+            maxCurrent = Math.max(maxCurrent, Math.abs(current));
+        }
+    });
+
+    // 4) توزيع التيار على العناصر المثالية: تُحلّ على شجرة ممتدة (نزع الأوراق)
+    const adj = new Map();
+    treeEdges.forEach(c => {
+        if (!adj.has(c.a)) adj.set(c.a, []);
+        if (!adj.has(c.b)) adj.set(c.b, []);
+        adj.get(c.a).push({ c, to: c.b, sign: +1 });   // التيار موجب من a إلى b
+        adj.get(c.b).push({ c, to: c.a, sign: -1 });
+    });
+    const flow = new Map(); treeEdges.forEach(c => flow.set(c, 0));
+    const visited = new Set();
+    const supply = net.slice(); // ما يجب أن يخرج من كل عقدة عبر الأسلاك = صافي ما يصلها من العناصر الأخرى
+    treeEdges.forEach(rootEdge => {
+        const start = rootEdge.a;
+        if (visited.has(start)) return;
+        const order = [], parentEdge = new Map();
+        const stack = [start]; visited.add(start); parentEdge.set(start, null);
+        while (stack.length) {
+            const u = stack.pop(); order.push(u);
+            (adj.get(u) || []).forEach(e => {
+                if (!visited.has(e.to)) { visited.add(e.to); parentEdge.set(e.to, { from: u, e }); stack.push(e.to); }
+            });
+        }
+        for (let i = order.length - 1; i > 0; i--) {
+            const v = order[i], pe = parentEdge.get(v);
+            // العقدة v تتلقّى net[v] من العناصر الأخرى، فيجب أن تُرسل ما يساويه عبر سلك الشجرة نحو الأب
+            // (net[v] = تيار خارج من v عبر العناصر؛ يجب أن يدخل v عبر الأسلاك)
+            const needIn = supply[v];                 // تيار يدخل v عبر الشجرة من الأب
+            // التيار من الأب إلى v = needIn  (في اتجاه الأب→v)
+            const fromParent = needIn;
+            const dirSign = (pe.e.sign === +1) ? 1 : -1; // pe.e معرّف من جهة الأب: sign=+1 تعني الأب = c.a
+            flow.set(pe.e.c, fromParent * dirSign);
+            supply[pe.from] += supply[v];
+            supply[v] = 0;
+        }
+    });
+
+    comps.forEach(c => {
+        if (!isIdealBranch(c)) return;
+        const key = edgeKey(c.a, c.b);
+        const current = flow.has(c) ? flow.get(c) : 0;
+        byKey[key] = { current, voltage: 0 };
         maxCurrent = Math.max(maxCurrent, Math.abs(current));
     });
 
-    const warning = maxCurrent > 1000 ? 'تحذير: تيار ضخم جدًا — يبدو أن هناك دائرة قصر!' : null;
+    // 5) الفولتميتر: دائرة مفتوحة، يقرأ فرق الجهد فقط
+    comps.forEach(c => {
+        if (c.type === 'voltmeter' || (c.type === 'switch' && !c.closed)) {
+            byKey[edgeKey(c.a, c.b)] = { current: 0, voltage: V[c.a] - V[c.b] };
+        }
+    });
+
+    let warning = null;
+    if (conflict) warning = 'تعارض: مصادر مثالية (بدون مقاومة داخلية) موصولة بحيث لا يوجد حلّ — أضف مقاومة داخلية للبطاريات أو عدّل التوصيل.';
+    else if (shortCircuit) warning = 'دائرة قصر: بطارية مثالية (بدون مقاومة داخلية) موصولة بسلك مباشرةً — التيار نظريًا لا نهائي!';
     return { V, byKey, warning };
 }
 
@@ -690,6 +793,21 @@ function lerpColor(c1, c2, t) {
 
 const REFERENCE_POWER = 10;
 
+// جهة كتابة نص القيمة بالنسبة للعنصر: تُختار عموديًا على السلك (فوق الأفقي، يمين العمودي)
+function labelSide(p1, p2) {
+    const uv = unitVec(p1, p2);
+    let sx = uv.nx, sy = uv.ny;
+    if (sy > 0.01 || (Math.abs(sy) <= 0.01 && sx < 0)) { sx = -sx; sy = -sy; }
+    return { sx, sy };
+}
+function drawSideText(text, cx, cy, sx, sy, off) {
+    ctx.save();
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = sx > 0.3 ? 'left' : (sx < -0.3 ? 'right' : 'center');
+    ctx.fillText(text, cx + sx * off, cy + sy * off);
+    ctx.restore();
+}
+
 function drawLampOnEdge(p1, p2, power) {
     const { ux, uy, len } = unitVec(p1, p2);
     const midX = (p1.x + p2.x) / 2, midY = (p1.y + p2.y) / 2;
@@ -746,7 +864,8 @@ function drawLampOnEdge(p1, p2, power) {
     ctx.fillRect(midX - 5, midY + r - 2, 10, 4);
     ctx.fillStyle = '#cbd5e1';
     ctx.font = '10px sans-serif';
-    ctx.fillText(`${power.toFixed(2)}W`, midX + r + 4, midY + 4);
+    const side = labelSide(p1, p2);
+    drawSideText(`${power.toFixed(2)}W`, midX, midY, -side.sx, -side.sy, r + 9); // الجهة المقابلة لاسم/قيمة المصباح
 }
 
 function drawMeterOnEdge(p1, p2, letter, color, reading, maxScale) {
@@ -863,7 +982,12 @@ function draw(exportMode) {
                 label = ''; 
             }
             
-            if (label) ctx.fillText(label, midX + 8, midY - 22);
+            if (label) {
+                // وضع القيمة قرب العنصر مباشرةً، عموديًا على السلك وبمسافة تناسب حجم العنصر
+                const halfSize = { resistor: 10, ammeter: 18, voltmeter: 18, lamp: 18, battery: 18, switch: 20 }[c.type] || 12;
+                const side = labelSide(p1, p2);
+                drawSideText(label, midX, midY, side.sx, side.sy, halfSize + 9);
+            }
         }
 
         // إصلاح: إظهار نقاط التيار المتحركة على الأسلاك أيضاً (أزلنا شرط c.type !== 'wire')
@@ -919,7 +1043,8 @@ function renderResults() {
         if (c.type === 'switch') extra = c.closed ? ' [مغلق]' : ' [مفتوح]';
         if (c.type === 'battery' && c.internalR > 0) extra = ` [r=${c.internalR}Ω]`;
         const tag = c.name ? `"${c.name}" ` : '';
-        text += `${tag}${typeName}${extra} | I=${Math.abs(r.current).toFixed(3)}A ${dir} | V=${Math.abs(r.voltage).toFixed(2)}V\n`;
+        const iTxt = Number.isFinite(r.current) ? Math.abs(r.current).toFixed(3) : '∞';
+        text += `${tag}${typeName}${extra} | I=${iTxt}A ${dir} | V=${Math.abs(r.voltage).toFixed(2)}V\n`;
     });
     if (solveResult.warning) text += `\n<span class="warn">⚠️ ${solveResult.warning}</span>`;
     resultsList.innerHTML = text;
@@ -992,6 +1117,7 @@ async function exportSchematic() {
         tCtx.lineJoin = 'round';
 
         const SYMBOL_LEN = 60;
+        const EXPORT_LABEL_OFF = 22; // بُعد النص عن مركز الرمز (نصف ارتفاع الرمز ≈ 12 + فاصل)
 
         Object.values(edgeComponents).forEach(c => {
             const p1 = nodePos(c.a), p2 = nodePos(c.b);
@@ -1001,6 +1127,18 @@ async function exportSchematic() {
             const len = Math.hypot(dx, dy);
             const ux = dx / len, uy = dy / len;
             const nx = -uy, ny = ux;
+            // جهة القيمة: أسفل العنصر الأفقي، ويمين العنصر العمودي؛ واسم العنصر على الجهة المقابلة فلا يتداخلان
+            let vx = nx, vy = ny;
+            if (!(vy > 0.01 || (Math.abs(vy) <= 0.01 && vx > 0))) { vx = -vx; vy = -vy; }
+            const sideText = (text, font, sx, sy, off) => {
+                tCtx.save();
+                tCtx.font = font;
+                tCtx.fillStyle = '#000';
+                tCtx.textBaseline = 'middle';
+                tCtx.textAlign = sx > 0.3 ? 'left' : (sx < -0.3 ? 'right' : 'center');
+                tCtx.fillText(text, midX + sx * off, midY + sy * off);
+                tCtx.restore();
+            };
 
             let symKey = c.type;
             if (c.type === 'switch') symKey = c.closed ? 'switchClosed' : 'switchOpen';
@@ -1050,8 +1188,7 @@ async function exportSchematic() {
             
             if (!c.hideValue) {
                 if (c.isUnknown) {
-                     tCtx.font = 'bold 18px Arial, sans-serif';
-                     tCtx.fillText('?', midX + nx * 25, midY + ny * 25);
+                     sideText('?', 'bold 18px Arial, sans-serif', vx, vy, EXPORT_LABEL_OFF);
                 } else {
                     if (c.type === 'resistor' || c.type === 'lamp') label = `${c.value}Ω`;
                     else if (c.type === 'battery') label = `${c.value}V`;
@@ -1064,19 +1201,11 @@ async function exportSchematic() {
                         label = r ? `${Math.abs(r.voltage).toFixed(2)}V` : '';
                     }
                     
-                    if (label) {
-                        const labelOffset = 32;
-                        const labelY = midY + (Math.abs(uy) > 0.5 ? 0 : labelOffset);
-                        const labelX = midX + (Math.abs(uy) > 0.5 ? labelOffset : 0);
-                        tCtx.fillText(label, labelX, labelY);
-                    }
+                    if (label) sideText(label, 'bold 13px Arial, sans-serif', vx, vy, EXPORT_LABEL_OFF);
                 }
             }
 
-            if (c.name) {
-                tCtx.font = 'bold 14px Arial, sans-serif';
-                tCtx.fillText(c.name, midX + nx * -35, midY + ny * -35);
-            }
+            if (c.name) sideText(c.name, 'bold 14px Arial, sans-serif', -vx, -vy, EXPORT_LABEL_OFF);
         });
 
         Object.values(arrowComponents).forEach(c => {
