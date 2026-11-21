@@ -556,7 +556,8 @@ function solveCircuit() {
             current = c.flipped ? -Ibat : Ibat;
             const p = c.flipped ? c.b : c.a, nn = c.flipped ? c.a : c.b;
             voltage = circuitOn ? (V[p] - V[nn]) : 0;
-            if (shortCircuit && (c.internalR || 0) === 0 && find(c.a) === find(c.b)) { current = Infinity; }
+            // قصر مثالي: داخل البطارية يسري التيار من السالب إلى الموجب، واتجاه a→b يعتمد على وضع البطارية
+            if (shortCircuit && (c.internalR || 0) === 0 && find(c.a) === find(c.b)) { current = c.flipped ? Infinity : -Infinity; }
         } else {
             const R = getResistance(c);
             voltage = V[c.a] - V[c.b];
@@ -604,6 +605,25 @@ function solveCircuit() {
             supply[v] = 0;
         }
     });
+
+    // دائرة قصر مثالية: التيار نظريًا لا نهائي في كل سلك/أميتر يقع على المسار بين قطبي البطارية (من الموجب إلى السالب)
+    if (shortCircuit) {
+        batteries.forEach(c => {
+            if ((c.internalR || 0) !== 0 || c.value === 0 || find(c.a) !== find(c.b)) return;
+            const pos = c.flipped ? c.b : c.a, neg = c.flipped ? c.a : c.b;
+            const prev = new Map([[pos, null]]);
+            const queue = [pos];
+            while (queue.length && !prev.has(neg)) {
+                const u = queue.shift();
+                (adj.get(u) || []).forEach(e => { if (!prev.has(e.to)) { prev.set(e.to, { from: u, e }); queue.push(e.to); } });
+            }
+            if (!prev.has(neg)) return;
+            for (let v = neg; prev.get(v); v = prev.get(v).from) {
+                const { from, e } = prev.get(v);
+                flow.set(e.c, from === e.c.a ? Infinity : -Infinity);
+            }
+        });
+    }
 
     comps.forEach(c => {
         if (!isIdealBranch(c)) return;
@@ -975,7 +995,7 @@ function draw(exportMode) {
                 else if (c.type === 'resistor' || c.type === 'lamp') label = `${tag}${c.value}Ω`;
                 else if (c.type === 'battery') label = `${tag}${c.value}V${c.internalR > 0 ? ' (r=' + c.internalR + 'Ω)' : ''}`;
                 else if (c.type === 'switch') label = `${tag}${c.closed ? '(مغلق)' : '(مفتوح)'}`;
-                else if (c.type === 'ammeter') label = `${tag}${r ? Math.abs(r.current).toFixed(2) + 'A' : ''}`;
+                else if (c.type === 'ammeter') label = `${tag}${r ? fmtCurrent(r.current, 2) + 'A' : ''}`;
                 else if (c.type === 'voltmeter') label = `${tag}${r ? Math.abs(r.voltage).toFixed(2) + 'V' : ''}`;
                 else label = tag.trim();
             } else {
@@ -1029,6 +1049,11 @@ function draw(exportMode) {
     pulseOffset += 1;
 }
 
+// تنسيق قراءة التيار: القيمة اللانهائية (دائرة قصر مثالية) تُعرض ∞
+function fmtCurrent(v, digits) {
+    return Number.isFinite(v) ? Math.abs(v).toFixed(digits) : '∞';
+}
+
 function renderResults() {
     const comps = Object.values(edgeComponents).sort((a, b) => a.id - b.id);
     if (comps.length === 0) { resultsList.innerHTML = 'ضَع عناصر على الشبكة لبدء الحساب...'; return; }
@@ -1043,7 +1068,7 @@ function renderResults() {
         if (c.type === 'switch') extra = c.closed ? ' [مغلق]' : ' [مفتوح]';
         if (c.type === 'battery' && c.internalR > 0) extra = ` [r=${c.internalR}Ω]`;
         const tag = c.name ? `"${c.name}" ` : '';
-        const iTxt = Number.isFinite(r.current) ? Math.abs(r.current).toFixed(3) : '∞';
+        const iTxt = fmtCurrent(r.current, 3);
         text += `${tag}${typeName}${extra} | I=${iTxt}A ${dir} | V=${Math.abs(r.voltage).toFixed(2)}V\n`;
     });
     if (solveResult.warning) text += `\n<span class="warn">⚠️ ${solveResult.warning}</span>`;
@@ -1069,7 +1094,7 @@ animLoop();
 // ========== التصدير الأكاديمي ==========
 const SVG_SYMBOLS = {
     resistor: `data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 40" width="100" height="40"><polyline points="0,20 15,20 20,10 27,30 34,10 41,30 48,10 55,30 62,10 69,30 76,10 80,20 85,20 100,20" fill="none" stroke="%23ff0000" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/></svg>`,
-    battery: `data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 40" width="100" height="40"><line x1="0" y1="20" x2="40" y2="20" stroke="%231e00ff" stroke-width="4"/><line x1="60" y1="20" x2="100" y2="20" stroke="%231e00ff" stroke-width="4"/><line x1="40" y1="3" x2="40" y2="42" stroke="%231e00ff" stroke-width="4"/><line x1="60" y1="8" x2="60" y2="32" stroke="%231e00ff" stroke-width="5"/></svg>`,
+    battery: `data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 48" width="100" height="48"><line x1="0" y1="24" x2="34" y2="24" stroke="%231e00ff" stroke-width="4"/><line x1="66" y1="24" x2="100" y2="24" stroke="%231e00ff" stroke-width="4"/><line x1="34" y1="4" x2="34" y2="44" stroke="%231e00ff" stroke-width="4"/><line x1="66" y1="12" x2="66" y2="36" stroke="%231e00ff" stroke-width="5"/></svg>`,
     switchClosed: `data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 40" width="100" height="40"><line x1="0" y1="20" x2="30" y2="20" stroke="%23000" stroke-width="4"/><line x1="70" y1="20" x2="100" y2="20" stroke="%23000" stroke-width="4"/><line x1="30" y1="20" x2="70" y2="20" stroke="%23000" stroke-width="4"/><circle cx="30" cy="20" r="4" fill="%23000"/><circle cx="70" cy="20" r="4" fill="%23000"/></svg>`,
     switchOpen: `data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 40" width="100" height="40"><line x1="0" y1="20" x2="30" y2="20" stroke="%23000" stroke-width="4"/><line x1="70" y1="20" x2="100" y2="20" stroke="%23000" stroke-width="4"/><line x1="30" y1="20" x2="65" y2="5" stroke="%23000" stroke-width="4"/><circle cx="30" cy="20" r="4" fill="%23000"/><circle cx="70" cy="20" r="4" fill="%23000"/></svg>`,
     lamp: `data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 40" width="100" height="40"><line x1="0" y1="20" x2="30" y2="20" stroke="%23000" stroke-width="4"/><line x1="70" y1="20" x2="100" y2="20" stroke="%23000" stroke-width="4"/><circle cx="50" cy="20" r="18" fill="%23FFD700" stroke="%23000" stroke-width="4"/><line x1="37" y1="7" x2="63" y2="33" stroke="%23000" stroke-width="4"/><line x1="63" y1="7" x2="37" y2="33" stroke="%23000" stroke-width="4"/></svg>`,
@@ -1116,7 +1141,13 @@ async function exportSchematic() {
         tCtx.lineCap = 'round';
         tCtx.lineJoin = 'round';
 
-        const SYMBOL_LEN = 60;
+        // مقياس الرسم: كل وحدة في ملف SVG = 0.6 بكسل. يُرسم من كل رمز «جسم العنصر» فقط [من، إلى] بوحدات SVG،
+        // وتُقصّ الأسلاك الزائدة داخل الرمز، فيظهر السلك الحقيقي أطول بين الرمز والعقدة
+        const PX_PER_UNIT = 0.6;
+        const SYMBOL_BODY = {
+            resistor: [14, 86], battery: [28, 72], switchClosed: [26, 74], switchOpen: [26, 74],
+            lamp: [28, 72], ammeter: [28, 72], voltmeter: [28, 72]
+        };
         const EXPORT_LABEL_OFF = 22; // بُعد النص عن مركز الرمز (نصف ارتفاع الرمز ≈ 12 + فاصل)
 
         Object.values(edgeComponents).forEach(c => {
@@ -1156,21 +1187,23 @@ async function exportSchematic() {
             tCtx.strokeStyle = '#000';
             tCtx.lineWidth = 2.5;
             tCtx.beginPath();
+            const img = imgs[symKey];
+            const [bx0, bx1] = SYMBOL_BODY[symKey] || [0, 100];
+            const SYMBOL_LEN = (bx1 - bx0) * PX_PER_UNIT;   // طول جسم الرمز المرسوم فعليًا
+            const symbolH = (img.height || 40) * PX_PER_UNIT;
+
             tCtx.moveTo(p1.x, p1.y);
             tCtx.lineTo(midX - ux * SYMBOL_LEN / 2, midY - uy * SYMBOL_LEN / 2);
             tCtx.moveTo(midX + ux * SYMBOL_LEN / 2, midY + uy * SYMBOL_LEN / 2);
             tCtx.lineTo(p2.x, p2.y);
             tCtx.stroke();
 
-            const img = imgs[symKey];
-            const aspect = img.height / img.width || 0.4;
-            const symbolH = SYMBOL_LEN * aspect;
-
             tCtx.save();
             tCtx.translate(midX, midY);
             
-            tCtx.rotate(angle);
-            tCtx.drawImage(img, -SYMBOL_LEN / 2, -symbolH / 2, SYMBOL_LEN, symbolH);
+            // البطارية المعكوسة: تدوير إضافي 180° ليبقى القطب الموجب (الصفيحة الطويلة) في جهته الصحيحة
+            tCtx.rotate(angle + (c.type === 'battery' && c.flipped ? Math.PI : 0));
+            tCtx.drawImage(img, bx0, 0, bx1 - bx0, img.height || 40, -SYMBOL_LEN / 2, -symbolH / 2, SYMBOL_LEN, symbolH);
             
             if (c.type === 'ammeter' || c.type === 'voltmeter') {
                 tCtx.rotate(-angle); 
@@ -1194,7 +1227,7 @@ async function exportSchematic() {
                     else if (c.type === 'battery') label = `${c.value}V`;
                     else if (c.type === 'ammeter') {
                         const r = solveResult && solveResult.byKey[edgeKey(c.a, c.b)];
-                        label = r ? `${Math.abs(r.current).toFixed(2)}A` : '';
+                        label = r ? `${fmtCurrent(r.current, 2)}A` : '';
                     }
                     else if (c.type === 'voltmeter') {
                         const r = solveResult && solveResult.byKey[edgeKey(c.a, c.b)];
