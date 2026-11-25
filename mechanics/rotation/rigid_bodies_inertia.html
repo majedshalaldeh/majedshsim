@@ -812,7 +812,7 @@ function rebuildSlotMesh(slot){
   // خط يمثّل محور الدوران الحالي بصريًا (لا يدور مع الجسم، يعكس فقط اتجاه المحور)
   const axisLen = b.d*2.8;
   const axisGeo = new THREE.CylinderGeometry(0.011, 0.011, axisLen, 8);
-  const axisMesh = new THREE.Mesh(axisGeo, new THREE.MeshBasicMaterial({color:accent, transparent:true, opacity:.5}));
+  const axisMesh = new THREE.Mesh(axisGeo, new THREE.MeshBasicMaterial({color:0xFFC700, transparent:true, opacity:1}));
   axisMesh.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0), b.axisVec);
   pivotGroup.add(axisMesh);
 
