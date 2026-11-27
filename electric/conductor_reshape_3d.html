@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>محاكاة إعادة تشكيل موصل فلزي | الأستاذ ماجد شلالدة</title>
+<style>
+  :root{
+    --bg-color:#0b1329;
+    --bg-secondary:#0f1a35;
+    --main-card-bg:#1c2541;
+    --sub-card-bg:#3a506b;
+    --text-color:#ffffff;
+    --text-muted:#c0c8d8;
+    --accent-cyan:#00b4d8;
+    --accent-green:#06d6a0;
+    --accent-gold:#ffd166;
+    --accent-purple:#b185ff;
+    --accent-red:#ef476f;
+    --accent-orange:#f77f00;
+    --border-soft:rgba(255,255,255,0.08);
+    --shadow-soft:0 10px 30px rgba(0,0,0,0.3);
+    --radius-sm:8px;
+    --radius-md:12px;
+    --radius-lg:16px;
+    --transition-fast:0.2s ease;
+    --transition-normal:0.3s ease;
+
+    --panel-bg: rgba(18,22,32,0.82);
+    --panel-border: rgba(255,255,255,0.08);
+    --accent: #5b8cff;
+    --accent2: #ffb545;
+    --text: #eef1f7;
+    --muted: #9aa3b5;
+    --danger: #ff5d5d;
+    --good: #38d996;
+
+    --panel-width: 300px;
+    --panel-right: 16px;
+
+    --scene-bg: #0b0e14;
+    --viewer-bg: #050810;
+  }
+
+  body.light-mode{
+    --bg-color:#f0f4f8;
+    --bg-secondary:#e2e8f0;
+    --main-card-bg:#ffffff;
+    --sub-card-bg:#e8eef5;
+    --text-color:#1a202c;
+    --text-muted:#4a5568;
+    --border-soft:rgba(0,0,0,0.08);
+    --shadow-soft:0 10px 30px rgba(0,0,0,0.08);
+
+    --panel-bg: rgba(255,255,255,0.94);
+    --panel-border: rgba(0,0,0,0.12);
+    --accent: #2563eb;
+    --accent2: #c2410c;
+    --text: #0f172a;
+    --muted: #475569;
+    --danger: #dc2626;
+    --good: #059669;
+
+    --scene-bg: #dbe6f5;
+    --viewer-bg: #c5d4e8;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0;padding:0;
+    width:100%;height:100%;
+    overflow:hidden;
+    background:var(--scene-bg);
+    font-family:"Tahoma","Segoe UI",Arial,sans-serif;
+    color:var(--text);
+    transition:background .3s,color .3s;
+  }
+
+  #navbar{
+    position:fixed;top:0;left:0;right:0;z-index:100;
+    display:flex;justify-content:space-between;align-items:center;
+    padding:12px 24px;
+    background:rgba(28,37,65,0.92);
+    backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--border-soft);
+    height:56px;
+    font-family:'Segoe UI',system-ui,-apple-system,Tahoma,Arial,sans-serif;
+  }
+  body.light-mode #navbar{background:rgba(255,255,255,0.92);}
+  .nav-brand{
+    font-size:1.05rem;font-weight:bold;
+    color:var(--accent-orange);
+    display:flex;align-items:center;gap:8px;
+  }
+  .nav-links{display:flex;gap:6px;flex-wrap:wrap;}
+  .nav-links a{
+    color:var(--text-color);text-decoration:none;
+    padding:8px 14px;border-radius:var(--radius-sm);
+    font-size:0.88rem;
+    transition:background .2s,color .2s;
+  }
+  .nav-links a:hover{background:var(--accent-orange);color:#000;}
+  .theme-toggle{
+    background:transparent;border:1px solid var(--border-soft);
+    color:var(--text-color);font-size:1.1rem;
+    width:36px;height:36px;border-radius:50%;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    transition:transform .2s,background .2s;
+  }
+  .theme-toggle:hover{transform:rotate(20deg);background:var(--sub-card-bg);}
+
+  #breadcrumb{
+    position:fixed;top:70px;left:50%;transform:translateX(-50%);
+    z-index:40;
+    display:flex;align-items:center;gap:8px;
+    padding:8px 18px;
+    background:var(--panel-bg);
+    border:1px solid var(--panel-border);border-radius:10px;
+    font-size:12px;color:var(--muted);
+    font-family:'Segoe UI',system-ui,sans-serif;
+    backdrop-filter:blur(8px);
+    transition:background .3s,border-color .3s,color .3s;
+    max-width:calc(100vw - 20px);
+    flex-wrap:wrap;
+  }
+  #breadcrumb a{color:var(--accent);text-decoration:none;transition:color .2s;}
+  #breadcrumb a:hover{color:var(--accent2);}
+  #breadcrumb .sep{opacity:0.5;}
+  #breadcrumb .cur{color:var(--text);font-weight:600;}
+
+  #siteHeader{
+    position:fixed;top:105px;left:0;right:0;
+    height:70px;
+    padding:10px 380px 0;
+    text-align:center;
+    z-index:25;pointer-events:none;
+  }
+  #titleBlock{max-width:900px;margin:0 auto;text-align:center;pointer-events:none;}
+  #titleBlock h1{
+    margin:0;font-size:19px;line-height:1.45;
+    color:var(--accent2);letter-spacing:.2px;
+    text-shadow:0 2px 8px rgba(0,0,0,.15);
+    transition:color .3s;
+  }
+  #titleBlock .credit{
+    font-size:11.5px;color:var(--muted);
+    margin-top:4px;white-space:nowrap;
+    transition:color .3s;
+  }
+
+  #logoWrap{
+    position:fixed;
+    top:190px;
+    right:var(--panel-right);
+    width:var(--panel-width);
+    height:200px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    z-index:30;
+    pointer-events:none;
+  }
+  #logoWrap img{
+    width:180px;height:180px;
+    border-radius:50%;
+    background:#fff;object-fit:cover;
+    box-shadow:0 6px 30px rgba(0,0,0,.5),0 0 0 4px rgba(255,255,255,.08);
+    border:3px solid rgba(255,255,255,.2);
+    transition:box-shadow .3s,border-color .3s,transform .3s;
+  }
+  #logoWrap img:hover{transform:scale(1.03);}
+  body.light-mode #logoWrap img{
+    box-shadow:0 6px 30px rgba(0,0,0,.2),0 0 0 4px rgba(0,0,0,.05);
+    border-color:rgba(0,0,0,.1);
+  }
+  #logoFallback{
+    display:none;
+    width:180px;height:180px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#f77f00,#00b4d8);
+    align-items:center;justify-content:center;
+    font-size:5.5rem;
+    box-shadow:0 6px 30px rgba(0,0,0,.5),0 0 0 4px rgba(255,255,255,.08);
+    border:3px solid rgba(255,255,255,.2);
+    color:#fff;
+  }
+
+  #mainLayout{
+    position:fixed;
+    top:190px;
+    left:16px;
+    right:calc(var(--panel-width) + var(--panel-right) + 16px);
+    bottom:36px;
+    z-index:5;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    min-height:0;
+    overflow:hidden;
+  }
+
+  .card{
+    background:var(--panel-bg);
+    border:1px solid var(--panel-border);
+    border-radius:16px;
+    padding:12px;
+    backdrop-filter:blur(10px);
+    transition:background .3s,border-color .3s;
+    display:flex;
+    flex-direction:column;
+    min-height:0;
+  }
+
+  #viewer-wrap{
+    position:relative;
+    flex:1 1 auto;
+    min-height:0;
+  }
+  #viewer{
+    width:100%;
+    height:100%;
+    border-radius:10px;
+    background:var(--viewer-bg);
+    overflow:hidden;
+    border:1px solid var(--panel-border);
+    transition:background .3s,border-color .3s;
+    min-height:0;
+  }
+  .badge-3d{
+    position:absolute;top:14px;left:14px;
+    background:var(--panel-bg);color:var(--accent);
+    padding:4px 10px;border-radius:20px;font-size:0.7rem;
+    pointer-events:none;border:1px solid var(--panel-border);
+  }
+  .legend{
+    display:flex;flex-wrap:wrap;gap:12px;
+    font-size:0.72rem;margin-top:8px;
+    color:var(--muted);
+    flex:none;
+  }
+  .legend span{display:flex;align-items:center;gap:6px;}
+  .dot{width:11px;height:11px;border-radius:50%;display:inline-block;}
+
+  .charts-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    flex:0 0 130px;
+    min-height:0;
+  }
+  .chart-card{
+    background:var(--panel-bg);
+    border-radius:16px;
+    border:1px solid var(--panel-border);
+    padding:6px 10px;
+    transition:background .3s,border-color .3s;
+    display:flex;
+    flex-direction:column;
+    min-height:0;
+  }
+  .chart-card h3{
+    font-size:0.7rem;color:var(--accent2);
+    margin:0 0 2px;text-align:center;
+    transition:color .3s;
+    flex:none;
+  }
+  canvas.chart{
+    width:100%;
+    flex:1;
+    min-height:0;
+    display:block;
+  }
+
+  .note{
+    background:rgba(232,163,61,0.15);
+    border-right:3px solid var(--accent2);
+    padding:6px 8px;border-radius:5px;
+    font-size:0.68rem;color:var(--accent2);
+    margin-top:8px;line-height:1.45;
+  }
+
+  #panel{
+    position:fixed;
+    top:400px;
+    right:var(--panel-right);
+    width:var(--panel-width);
+    bottom:36px;
+    overflow:hidden;
+    background:var(--panel-bg);
+    border:1px solid var(--panel-border);
+    border-radius:16px;
+    padding:14px 16px;
+    color:var(--text);backdrop-filter:blur(10px);
+    z-index:35;
+    transition:background .3s,border-color .3s;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    font-size:12px;
+  }
+  #panel h3{
+    margin:0 0 6px;font-size:14px;color:var(--accent2);
+    border-bottom:1px solid var(--panel-border);padding-bottom:6px;
+    transition:color .3s,border-color .3s;
+    flex:none;
+  }
+  #panel h3:not(:first-child){margin-top:4px;}
+  .field{margin-bottom:8px;flex:none;}
+  .field .row{
+    display:flex;justify-content:space-between;
+    font-size:12px;color:var(--muted);margin-bottom:2px;
+    transition:color .3s;
+  }
+  .field .row b{color:var(--text);transition:color .3s;}
+  input[type=range]{width:100%;accent-color:var(--accent);height:16px;}
+  input[type=range]:disabled{opacity:0.35;cursor:not-allowed;}
+
+  .mode-row{display:flex;gap:6px;margin:0 0 8px;flex:none;}
+  .mode-pill{
+    flex:1;padding:7px 6px;border-radius:10px;
+    border:1px solid var(--panel-border);
+    background:rgba(128,128,128,.08);
+    color:var(--muted);font-size:11.5px;font-weight:bold;
+    cursor:pointer;backdrop-filter:blur(6px);
+    font-family:inherit;transition:.2s;
+  }
+  .mode-pill.active{
+    background:var(--accent);color:#fff;
+    border-color:var(--accent);
+  }
+
+  .btn-row{display:flex;gap:6px;margin-top:4px;flex-wrap:wrap;flex:none;}
+  .btn{
+    flex:1;padding:7px 8px;border-radius:10px;
+    border:1px solid var(--panel-border);
+    background:rgba(128,128,128,.08);
+    color:var(--text);font-size:11.5px;font-weight:bold;
+    cursor:pointer;font-family:inherit;transition:.2s;
+    min-width:fit-content;
+  }
+  .btn:hover{background:rgba(128,128,128,.15);}
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .btn.warn{background:var(--accent2);border-color:var(--accent2);color:#000;}
+  .btn:disabled{opacity:.35;cursor:not-allowed;}
+
+  .stats{
+    background:rgba(128,128,128,.08);
+    border-radius:10px;padding:6px 8px;
+    font-size:11.5px;color:var(--muted);
+    transition:background .3s,color .3s;
+    flex:1 1 auto;
+    min-height:0;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+  }
+  .stats table{
+    width:100%;border-collapse:collapse;font-size:11.5px;
+    flex:none;
+  }
+  .stats th,.stats td{
+    padding:2px 3px;
+    border-bottom:1px solid var(--panel-border);
+    text-align:right;
+    line-height:1.3;
+  }
+  .stats th{color:var(--accent2);font-weight:700;font-size:11px;}
+  .stats td.val{
+    color:var(--text);font-weight:700;
+    font-variant-numeric:tabular-nums;
+    font-size:11.5px;
+  }
+  .ind{
+    display:inline-block;font-size:9.5px;padding:0 4px;
+    border-radius:8px;font-weight:700;
+  }
+  .ind.up{background:rgba(6,214,160,0.15);color:var(--good);}
+  .ind.down{background:rgba(239,71,111,0.15);color:var(--danger);}
+  .ind.same{background:rgba(128,128,128,0.15);color:var(--muted);}
+
+  #vol-canvas{
+    width:100%;
+    margin-top:6px;
+    border-radius:6px;
+    background:rgba(128,128,128,0.08);
+    border:1px solid var(--panel-border);
+    transition:background .3s,border-color .3s;
+    flex:1 1 auto;
+    min-height:0;
+    max-height:80px;
+    object-fit:contain;
+  }
+
+  #footer{
+    position:fixed;bottom:0;left:0;right:0;
+    padding:6px 20px;text-align:center;
+    font-size:11px;color:var(--muted);
+    background:linear-gradient(0deg, var(--panel-bg) 0%, transparent 100%);
+    pointer-events:none;z-index:20;
+    font-family:'Segoe UI',system-ui,sans-serif;
+    transition:color .3s,background .3s;
+    height:28px;
+    line-height:16px;
+  }
+  #footer strong{color:var(--accent2);transition:color .3s;}
+
+  #toast{
+    position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
+    background:var(--accent);color:#fff;
+    padding:8px 16px;border-radius:20px;
+    font-size:12px;z-index:999;
+    box-shadow:0 4px 16px rgba(0,0,0,.5);
+    transition:opacity .3s;opacity:0;pointer-events:none;
+  }
+
+  @media(max-width:1200px){
+    :root{--panel-width:280px;--panel-right:12px;}
+    #panel{padding:12px 14px;}
+  }
+  @media(max-width:900px){
+    :root{--panel-width:260px;--panel-right:8px;}
+    #siteHeader{height:60px;padding:8px 280px 0 140px;}
+    #titleBlock h1{font-size:15px;}
+    #titleBlock .credit{font-size:10px;}
+    #logoWrap{top:175px;height:160px;}
+    #logoWrap img{width:140px;height:140px;}
+    #logoFallback{width:140px;height:140px;font-size:4rem;}
+    #mainLayout{top:180px;}
+    #panel{top:355px;font-size:11.5px;padding:10px 12px;}
+    #breadcrumb{top:64px;font-size:11px;padding:6px 14px;}
+    .charts-grid{flex:0 0 115px;}
+    .chart-card h3{font-size:0.66rem;}
+  }
+  @media(max-width:650px){
+    body{overflow:auto;height:auto;}
+    #navbar{padding:8px 10px;height:auto;flex-wrap:wrap;gap:6px;}
+    .nav-brand{font-size:0.9rem;}
+    .nav-links a{padding:5px 8px;font-size:0.72rem;}
+    #siteHeader{position:static;padding:66px 8px 0;height:auto;}
+    #breadcrumb{position:static;transform:none;margin:6px auto;width:fit-content;}
+    #logoWrap{position:static;margin:8px auto;width:100px;height:100px;}
+    #logoWrap img{width:90px;height:90px;}
+    #logoFallback{width:90px;height:90px;font-size:2.8rem;}
+    #mainLayout{position:static;margin:8px;height:auto;overflow:visible;}
+    #panel{position:static;width:auto;margin:8px;height:auto;overflow:visible;}
+    #viewer{height:360px;min-height:360px;}
+    .charts-grid{grid-template-columns:1fr;flex:none;}
+    canvas.chart{height:150px;min-height:150px;}
+    #footer{position:static;height:auto;padding:8px;}
+  }
+</style>
+</head>
+<body>
+
+<nav id="navbar">
+  <div class="nav-brand">⚛️ <span>فيزياء ماجد شلالدة</span></div>
+  <div class="nav-links">
+    <a href="../index.html#mechanics">⚙️ الميكانيكا</a>
+    <a href="../index.html#electricity">⚡ الكهرباء</a>
+    <a href="../index.html#magnetism">🧲 المغناطيسية</a>
+    <a href="../index.html#modern">🔬 الحديثة</a>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="تبديل الوضع">🌙</button>
+</nav>
+
+<div id="breadcrumb">
+  <a href="../index.html">🏠 الرئيسية</a>
+  <span class="sep">›</span>
+  <a href="../index.html#electricity">⚡ الكهرباء المتحركة</a>
+  <span class="sep">›</span>
+  <a href="current-resistance.html">🔌 التيار والمقاومة</a>
+  <span class="sep">›</span>
+  <span class="cur">🔬 إعادة تشكيل موصل فلزي</span>
+</div>
+
+<div id="siteHeader">
+  <div id="titleBlock">
+    <h1>محاكاة إعادة تشكيل موصل فلزي — مع إمكانية ضبط الجهد V₀</h1>
+    <div class="credit">إعداد وتطوير: الأستاذ ماجد شلالده &nbsp;|&nbsp; 0599870176</div>
+  </div>
+</div>
+
+<div id="logoWrap">
+  <img src="../logo.png"
+       alt="شعار الأستاذ ماجد شلالده"
+       onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+  <div id="logoFallback">⚛️</div>
+</div>
+
+<div id="mainLayout">
+  <div class="card" id="viewer-wrap">
+    <div id="viewer"></div>
+    <div class="badge-3d">اسحب للتدوير • عجلة الفأرة للتكبير</div>
+    <div class="legend">
+      <span><i class="dot" style="background:#ff0000"></i> ذرات الشبكة</span>
+      <span><i class="dot" style="background:#ffffff"></i> إلكترونات حرة</span>
+    </div>
+  </div>
+
+  <div class="charts-grid">
+    <div class="chart-card">
+      <h3>السرعة الانسياقية v_d مقابل الطول L</h3>
+      <canvas class="chart" id="chart-vd"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>كثافة التيار J مقابل الطول L</h3>
+      <canvas class="chart" id="chart-j"></canvas>
+    </div>
+  </div>
+</div>
+
+<div id="panel">
+  <h3>نمط التجربة</h3>
+  <div class="mode-row">
+    <button class="mode-pill active" data-exp="1">١: ثبات الحجم</button>
+    <button class="mode-pill" data-exp="2">٢: ثبات L</button>
+    <button class="mode-pill" data-exp="3">٣: ثبات الأبعاد</button>
+  </div>
+  <div id="exp-hint" style="font-size:11px;color:var(--muted);line-height:1.4;margin-bottom:6px;flex:none;"></div>
+
+  <h3>أدوات التحكم</h3>
+
+  <!-- ✅ الجهد أولاً وقابل للتغيير دائماً -->
+  <div class="field">
+    <div class="row"><span>فرق الجهد V₀</span><b id="lbl-V0">0.50 V</b></div>
+    <input type="range" id="slider-V0" min="0.1" max="10" step="0.05" value="0.5">
+  </div>
+
+  <div class="field">
+    <div class="row"><span>الطول L</span><b id="lbl-L">10.0 cm</b></div>
+    <input type="range" id="slider-L" min="4" max="40" step="0.1" value="10">
+  </div>
+  <div class="field">
+    <div class="row"><span>المقطع A</span><b id="lbl-A">4.00 mm²</b></div>
+    <input type="range" id="slider-A" min="0.5" max="12" step="0.05" value="4">
+  </div>
+  <div class="field">
+    <div class="row"><span>التركيز n</span><b id="lbl-n">8.5×10²⁸</b></div>
+    <input type="range" id="slider-n" min="2" max="20" step="0.1" value="8.5">
+  </div>
+
+  <div class="note" id="mode-note"></div>
+
+  <div class="btn-row">
+    <button class="btn primary" id="btn-inc">زيادة L</button>
+    <button class="btn warn" id="btn-dec">تقليل L</button>
+    <button class="btn" id="btn-reset">↺ إعادة الضبط</button>
+  </div>
+
+  <h3 style="margin-top:8px;">النتائج</h3>
+  <div class="stats">
+    <table>
+      <thead>
+        <tr><th>الكمية</th><th>القيمة</th><th>الاتجاه</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>L</td><td class="val" id="res-L">—</td><td><span class="ind same" id="ind-L">—</span></td></tr>
+        <tr><td>A</td><td class="val" id="res-A">—</td><td><span class="ind same" id="ind-A">—</span></td></tr>
+        <tr><td>V</td><td class="val" id="res-V">—</td><td><span class="ind same" id="ind-V">—</span></td></tr>
+        <tr><td>V₀</td><td class="val" id="res-V0">—</td><td><span class="ind same" id="ind-V0">—</span></td></tr>
+        <tr><td>R</td><td class="val" id="res-R">—</td><td><span class="ind same" id="ind-R">—</span></td></tr>
+        <tr><td>I</td><td class="val" id="res-I">—</td><td><span class="ind same" id="ind-I">—</span></td></tr>
+        <tr><td>J</td><td class="val" id="res-J">—</td><td><span class="ind same" id="ind-J">—</span></td></tr>
+        <tr><td>v_d</td><td class="val" id="res-vd">—</td><td><span class="ind same" id="ind-vd">—</span></td></tr>
+      </tbody>
+    </table>
+    <canvas id="vol-canvas" width="280" height="90"></canvas>
+  </div>
+</div>
+
+<div id="footer">
+  © 2025 المنصة التفاعلية للمحاكاة الفيزيائية — إعداد <strong>الأستاذ ماجد شلالدة</strong> — 📱 0599870176
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+const E_CHARGE = 1.602e-19;
+const MM2_TO_M2 = 1e-6;
+const CM_TO_M = 1e-2;
+const RHO = 1.68e-8;
+
+/* ✅ الجهد قابل للتغيير دائماً — نطاق أوسع */
+const state = { L_cm: 10, A_mm2: 4, V0: 0.5, n28: 8.5, exp: 1 };
+
+const themeToggle = document.getElementById('themeToggle');
+const savedTheme = localStorage.getItem('theme');
+if (savedTheme === 'light') {
+  document.body.classList.add('light-mode');
+  themeToggle.textContent = '☀️';
+}
+
+function getSceneColors(){
+  const isLight = document.body.classList.contains('light-mode');
+  return { viewerBg: isLight ? 0xc5d4e8 : 0x050810 };
+}
+
+const viewer = document.getElementById('viewer');
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(getSceneColors().viewerBg);
+
+const camera = new THREE.PerspectiveCamera(45, viewer.clientWidth/Math.max(1,viewer.clientHeight), 0.1, 1000);
+camera.position.set(8, 5, 10);
+camera.lookAt(0, 0, 0);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(viewer.clientWidth, viewer.clientHeight);
+if (renderer.outputEncoding !== undefined) renderer.outputEncoding = THREE.sRGBEncoding;
+viewer.appendChild(renderer.domElement);
+
+scene.add(new THREE.AmbientLight(0xffffff, 1.5));
+const dirLight = new THREE.DirectionalLight(0xffffff, 2.0);
+dirLight.position.set(10, 20, 12); scene.add(dirLight);
+const dirLight2 = new THREE.DirectionalLight(0xaaccff, 1.5);
+dirLight2.position.set(-10, -5, -12); scene.add(dirLight2);
+const dirLight3 = new THREE.DirectionalLight(0xffffff, 1.5);
+dirLight3.position.set(0, 15, 0); scene.add(dirLight3);
+
+const conductorGroup = new THREE.Group();
+scene.add(conductorGroup);
+
+const baseColor = new THREE.Color(0xffffff);
+const flashUpColor = new THREE.Color(0xffb347);
+const flashDownColor = new THREE.Color(0x6fa8ff);
+let flashTime = 0, flashDir = null;
+
+/* شفافية أعلى للموصل */
+const conductorMat = new THREE.MeshPhysicalMaterial({
+  color: 0xffffff, metalness: 0.1, roughness: 0.05,
+  clearcoat: 1.0, clearcoatRoughness: 0.05,
+  transparent: true, opacity: 0.06, side: THREE.DoubleSide,
+  emissive: 0x1a3a6a, emissiveIntensity: 0.15,
+  depthWrite: false
+});
+const conductorMesh = new THREE.Mesh(new THREE.CylinderGeometry(1,1,1,64,1,false), conductorMat);
+conductorMesh.rotation.z = Math.PI/2;
+conductorGroup.add(conductorMesh);
+
+const wireMat = new THREE.MeshBasicMaterial({ color: 0x4aaeff, wireframe: true, transparent: true, opacity: 0.18 });
+const wireMesh = new THREE.Mesh(new THREE.CylinderGeometry(1,1,1,32,1,false), wireMat);
+wireMesh.rotation.z = Math.PI/2;
+conductorGroup.add(wireMesh);
+
+/* ذرات حمراء */
+const latticeGroup = new THREE.Group();
+conductorGroup.add(latticeGroup);
+const atomGeo = new THREE.SphereGeometry(0.22, 16, 16);
+const atomMat = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+
+function buildLattice(radius, length) {
+  while(latticeGroup.children.length) latticeGroup.children.pop();
+  const rings = Math.min(10, Math.max(4, Math.floor(length / 2.0)));
+  const perRing = Math.min(12, Math.max(5, Math.round(radius * 8)));
+  for (let i = 0; i < rings; i++) {
+    const x = -length/2 + (i + 0.5) * (length / rings);
+    for (let j = 0; j < perRing; j++) {
+      const ang = (j / perRing) * Math.PI * 2 + (i%2)*0.3;
+      const r = radius * 0.75;
+      const m = new THREE.Mesh(atomGeo, atomMat);
+      m.position.set(x, Math.cos(ang) * r, Math.sin(ang) * r);
+      latticeGroup.add(m);
+    }
+  }
+}
+
+const electronsGroup = new THREE.Group();
+conductorGroup.add(electronsGroup);
+const electronGeo = new THREE.SphereGeometry(0.15, 16, 16);
+const electronMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+let electrons = [];
+
+function buildElectrons(radius, length) {
+  while(electronsGroup.children.length) electronsGroup.children.pop();
+  electrons = [];
+  const n = 50;
+  for (let i = 0; i < n; i++) {
+    const m = new THREE.Mesh(electronGeo, electronMat);
+    const r = radius * 0.6 * Math.sqrt(Math.random());
+    const ang = Math.random() * Math.PI * 2;
+    const y = Math.cos(ang) * r, z = Math.sin(ang) * r;
+    const offset = Math.random();
+    m.position.set(-length/2 + offset * length, y, z);
+    electronsGroup.add(m);
+    electrons.push({ mesh: m, y, z, offset });
+  }
+}
+
+function makeLabel(text, color) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 320; canvas.height = 64;
+  const ctx = canvas.getContext('2d');
+  ctx.font = 'bold 30px Tahoma, Arial';
+  ctx.fillStyle = color; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(text, 160, 32);
+  const tex = new THREE.CanvasTexture(canvas);
+  const mat = new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false });
+  const sp = new THREE.Sprite(mat);
+  sp.scale.set(3.6, 0.75, 1);
+  return sp;
+}
+function updateLabel(sprite, text, color) {
+  const ctx = sprite.material.map.image.getContext('2d');
+  ctx.clearRect(0,0,320,64);
+  ctx.font = 'bold 30px Tahoma, Arial';
+  ctx.fillStyle = color; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(text, 160, 32);
+  sprite.material.map.needsUpdate = true;
+}
+
+const labelL = makeLabel('L = 10 cm', '#7fb1ff');
+const labelA = makeLabel('A = 4 mm²', '#ffffff');
+conductorGroup.add(labelL, labelA);
+
+function computeRadiusFromArea(A_mm2) {
+  return { Lscene: state.L_cm * 1.3, rScene: Math.sqrt(state.A_mm2) * 0.50 };
+}
+
+function updateConductorGeometry() {
+  const { Lscene, rScene } = computeRadiusFromArea(state.A_mm2);
+  state._Lscene = Lscene; state._rScene = rScene;
+
+  conductorMesh.geometry.dispose();
+  conductorMesh.geometry = new THREE.CylinderGeometry(rScene, rScene, Lscene, 64, 1, false);
+  wireMesh.geometry.dispose();
+  wireMesh.geometry = new THREE.CylinderGeometry(rScene*1.002, rScene*1.002, Lscene, 32, 1, false);
+
+  buildLattice(rScene, Lscene);
+  buildElectrons(rScene, Lscene);
+
+  labelL.position.set(0, rScene + 1.2, 0);
+  labelA.position.set(0, rScene + 0.7, 0);
+  updateLabel(labelL, `L = ${state.L_cm.toFixed(1)} cm`, '#7fb1ff');
+  updateLabel(labelA, `A = ${state.A_mm2.toFixed(2)} mm²`, '#ffffff');
+}
+
+/* ✅ الفيزياء: I = V₀/R دائماً (بما فيها النمط 3) */
+function computePhysics() {
+  const L_m = state.L_cm * CM_TO_M;
+  const A_m2 = state.A_mm2 * MM2_TO_M2;
+  const n = state.n28 * 1e28;
+  const R = RHO * L_m / A_m2;
+  const I = state.V0 / R;
+  return {
+    L_m, A_m2, n, I, R,
+    J: I / A_m2,
+    vd: I / (n * E_CHARGE * A_m2),
+    V: A_m2 * L_m,
+    V0: state.V0
+  };
+}
+
+const els = {
+  lblL: document.getElementById('lbl-L'), lblA: document.getElementById('lbl-A'),
+  lblV0: document.getElementById('lbl-V0'), lblN: document.getElementById('lbl-n'),
+  resL: document.getElementById('res-L'), resA: document.getElementById('res-A'),
+  resV: document.getElementById('res-V'), resV0: document.getElementById('res-V0'),
+  resR: document.getElementById('res-R'), resI: document.getElementById('res-I'),
+  resJ: document.getElementById('res-J'), resVd: document.getElementById('res-vd'),
+  indL: document.getElementById('ind-L'), indA: document.getElementById('ind-A'),
+  indV: document.getElementById('ind-V'), indV0: document.getElementById('ind-V0'),
+  indR: document.getElementById('ind-R'), indI: document.getElementById('ind-I'),
+  indJ: document.getElementById('ind-J'), indVd: document.getElementById('ind-vd'),
+  hint: document.getElementById('exp-hint'),
+  modeNote: document.getElementById('mode-note')
+};
+
+let prev = null;
+function setIndicator(el, dir) {
+  el.className = 'ind ' + (dir > 0 ? 'up' : dir < 0 ? 'down' : 'same');
+  el.textContent = dir > 0 ? '▲' : dir < 0 ? '▼' : '—';
+}
+function fmt(x, d=3) {
+  if (x === 0) return '0';
+  const ax = Math.abs(x);
+  if (ax >= 1e4 || ax < 1e-2) return x.toExponential(d).replace('e','×10^');
+  return x.toFixed(d);
+}
+
+function updateUI() {
+  const p = computePhysics();
+  els.lblL.textContent = state.L_cm.toFixed(1) + ' cm';
+  els.lblA.textContent = state.A_mm2.toFixed(2) + ' mm²';
+  els.lblV0.textContent = state.V0.toFixed(2) + ' V';
+  els.lblN.textContent = state.n28.toFixed(1) + '×10²⁸';
+
+  els.resL.textContent = state.L_cm.toFixed(2) + ' cm';
+  els.resA.textContent = state.A_mm2.toFixed(2) + ' mm²';
+  els.resV.textContent = (p.V * 1e9).toFixed(2) + ' ×10⁻⁹';
+  els.resV0.textContent = state.V0.toFixed(2) + ' V';
+  els.resR.textContent = (p.R * 1e3).toFixed(2) + ' mΩ';
+  els.resI.textContent = fmt(p.I, 3) + ' A';
+  els.resJ.textContent = fmt(p.J / 1e6, 2) + ' ×10⁶';
+  els.resVd.textContent = fmt(p.vd, 2) + ' m/s';
+
+  if (prev) {
+    const tol = 1e-9;
+    setIndicator(els.indL, state.L_cm - prev.L_cm > tol ? 1 : state.L_cm - prev.L_cm < -tol ? -1 : 0);
+    setIndicator(els.indA, state.A_mm2 - prev.A_mm2 > tol ? 1 : state.A_mm2 - prev.A_mm2 < -tol ? -1 : 0);
+    setIndicator(els.indV0, state.V0 - prev.V0 > 1e-9 ? 1 : state.V0 - prev.V0 < -1e-9 ? -1 : 0);
+    setIndicator(els.indR, p.R - prev.R > 1e-9 ? 1 : p.R - prev.R < -1e-9 ? -1 : 0);
+    setIndicator(els.indI, p.I - prev.I > 1e-9 ? 1 : p.I - prev.I < -1e-9 ? -1 : 0);
+    setIndicator(els.indJ, p.J - prev.J > 1e-6 ? 1 : p.J - prev.J < -1e-6 ? -1 : 0);
+    setIndicator(els.indVd, p.vd - prev.vd > 1e-12 ? 1 : p.vd - prev.vd < -1e-12 ? -1 : 0);
+    setIndicator(els.indV, p.V - prev.V > 1e-18 ? 1 : p.V - prev.V < -1e-18 ? -1 : 0);
+  }
+  prev = { L_cm: state.L_cm, A_mm2: state.A_mm2, V0: state.V0, I: p.I, vd: p.vd, J: p.J, V: p.V, R: p.R };
+
+  updateLabel(labelL, `L = ${state.L_cm.toFixed(1)} cm`, '#7fb1ff');
+  updateLabel(labelA, `A = ${state.A_mm2.toFixed(2)} mm²`, '#ffffff');
+
+  drawCharts();
+  drawVolumeSketch();
+}
+
+/* ✅ النماذج الثلاثة مع الجهد القابل للتغيير */
+const expHints = {
+  1: 'ثبات الحجم V = A·L: تغيير L يعكس A تلقائياً — V₀ حر.',
+  2: 'ثبات L فقط: يمكن تغيير A و V₀ بحرية.',
+  3: 'الأبعاد ثابتة تماماً: يمكن تغيير V₀ و n بحرية.'
+};
+
+function activateExp(n) {
+  document.querySelectorAll('.mode-pill').forEach(t => t.classList.toggle('active', +t.dataset.exp === n));
+  state.exp = n;
+  els.hint.textContent = expHints[n];
+  const notes = {
+    1: '🔒 الحجم V = A·L ثابت. V₀ قابل للتغيير ← I = V₀/R يتغير تلقائياً.',
+    2: '🔒 L ثابت. V₀ و A قابلان للتغيير ← I = V₀/R.',
+    3: '🔓 الأبعاد ثابتة (L و A). V₀ قابل للتغيير ← I = V₀/R.'
+  };
+  els.modeNote.textContent = notes[n];
+}
+
+document.querySelectorAll('.mode-pill').forEach(tab => {
+  tab.addEventListener('click', () => { activateExp(+tab.dataset.exp); updateUI(); });
+});
+
+const slL = document.getElementById('slider-L');
+const slA = document.getElementById('slider-A');
+const slV0 = document.getElementById('slider-V0');
+const slN = document.getElementById('slider-n');
+
+function onLChange() {
+  const newL = +slL.value;
+  if (state.exp === 1) {
+    const Vconst = state.A_mm2 * state.L_cm;
+    state.L_cm = newL;
+    state.A_mm2 = Math.min(12, Math.max(0.5, Vconst / newL));
+    slA.value = state.A_mm2;
+    flashConductor(newL > (prev?.L_cm ?? newL) ? 'up' : 'down');
+  } else {
+    state.L_cm = newL;
+  }
+  updateConductorGeometry(); updateUI();
+}
+function onAChange() {
+  const newA = +slA.value;
+  if (state.exp === 1) {
+    const Vconst = state.A_mm2 * state.L_cm;
+    state.A_mm2 = newA;
+    state.L_cm = Math.min(40, Math.max(4, Vconst / newA));
+    slL.value = state.L_cm;
+    flashConductor(newA > (prev?.A_mm2 ?? newA) ? 'down' : 'up');
+    showToast('في نمط ثبات الحجم: L تتبع A تلقائياً');
+  } else {
+    state.A_mm2 = newA;
+  }
+  updateConductorGeometry(); updateUI();
+}
+
+/* ✅ الجهد قابل للتغيير دائماً — يعمل في كل الأنماط */
+function onV0Change() {
+  state.V0 = +slV0.value;
+  updateUI();
+}
+
+function onNChange() { state.n28 = +slN.value; updateUI(); }
+
+slL.addEventListener('input', onLChange);
+slA.addEventListener('input', onAChange);
+slV0.addEventListener('input', onV0Change);
+slN.addEventListener('input', onNChange);
+
+function flashConductor(dir) { flashDir = dir; flashTime = 0.6; }
+function showToast(msg) {
+  let t = document.getElementById('toast');
+  if (!t) { t = document.createElement('div'); t.id = 'toast'; document.body.appendChild(t); }
+  t.textContent = msg; t.style.opacity = '1';
+  clearTimeout(t._h);
+  t._h = setTimeout(() => t.style.opacity = '0', 2200);
+}
+
+function reshape(factor) {
+  const Vconst = state.A_mm2 * state.L_cm;
+  let newL = Math.min(40, Math.max(4, state.L_cm * factor));
+  let newA = Vconst / newL;
+  if (newA < 0.5) { newA = 0.5; newL = Vconst / newA; }
+  if (newA > 12) { newA = 12; newL = Vconst / newA; }
+  const dir = newL > state.L_cm ? 'up' : 'down';
+  state.L_cm = newL; state.A_mm2 = newA;
+  slL.value = newL; slA.value = newA;
+  activateExp(1);
+  flashConductor(dir);
+  updateConductorGeometry(); updateUI();
+}
+document.getElementById('btn-inc').addEventListener('click', () => reshape(1.15));
+document.getElementById('btn-dec').addEventListener('click', () => reshape(1/1.15));
+document.getElementById('btn-reset').addEventListener('click', () => {
+  state.L_cm = 10; state.A_mm2 = 4; state.V0 = 0.5; state.n28 = 8.5;
+  slL.value = 10; slA.value = 4; slV0.value = 0.5; slN.value = 8.5;
+  prev = null;
+  activateExp(1);
+  updateConductorGeometry(); updateUI();
+});
+
+function drawChart(canvas, xData, yData, currentX, currentY, color, xLabel, yLabel) {
+  const dpr = Math.min(window.devicePixelRatio, 2);
+  const W = canvas.clientWidth, H = canvas.clientHeight;
+  if (W === 0 || H === 0) return;
+  canvas.width = W * dpr; canvas.height = H * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,W,H);
+
+  const pad = { l: 50, r: 10, t: 12, b: 24 };
+  const cw = W - pad.l - pad.r, ch = H - pad.t - pad.b;
+  const xMin = Math.min(...xData), xMax = Math.max(...xData);
+  const yMin = 0, yMax = Math.max(...yData) * 1.15;
+  const X = x => pad.l + ((x - xMin) / (xMax - xMin || 1)) * cw;
+  const Y = y => pad.t + ch - ((y - yMin) / (yMax - yMin || 1)) * ch;
+
+  const isLight = document.body.classList.contains('light-mode');
+  const gridColor = isLight ? '#c8d4e4' : '#1f2f4d';
+  const axisColor = isLight ? '#64748b' : '#4a5f80';
+  const labelColor = isLight ? '#475569' : '#8fa6c8';
+
+  ctx.strokeStyle = gridColor; ctx.lineWidth = 1;
+  for (let i = 0; i <= 4; i++) {
+    const yy = pad.t + (ch/4)*i;
+    ctx.beginPath(); ctx.moveTo(pad.l, yy); ctx.lineTo(pad.l+cw, yy); ctx.stroke();
+    const xx = pad.l + (cw/4)*i;
+    ctx.beginPath(); ctx.moveTo(xx, pad.t); ctx.lineTo(xx, pad.t+ch); ctx.stroke();
+  }
+  ctx.strokeStyle = axisColor; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(pad.l, pad.t); ctx.lineTo(pad.l, pad.t+ch); ctx.lineTo(pad.l+cw, pad.t+ch); ctx.stroke();
+
+  ctx.beginPath();
+  for (let i = 0; i < xData.length; i++) {
+    const px = X(xData[i]), py = Y(yData[i]);
+    if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+  }
+  ctx.strokeStyle = color; ctx.lineWidth = 2.5; ctx.stroke();
+
+  ctx.setLineDash([4,4]);
+  ctx.strokeStyle = color + '77';
+  ctx.beginPath(); ctx.moveTo(pad.l, Y(currentY)); ctx.lineTo(pad.l + cw, Y(currentY)); ctx.stroke();
+  ctx.setLineDash([]);
+
+  const cx = X(currentX), cy = Y(currentY);
+  ctx.beginPath(); ctx.arc(cx, cy, 5, 0, Math.PI*2);
+  ctx.fillStyle = color; ctx.fill();
+  ctx.strokeStyle = isLight ? '#0f172a' : '#fff'; ctx.lineWidth = 2; ctx.stroke();
+
+  ctx.fillStyle = color; ctx.font = 'bold 9.5px Tahoma'; ctx.textAlign = 'left';
+  ctx.fillText(currentY.toExponential(2), pad.l + 4, Y(currentY) - 5);
+
+  ctx.fillStyle = labelColor; ctx.font = '9px Tahoma';
+  ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  ctx.fillText(xLabel, pad.l + cw/2, H - 12);
+  ctx.save();
+  ctx.translate(10, pad.t + ch/2);
+  ctx.rotate(-Math.PI/2);
+  ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+  ctx.fillText(yLabel, 0, 0);
+  ctx.restore();
+}
+
+function drawCharts() {
+  const Lmin = 4, Lmax = 40, N = 60;
+  const Larr = [], vdArr = [], JArr = [];
+  const n = state.n28 * 1e28;
+
+  if (state.exp === 1) {
+    const Vconst = state.A_mm2 * state.L_cm;
+    for (let i = 0; i < N; i++) {
+      const L = Lmin + (Lmax - Lmin) * i / (N-1);
+      const A = Math.max(0.01, Vconst / L);
+      const A_m2 = A * MM2_TO_M2;
+      const L_m = L * CM_TO_M;
+      const R = RHO * L_m / A_m2;
+      const I = state.V0 / R;
+      Larr.push(L);
+      vdArr.push(I / (n * E_CHARGE * A_m2));
+      JArr.push(I / A_m2);
+    }
+  } else if (state.exp === 2) {
+    const A_m2 = state.A_mm2 * MM2_TO_M2;
+    const L_m = state.L_cm * CM_TO_M;
+    const R = RHO * L_m / A_m2;
+    const I = state.V0 / R;
+    const vdVal = I / (n * E_CHARGE * A_m2);
+    const JVal = I / A_m2;
+    for (let i = 0; i < N; i++) {
+      Larr.push(Lmin + (Lmax - Lmin) * i / (N-1));
+      vdArr.push(vdVal); JArr.push(JVal);
+    }
+  } else {
+    const A_m2 = state.A_mm2 * MM2_TO_M2;
+    const L_m = state.L_cm * CM_TO_M;
+    const R = RHO * L_m / A_m2;
+    const I = state.V0 / R;
+    const vdVal = I / (n * E_CHARGE * A_m2);
+    const JVal = I / A_m2;
+    for (let i = 0; i < N; i++) {
+      Larr.push(Lmin + (Lmax - Lmin) * i / (N-1));
+      vdArr.push(vdVal); JArr.push(JVal);
+    }
+  }
+
+  const p = computePhysics();
+  drawChart(document.getElementById('chart-vd'), Larr, vdArr, state.L_cm, p.vd, '#00b4d8', 'L (cm)', 'v_d (m/s)');
+  drawChart(document.getElementById('chart-j'), Larr, JArr, state.L_cm, p.J, '#ef476f', 'L (cm)', 'J (A/m²)');
+}
+
+function drawVolumeSketch() {
+  const c = document.getElementById('vol-canvas');
+  const ctx = c.getContext('2d');
+  const W = c.width, H = c.height;
+  ctx.clearRect(0,0,W,H);
+
+  const isLight = document.body.classList.contains('light-mode');
+  const V = state.A_mm2 * state.L_cm;
+  const maxH = H - 26;
+  const scale = maxH / Math.max(state.L_cm, 1);
+
+  const w1 = Math.max(18, state.A_mm2 * 9);
+  const h1 = Math.min(maxH, state.L_cm * scale);
+  ctx.fillStyle = isLight ? '#2563eb' : '#4a86e8';
+  ctx.fillRect(28, H - 10 - h1, w1, h1);
+
+  const altL = 40 - state.L_cm + 4;
+  const altA = V / altL;
+  const w2 = Math.max(18, altA * 9);
+  const h2 = Math.min(maxH, altL * scale);
+  ctx.fillStyle = isLight ? '#dc2626' : '#ff2244';
+  ctx.fillRect(140, H - 10 - h2, w2, h2);
+
+  ctx.fillStyle = isLight ? '#2563eb' : '#7fb1ff'; ctx.font = 'bold 10px Tahoma'; ctx.textAlign = 'center';
+  ctx.fillText(`V = A·L = ${V.toFixed(1)}`, W/2, 12);
+  ctx.fillStyle = isLight ? '#1a202c' : '#fff'; ctx.font = 'bold 9px Tahoma';
+  ctx.fillText(`A=${state.A_mm2.toFixed(1)}`, 28 + w1/2, H - 14);
+  ctx.fillText(`A'=${altA.toFixed(1)}`, 140 + w2/2, H - 14);
+}
+
+let tPrev = performance.now();
+function animate(now) {
+  requestAnimationFrame(animate);
+  const dt = Math.min(0.05, (now - tPrev) / 1000);
+  tPrev = now;
+
+  const p = computePhysics();
+  const Lscene = state._Lscene || 6;
+
+  const logVd = Math.log10(p.vd + 1e-12);
+  const speedFactor = Math.max(0.15, Math.min(5, (logVd + 5) * 0.9));
+  const driftSceneSpeed = 0.5 * speedFactor;
+
+  for (const el of electrons) {
+    el.offset -= (driftSceneSpeed * dt) / Lscene;
+    if (el.offset < 0) el.offset += 1;
+    el.mesh.position.x = -Lscene/2 + el.offset * Lscene;
+    el.mesh.position.y = el.y + Math.sin(now*0.004 + el.offset*10) * 0.03;
+    el.mesh.position.z = el.z + Math.cos(now*0.003 + el.offset*8) * 0.03;
+  }
+
+  if (flashTime > 0) {
+    flashTime -= dt;
+    const t = Math.max(0, flashTime / 0.6);
+    const target = flashDir === 'up' ? flashUpColor : flashDownColor;
+    conductorMat.color.copy(baseColor).lerp(target, t * 0.7);
+    conductorMat.emissive.copy(target).multiplyScalar(t * 0.35);
+  } else {
+    conductorMat.color.copy(baseColor);
+    conductorMat.emissive.setHex(0x1a3a6a);
+  }
+
+  renderer.render(scene, camera);
+}
+
+let isDragging = false, prevX = 0, prevY = 0;
+let theta = Math.atan2(10, 8);
+let phi = Math.acos(5 / Math.sqrt(8*8+5*5+10*10));
+let radius = Math.sqrt(8*8+5*5+10*10);
+function updateCamera() {
+  const x = radius * Math.sin(phi) * Math.cos(theta);
+  const y = radius * Math.cos(phi);
+  const z = radius * Math.sin(phi) * Math.sin(theta);
+  camera.position.set(x, y, z);
+  camera.lookAt(0,0,0);
+}
+updateCamera();
+
+renderer.domElement.addEventListener('pointerdown', e => {
+  isDragging = true; prevX = e.clientX; prevY = e.clientY;
+  renderer.domElement.setPointerCapture(e.pointerId);
+});
+renderer.domElement.addEventListener('pointermove', e => {
+  if (!isDragging) return;
+  theta -= (e.clientX - prevX) * 0.008;
+  phi = Math.max(0.15, Math.min(Math.PI - 0.15, phi - (e.clientY - prevY) * 0.008));
+  prevX = e.clientX; prevY = e.clientY;
+  updateCamera();
+});
+renderer.domElement.addEventListener('pointerup', e => {
+  isDragging = false;
+  try { renderer.domElement.releasePointerCapture(e.pointerId); } catch(_) {}
+});
+renderer.domElement.addEventListener('wheel', e => {
+  e.preventDefault();
+  radius = Math.max(6, Math.min(60, radius * (1 + Math.sign(e.deltaY) * 0.08)));
+  updateCamera();
+}, { passive: false });
+
+function onResize() {
+  const w = viewer.clientWidth, h = viewer.clientHeight;
+  if (w === 0 || h === 0) return;
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  renderer.setSize(w, h);
+  drawCharts();
+}
+window.addEventListener('resize', onResize);
+setTimeout(onResize, 100);
+
+themeToggle.addEventListener('click', () => {
+  document.body.classList.toggle('light-mode');
+  const isLight = document.body.classList.contains('light-mode');
+  themeToggle.textContent = isLight ? '☀️' : '🌙';
+  localStorage.setItem('theme', isLight ? 'light' : 'dark');
+  scene.background = new THREE.Color(getSceneColors().viewerBg);
+  drawCharts();
+  drawVolumeSketch();
+});
+
+buildLattice(1, 6);
+buildElectrons(1, 6);
+updateConductorGeometry();
+activateExp(1);
+updateUI();
+requestAnimationFrame(animate);
+</script>
+</body>
+</html>
